@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Athena · Writing studio</title><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/settings.css"><script src="/app.js" defer></script></head>
+<body>
+<aside>
+  <a class="brand" href="/" aria-label="Athena home"><span class="monogram">A</span> ATHENA</a>
+  <p class="eyebrow">YOUR WRITING STUDIO</p>
+  <button id="new-book" class="nav active">＋ &nbsp; Create a book</button>
+  <a id="settings-link" class="nav settings-nav" href="/settings">⚙ &nbsp; Settings</a>
+  <div class="shelf-heading"><span>YOUR BOOKS</span><span id="book-count">0</span></div>
+  <div id="books" aria-label="Your books"><p class="muted">Your stories will appear here.</p></div>
+  <div class="sidebar-footer"><span class="dot"></span> Local workspace<p>Your ideas. Your library.</p></div>
+</aside>
+<main>
+  <header><span>From an idea to the last page.</span><span class="workspace-tag">ATHENA / STUDIO</span></header>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <section id="create-view">
+    <p class="eyebrow">A NEW CHAPTER STARTS HERE</p>
+    <h1>What story will<br>you tell?</h1>
+    <p class="intro">Bring the idea. Athena will plan, write, and revise it into a manuscript you can make your own.</p>
+    <form id="book-form">
+      <label for="concept">Describe your book</label>
+      <textarea id="concept" required maxlength="30000" rows="6" placeholder="A lighthouse keeper begins receiving letters from tomorrow. A quiet mystery about grief, second chances, and the things we leave unsaid…"></textarea>
+      <p class="hint">Include a theme, audience, characters, or tone. Leave the rest to Athena.</p>
+      <div class="model-summary"><div><span class="eyebrow">WRITING MODEL</span><p id="saved-model">Loading settings…</p></div><a id="configure-model" href="/settings">Change settings ↗</a></div>
+      <div class="length-row"><div><label for="chapters">Chapter count <span class="muted">(optional)</span></label><input id="chapters" type="number" min="1" max="200" placeholder="Let Athena decide"></div><p class="hint">Try 3 chapters for a first run.<br>Speed and writing quality depend on your model and hardware.</p></div>
+      <div class="form-footer"><span>Plan → Write → Review → Manuscript</span><button type="submit" id="start">Create my book <span>↗</span></button></div>
+    </form>
+  </section>
+  <section id="settings-view" hidden>
+    <p class="eyebrow">MAKE ATHENA YOUR OWN</p>
+    <h1>Studio settings</h1>
+    <p class="intro">Set up your writing model and generation preferences once, then focus on your next story.</p>
+    <form id="settings-form">
+      <div class="connection-card">
+        <div class="section-title"><span class="step-number">01</span><div><h2>Choose your writing model</h2><p>Connect a model running on your computer, or use OpenRouter.</p></div></div>
+        <div class="grid">
+          <div><label for="provider">Model provider</label><select id="provider"><option value="ollama">Ollama · local</option><option value="lmstudio">LM Studio · local</option><option value="openrouter">OpenRouter · cloud</option></select></div>
+          <div><label for="base-url">Server address</label><input id="base-url" type="url" value="http://127.0.0.1:11434/v1" required></div>
+        </div>
+        <div id="openrouter-key-panel" class="key-panel" hidden>
+          <label for="openrouter-key">OpenRouter API key</label>
+          <p class="hint">Create a key in <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer">your OpenRouter account ↗</a>, then paste it here.</p>
+          <div class="key-entry"><input id="openrouter-key" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste your API key" maxlength="2048" aria-describedby="key-status"><button type="button" id="toggle-key" class="secondary" aria-pressed="false">Show</button></div>
+          <p id="key-status" class="hint" role="status" aria-live="polite">Checking saved key…</p>
+          <div class="key-actions"><button type="button" id="save-key" class="secondary">Save key</button><button type="button" id="test-key" class="secondary">Test key</button><button type="button" id="remove-key" class="secondary" hidden>Remove saved key</button></div>
+          <p class="hint">Saved in your operating system’s credential vault. Testing checks the key without generating a book.</p>
+        </div>
+        <div class="model-row"><div><label for="model">Model</label><input id="model" list="model-options" required placeholder="Connect to find your installed models" autocomplete="off"><datalist id="model-options"></datalist></div><button type="button" id="connect" class="secondary">Find models</button></div>
+        <p id="connection-help" class="hint">Start Ollama and download a model, then select Find models. Generation stays with the server you choose.</p>
+      </div>
+      <div class="connection-card">
+        <div class="section-title"><span class="step-number">02</span><div><h2>Generation limits</h2><p>Control how much work Athena can do for each book.</p></div></div>
+        <div class="grid">
+          <div><label for="max-calls">Maximum model requests per book</label><input id="max-calls" type="number" min="1" max="10000" required value="200"><p class="hint">Includes retries. Athena pauses when this limit is reached.</p></div>
+          <div><label for="max-tokens">Maximum output tokens per response</label><input id="max-tokens" type="number" min="256" max="131072" required value="8192"><p class="hint">Must fit your model’s output and context limits.</p></div>
+          <div><label for="timeout">Response timeout (seconds)</label><input id="timeout" type="number" min="30" max="3600" required value="900"><p class="hint">Give slower local models more time to finish a response.</p></div>
+        </div>
+      </div>
+      <div class="form-footer"><span>Applies to new books. Existing books keep their settings.</span><button type="submit" id="save-settings">Save settings</button></div>
+    </form>
+  </section>
+  <section id="detail-view" hidden>
+    <p class="eyebrow">YOUR MANUSCRIPT</p><h1 id="book-title">Work in progress</h1><p id="book-concept" class="intro"></p>
+    <div class="status-row"><span id="status" class="badge"></span><span id="book-model" class="muted"></span></div>
+    <div class="progress-card"><h2 id="active-step">Getting ready</h2><p id="progress-text" class="muted"></p><div id="metrics" class="metrics"></div></div>
+    <p id="job-error" role="alert" hidden></p>
+    <div class="actions"><button id="resume" class="secondary">Resume worker</button><a id="download" class="button" hidden>Download manuscript ↓</a><button id="read" class="secondary" hidden>Read manuscript</button></div>
+    <p class="hint">You can close this page while Athena writes. Keep your computer awake and your model server running.</p>
+    <article id="reader" hidden><pre id="manuscript"></pre></article>
+    <details><summary>Activity log</summary><pre id="log">Waiting for activity…</pre><p id="job-id" class="hint"></p></details>
+  </section>
+  <footer>Made for stories that deserve to be told.</footer>
+</main>
+</body></html>

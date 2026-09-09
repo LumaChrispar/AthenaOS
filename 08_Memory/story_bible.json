@@ -1,0 +1,27 @@
+{
+  "project_id": "MERCH-SHAD-001",
+  "title": "The Merchant of Shadows",
+  "version": "1.1 - Canonized Loss 1",
+  "status": "Architecture Defined - Drafting Active",
+  "core_conflict": {
+    "antagonist": "The Merchant of Shadows (M.O.S.)",
+    "nature": "Transactional Evil / Moral Corruption",
+    "stakes": "The protagonist's entire identity and moral fiber; loss is permanent.",
+    "rules": [
+      "Payment cannot be repaid or delayed.",
+      "The payment must carry emotional weight to be accepted by the Merchant."
+    ]
+  },
+  "schemas_required": ["character.schema.json", "relationship.schema.json"],
+  "canon_log": [
+    {
+      "event_id": "CAN-001",
+      "source_chapter": "draft_chapter_1_v2.md",
+      "description": "Elara Vane made a preliminary payment to the Merchant of Shadows.",
+      "payment_type": "Emotion/Memory Resonance",
+      "lost_asset": "The perfect, immediate memory of joy (specifically, beach nostalgia).",
+      "effect": "Protagonist's emotional baseline is lowered. She now experiences an 'ache' or a sense of functional dullness when recalling peak positive emotion. This sets the stage for deeper, more desperate bargains.",
+      "status_impacted": "Character Arc Progress: -5%"
+    }
+  ]
+}

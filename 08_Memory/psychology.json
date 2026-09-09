@@ -1,0 +1,121 @@
+{
+  "project_id": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
+  "title": "Character Profiles: The Nevermore Inheritance",
+  "characters": [
+    {
+      "character_id": "elara-protagonist-investigator",
+      "name": "ELARA",
+      "aliases": [
+        "Ellie (family nickname)"
+      ],
+      "status": "active",
+      "arc_progress": 10,
+      "appearance": {
+        "physical_description": "Slender, often dressed in muted, practical clothing. Her appearance suggests someone who spends more time thinking than socializing.",
+        "body_language": "When confident: Direct, controlled posture; hands rest at her sides or hold a notebook/object for grounding. When anxious: Tends to fidget with jewelry or adjust her collar; she becomes rigid and still.",
+        "walking_style": "Purposeful and measured. She walks as if calculating the distance between two points, rarely meandering unless forced into it.",
+        "default_expression": "A look of intense, focused curiosity mixed with underlying skepticism. Her brow is often slightly furrowed, as if solving a complex equation in real-time.",
+        "physical_habits_and_tells": "Taps her fingers rhythmically when she is frustrated or trying to process too much information. She has a habit of looking for the source of sound (a whisper, a creak) even when there is none."
+      },
+      "psychology": {
+        "core_wound": "The belief that chaos and pain are best managed by external knowledge. Specifically, an unresolved incident in her past where a lack of information allowed tragedy to occur.",
+        "core_belief": "\"If I can understand it, I can control it.\"",
+        "core_desire": "To solve the mystery of Nevermore; to find the definitive truth about its history and the family's past.",
+        "core_need": "To accept that some things\u2014grief, loss, memory\u2014are fundamentally unknowable and must simply be endured.",
+        "fear": "The uncertainty of a situation; being blindsided by emotion or random chance. She fears emotional chaos more than physical danger.",
+        "secret_desire": "To be the person who saves her family from their own grief, thereby justifying her existence and intelligence.",
+        "hidden_shame": "That she is not always right, and that sometimes, the most profound truths are illogical or irrational.",
+        "greatest_strength": "Intellectual rigor; an unparalleled ability to synthesize disparate facts into a coherent theory.",
+        "fatal_flaw": "Controlling skepticism. She must prove everything with logic, leading her to dismiss emotional evidence (the haunting) until it is too late.",
+        "moral_code": "She will never allow herself to be manipulated or tricked; she believes truth must be verifiable.",
+        "defense_mechanisms": [
+          "Intellectualization: Converting raw emotion into a historical theory or investigative hypothesis.",
+          "Dismissal: Immediately labeling anything supernatural as 'psychosomatic' or 'architectural anomaly'."
+        ]
+      },
+      "history": "Elara has spent her adult life pursuing academic knowledge, feeling that logic is the only reliable currency. Her family's current grief over their loss has made her cling even tighter to the idea of empirical truth, viewing emotional vulnerability as a weakness.",
+      "abilities": [
+        "Pattern Recognition",
+        "Deductive Reasoning",
+        "Archival Research"
+      ],
+      "inventory": []
+    },
+    {
+      "character_id": "liam-emotional-artist",
+      "name": "LIAM",
+      "aliases": [],
+      "status": "active",
+      "arc_progress": 10,
+      "appearance": {
+        "physical_description": "Soft features, often appearing slightly disheveled. He carries himself with the quiet intensity of someone who spends too much time staring at details.",
+        "body_language": "When confident: He is observational; he takes up little space but commands attention through stillness. When anxious: He physically shrinks, hunching his shoulders and turning inward, making himself small to avoid being seen or questioned.",
+        "walking_style": "Meandering and unhurried. He moves as if viewing the world through a soft-focus filter, noticing textures and shadows rather than destinations.",
+        "default_expression": "A melancholic neutrality; his expression suggests he is always listening to something others cannot hear.",
+        "physical_habits_and_tells": "He frequently touches or traces patterns on surfaces (dust motes, carved wood). When overwhelmed by emotion, he stops speaking and simply stares at a single point in the distance."
+      },
+      "psychology": {
+        "core_wound": "Feeling fundamentally unheard. His emotional pain was dismissed or minimized during his formative years.",
+        "core_belief": "\"My feelings are too messy to be real, so I will only record them from a safe distance.\"",
+        "core_desire": "To capture the beauty and depth of life's moments without having to participate fully in their messiness. To find emotional safety through art.",
+        "core_need": "To allow himself to feel his own pain\u2014the messy, loud, undeniable kind\u2014and know that it is valid.",
+        "fear": "Emotional abandonment; being forced into a situation where he must speak the truth about his heart and be rejected for it.",
+        "secret_desire": "To connect with someone so deeply that they see the vulnerable, un-artistic core of himself. To be seen as worthy of sustained attention.",
+        "hidden_shame": "That his emotional sensitivity makes him weak or unreliable in a practical sense.",
+        "greatest_strength": "Empathy and acute sensory perception; he is the family's emotional barometer, picking up on subtle shifts in atmosphere and mood.",
+        "fatal_flaw": "Emotional avoidance. He processes pain by externalizing it into art, which allows him to remain safe but prevents true connection or resolution.",
+        "moral_code": "He will never intentionally hurt someone else's feelings; he prioritizes emotional harmony over objective truth.",
+        "defense_mechanisms": [
+          "Aestheticization: Turning trauma and pain into beautiful, consumable art pieces.",
+          "Withdrawal: Retreating into his creative process or physical space when conflict arises."
+        ]
+      },
+      "history": "Liam has always been the family's emotional sponge. He learned early that if he remained an observer\u2014the artist\u2014he was safe from direct confrontation and judgment. His art is not merely a hobby; it is his primary defense mechanism against emotional reality.",
+      "abilities": [
+        "Emotional Resonance",
+        "Observation (Subtext)",
+        "Artistic Interpretation"
+      ],
+      "inventory": []
+    },
+    {
+      "character_id": "martha-matriarch-gatekeeper",
+      "name": "MARTHA",
+      "aliases": [
+        "Ma'am"
+      ],
+      "status": "active",
+      "arc_progress": 10,
+      "appearance": {
+        "physical_description": "Impeccably maintained; she carries the weight of decades in her posture. Her clothes are always expensive but slightly dated, suggesting a refusal to fully engage with modernity.",
+        "body_language": "Controlled and rigid. She uses gestures that are precise and contained\u2014a flick of the wrist, a measured placement of an object. When cornered: she becomes glacially calm, deploying icy authority.",
+        "walking_style": "Measured and deliberate. She never rushes; her movements suggest that time is on her side and that she dictates its pace for everyone else.",
+        "default_expression": "A practiced, benevolent smile that rarely reaches her eyes. Her default look suggests disappointment in others' lack of decorum or understanding.",
+        "physical_habits_and_tells": "She frequently touches the edges of objects\u2014a piece of furniture, a photograph frame\u2014as if confirming their solidity and permanence. She corrects people's grammar or phrasing when they are agitated."
+      },
+      "psychology": {
+        "core_wound": "The foundational shame of a family secret that threatens the perfect fa\u00e7ade she built for herself. The belief that one mistake could ruin everything.",
+        "core_belief": "\"To maintain order and reputation, some truths must be sacrificed.\"",
+        "core_desire": "To keep Nevermore (and her family's name) pristine, stable, and above reproach; to manage the narrative of their life.",
+        "core_need": "To accept that perfection is an illusion, and that true strength comes from vulnerability and forgiveness, not control.",
+        "fear": "Exposure. She fears any revelation\u2014historical or personal\u2014that would undermine her carefully constructed image of family success and moral superiority.",
+        "secret_desire": "To be genuinely seen by her children without judgment; to admit she is capable of making mistakes.",
+        "hidden_shame": "That the original tragedy was not an accident, but a consequence of human failing or malice within their own bloodline.",
+        "greatest_strength": "Exceptional social management and emotional control. She can navigate high-stakes family drama with surgical precision.",
+        "fatal_flaw": "Control through denial. Her need to protect the narrative makes her complicit in the deception, viewing truth as a destructive force.",
+        "moral_code": "She will never allow outsiders (or inconvenient truths) to dictate the terms of their family life; she will always prioritize appearance over reality.",
+        "defense_mechanisms": [
+          "Minimization: Downplaying tragedies or suspicious events by labeling them 'old house quirks' or 'overreactions.'",
+          "Gaslighting/Deflection: Shifting focus onto another person's perceived instability to avoid discussing core issues."
+        ]
+      },
+      "history": "Martha has spent her life as the keeper of the family narrative. She views history not as a collection of facts, but as a curated performance piece. The original secret of Nevermore is literally woven into her sense of self-worth.",
+      "abilities": [
+        "Social Manipulation",
+        "Emotional Suppression",
+        "Narrative Control"
+      ],
+      "inventory": []
+    }
+  ]
+}

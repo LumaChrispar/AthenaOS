@@ -1,0 +1,63 @@
+{
+  "score": 1,
+  "editorial_letter": "This draft cannot be evaluated as Chapter 1 of The Nevermore Inheritance because it is a manuscript for an entirely different novel. The submitted text — 'The Weight of Aethel's Veil' — presents a solo-protagonist fantasy set in a perpetual-twilight city called Aethel, featuring a memory-trading economy, a shadowy Merchant, and a protagonist (Elara Vane) who buys and sells memories. The approved outline.json describes a three-POV Gothic Horror family drama set at a mansion called Nevermore, with protagonists Elara (Investigator/Skeptic), Liam (Emotional Core/Artist), and Martha (Keeper of Secrets/Matriarch), arriving at an ancestral estate where the house itself is a psychological entity fueled by unresolved grief. Zero narrative elements align: different setting, different cast, different conflict, different genre mechanics, different thematic concerns. The draft is ~1,100 words against a 2,500–4,000 target for Chapter 1, but word count is the least of the problems. This manuscript belongs to the 'City of Aethel' project (see world_bible.json in the same directory), not The Nevermore Inheritance. Recommendation: Set this draft aside for the Aethel project and begin a fresh Chapter 1 for Nevermore that follows the Chapter 1 roadmap in outline.json (POV: Elara; Location: Estate Gates/Entrance Hall; Objective: Establish oppressive atmosphere and strained family dynamic; Conflict: Initial unsettling discovery such as a shifting portrait; Emotional Purpose: Curiosity mixed with dread; What Changes: Initial safety shattered, house immediately hostile).",
+  "scene_level_notes": [
+    {
+      "scene": "Opening — Aethel mid-level market",
+      "location_in_draft": "Paragraphs 1–3",
+      "assessment": "Establishes a fantasy city (Aethel) with magical decay, memory vendors, and a curfew system. No estate gates, no family arrival, no Nevermore mansion. The 'perpetual twilight' is a metaphysical condition of Aethel, not the atmospheric dread of a Gothic estate. Elara Vane is a solitary survivor navigating a market, not an investigator arriving at an inherited house with siblings.",
+      "alignment_with_outline": 0
+    },
+    {
+      "scene": "Encounter with City Wardens and Merchant",
+      "location_in_draft": "Paragraphs 4–9",
+      "assessment": "Introduces City Wardens with stun-rifles and a memory-merchant who trades in 'Restored Sentiment.' This builds the Aethel world's magic economy. The outline's Chapter 1 requires the family's strained dynamic on display at Nevermore's threshold — Liam's withdrawal, Martha's secrets, Elara's skepticism. None of these characters or dynamics exist here.",
+      "alignment_with_outline": 0
+    },
+    {
+      "scene": "Apartment discovery — anachronistic photograph",
+      "location_in_draft": "Paragraph 10–11",
+      "assessment": "Elara finds a photo of a beach that doesn't exist in Aethel, realizing a memory has been edited. This is the Aethel project's inciting mystery (memory theft/trade). The Nevermore outline's Chapter 1 conflict is an 'unsettling discovery (e.g., a portrait that shifts)' at the estate entrance hall, experienced by the family together, signaling the house is actively observing them. Different mechanism, different stakes, different emotional purpose.",
+      "alignment_with_outline": 0
+    }
+  ],
+  "priority_revision_list": [
+    {
+      "priority": 1,
+      "issue": "Wrong manuscript submitted — this is the Aethel project, not The Nevermore Inheritance",
+      "concrete_direction": "Archive draft_chapter_1.md and draft_chapter_1_v2.md under the Aethel project (they belong with world_bible.json). Do not attempt to revise this text into Nevermore Chapter 1; the foundations are incompatible. Start a new file: nevermore_ch01_v1.md."
+    },
+    {
+      "priority": 2,
+      "issue": "No Nevermore Chapter 1 draft exists",
+      "concrete_direction": "Write a fresh Chapter 1 following the outline.json roadmap exactly: POV Elara (Third Limited Omniscient, past tense, atmospheric/dread-filled/melancholic tone). Open at the Estate Gates/Entrance Hall with the full family (Elara, Liam, Martha) arriving. Establish the oppressive atmosphere through sensory detail (decay, dust, overwhelming history, thick air). Show the strained family dynamic — Elara's skeptical control, Liam's withdrawal/artistic shield, Martha's secretive self-protection. Inciting incident: a specific unsettling discovery in the entrance hall (e.g., a portrait whose eyes follow them, or a reflection that doesn't match reality) that shatters initial safety and signals the house is actively observing. Target 2,500–4,000 words. End on a hook of curiosity mixed with dread."
+    },
+    {
+      "priority": 3,
+      "issue": "Voice and perspective misalignment if attempting salvage",
+      "concrete_direction": "The Aethel draft uses a close third-person on a solitary protagonist in a fantasy setting. Nevermore requires Third Limited Omniscient with shifting POV across three family members, Gothic Horror tone. Even the Elara character differs: Aethel's Elara Vane is a memory-trade survivor; Nevermore's Elara is an Investigator/Skeptic arriving at an inherited mansion with unresolved family grief. They share only a first name."
+    },
+    {
+      "priority": 4,
+      "issue": "Thematic statement mismatch",
+      "concrete_direction": "Aethel's theme appears to be memory as commodity/identity in a dying magical city. Nevermore's thematic statement: 'True freedom is found not in escaping the past, but in acknowledging and processing it; attachment to memory can become a form of death.' Chapter 1 must plant this theme through the family's inability to process grief, mirrored by the house's possessive grip on memory."
+    }
+  ],
+  "category_scores": {
+    "structure_architecture": 0,
+    "character_development": 0,
+    "pacing": 0,
+    "theme": 0,
+    "plot_continuity": 0,
+    "opening_closing": 0
+  },
+  "evaluation_metadata": {
+    "evaluator": "SRV-007 Developmental Editor",
+    "framework_version": "SRV-007",
+    "draft_evaluated": "draft_chapter_1.md (The Weight of Aethel's Veil, v1.0)",
+    "outline_referenced": "outline.json (The Nevermore Inheritance)",
+    "date": "2026-07-05",
+    "blind_evaluation": true,
+    "verdict": "WRONG_MANUSCRIPT"
+  }
+}

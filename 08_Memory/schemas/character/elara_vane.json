@@ -1,0 +1,19 @@
+{
+  "character_id": "CHAR-PROTAG-UUID",
+  "name": "Elara Vane (The Protagonist)",
+  "aliases": ["Survivor"],
+  "status": "active",
+  "arc_progress": 0,
+  "appearance": {
+    "gender": "F",
+    "age": "Mid-20s",
+    "defining_features": "Wears tailored, dark clothing; carries the weight of perpetual fatigue in her posture. Often seen with a faint scent of brine and cheap incense.",
+    "physical_scars": ["A deep burn mark on her left forearm (symbolic of her past failure)."],
+    "signature_item": "A tarnished silver locket containing a single, dried flower."
+  },
+  "psychology": {
+    "primary_desire": "To reclaim the memory/person she lost.",
+    "core_fear": "Being forgotten or erased (both by others and herself).",
+    "flaw": "Fatalism; tendency to believe that sacrifice is the only form of agency."
+  }
+}

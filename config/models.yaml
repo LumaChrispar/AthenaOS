@@ -1,0 +1,70 @@
+# config/models.yaml
+# Defines which LLM model executes which capability based on complexity and cost.
+# Local jobs can override this through the UI or --provider and --model.
+# All roles use the selected local model while retaining role temperatures.
+connection:
+  provider: openrouter
+  base_url: https://openrouter.ai/api/v1
+
+models:
+  - id: architecture-reasoning
+    provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+    capabilities:
+      - SRV-001  # CEO
+      - SRV-002  # Story Architect
+      - SRV-007  # Developmental Editor
+      - SRV-010  # QA Director
+      - SRV-016  # Continuity Editor
+    temperature: 0.15
+    note: "Low temperature for structural and logical tasks requiring consistency"
+
+  - id: character-world-building
+    provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+    capabilities:
+      - SRV-003  # Character Psychologist
+      - SRV-004  # World Builder
+      - SRV-011  # Plot Engineer
+      - SRV-012  # Shakespearean Stylist
+      - SRV-015  # Timeline Manager
+    temperature: 0.5
+    note: "Mid temperature — creative but anchored to established facts"
+
+  - id: prose-generation
+    provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+    capabilities:
+      - SRV-005  # Literary Author (Drafting)
+      - SRV-006  # Shakespearean Stylist (legacy)
+      - SRV-008  # Copy Editor
+      - SRV-013  # Dialogue Master
+    temperature: 0.75
+    note: "Higher temperature for prose — needs variability and surprise"
+
+  - id: voice-variation
+    provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+    capabilities:
+      - SRV-027  # Voice Variation Engine
+      - SRV-028  # Voice Calibrator / Dialogue Identity
+    temperature: 0.9
+    note: "Highest temperature — deliberate controlled unpredictability"
+
+  - id: analysis-critique
+    provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+    capabilities:
+      - SRV-009  # Story Bible Manager
+      - SRV-014  # Foreshadowing Specialist
+      - SRV-019  # Publishing Consultant
+      - SRV-022  # Readability Auditor
+      - SRV-023  # Originality Auditor
+      - SRV-026  # Literary Critic
+    temperature: 0.2
+    note: "Low temperature for analytical roles producing factual reports"
+
+default_temperature: 0.5
+max_calls_per_job: 200
+max_output_tokens: 8192
+default_model: nvidia/nemotron-3-ultra-550b-a55b:free

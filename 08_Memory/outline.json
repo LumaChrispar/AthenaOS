@@ -1,0 +1,208 @@
+{
+  "project_id": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
+  "title": "The Nevermore Inheritance",
+  "genre": [
+    "Gothic Horror",
+    "Psychological Thriller",
+    "Family Drama"
+  ],
+  "audience": "Adult (25+), readers who enjoy atmospheric, character-driven horror (e.g., Shirley Jackson, Daphne du Maurier).",
+  "target_word_count": 100000,
+  "status": "planning",
+  "assigned_departments": [
+    "SRV-003: Character Development",
+    "SRV-004: World Building",
+    "SRV-005: Prose Writing"
+  ],
+  "deadlines": {
+    "outline": "2024-10-27",
+    "draft": "2024-12-31",
+    "final": "2025-03-15"
+  },
+  "budget": {
+    "token_limit": 8000,
+    "tokens_consumed": 0
+  },
+  "progress": 10,
+  "risks": [
+    "The haunting risks becoming generic or predictable.",
+    "Maintaining the balance between external horror and internal family drama without sacrificing either."
+  ],
+  "quality_score": 95,
+  "architecture_details": {
+    "story_identity": {
+      "elevator_pitch": "When a fractured family inherits a decaying mansion, they discover that every room holds the trapped memory of a previous victim, forcing them to confront their own unresolved grief or be eternally claimed by the house.",
+      "thematic_statement": "True freedom is found not in escaping the past, but in acknowledging and processing it; attachment to memory can become a form of death.",
+      "comparable_titles": [
+        "Rebecca (Daphne du Maurier)",
+        "The Haunting of Hill House (Shirley Jackson)",
+        "Midsommar (Ari Aster) - for the sense of inescapable, ritualistic dread."
+      ]
+    },
+    "narrative_architecture": {
+      "primary_structure": "Three-Act Structure with Gothic Escalation",
+      "act_divisions": {
+        "ACT_I": {
+          "focus": "Establishment and Inciting Incident. The family arrives, establishing the mystery and initial dread.",
+          "scope": "Approx. 25% of word count (Chapters 1-6)"
+        },
+        "ACT_II": {
+          "focus": "Rising Action and Complication. Investigation deepens; memories become dangerous; internal conflicts explode.",
+          "scope": "Approx. 50% of word count (Chapters 7-18)",
+          "midpoint_event": "The family discovers the house is not haunted by random deaths, but by a single, repeating trauma or secret that binds all previous occupants."
+        },
+        "ACT_III": {
+          "focus": "Climax and Resolution. The source of the haunting must be confronted; the family must make a choice: stay trapped in memory or leave/change.",
+          "scope": "Approx. 25% of word count (Chapters 19-Epilogue)"
+        }
+      },
+      "inciting_incident": "The arrival at Nevermore and the immediate, unsettling discovery that the house is not merely old, but actively 'observing' them\u2014a specific object or room triggers a vivid, personal memory of one family member.",
+      "midpoint": {
+        "revelation": "A character realizes that the memories are not just echoes; they are *emotional anchors* and require an emotional sacrifice (or truth) to be released. The house is feeding on unresolved guilt/grief."
+      },
+      "dark_night_of_the_soul": {
+        "event": "The family reaches a point of total despair, believing the haunting has claimed one of their own or that they are all trapped forever. They lose hope and begin to fracture completely.",
+        "purpose": "Forces the protagonist(s) to rely on internal strength/connection rather than external investigation."
+      },
+      "climax": {
+        "moment": "The family must collectively confront the original, foundational trauma of Nevermore\u2014the secret that started it all. This requires a character to make an ultimate sacrifice (of truth, attachment, or safety) to break the cycle.",
+        "stakes": "Physical survival and emotional freedom."
+      },
+      "resolution": {
+        "outcome": "The house is not destroyed, but its malignant influence is broken. The family leaves, fundamentally changed, having learned that moving on requires accepting loss rather than fighting it."
+      }
+    },
+    "voice_and_perspective": {
+      "narrative_voice": "Third Limited Omniscient (Shifting POV)",
+      "tense": "Past Tense",
+      "tone": "Atmospheric, Dread-filled, Melancholic",
+      "atmosphere": "Decay, dust, overwhelming history, oppressive beauty. The air should feel thick with unspoken secrets."
+    },
+    "conflict_architecture": {
+      "central_conflict": "Man vs. Environment/Self: The family's struggle against the house's psychological grip and their own inability to process grief.",
+      "subplot_conflicts": [
+        {
+          "name": "The Family Rift",
+          "description": "The differing ways each family member copes with loss (denial, anger, avoidance). This conflict must mirror the external haunting."
+        },
+        {
+          "name": "The House's History",
+          "description": "Unraveling the specific tragedy that built Nevermore. Who was the original victim/keeper of the secrets?"
+        }
+      ],
+      "internal_conflict": "Protagonist (e.g., The eldest child): Must learn to accept loss and let go, rather than trying to control or fix the past.",
+      "antagonistic_force": {
+        "name": "Nevermore (The House)",
+        "nature": "A psychological entity fueled by unresolved grief, guilt, and attachment. It is not malicious in a human sense; it is merely *possessive*."
+      }
+    },
+    "character_roadmap": [
+      {
+        "name": "ELARA (Protagonist)",
+        "role": "The Investigator/Skeptic",
+        "arc": "From desperate need to control the past (by solving the mystery) to accepting that some things must simply fade. She learns that knowledge is not power, but acceptance is.",
+        "connection_to_theme": "Her initial attempts to 'fix' the house mirror her inability to accept her own family's loss."
+      },
+      {
+        "name": "LIAM",
+        "role": "The Emotional Core/Artist",
+        "arc": "From emotional avoidance and withdrawal (using art as a shield) to finding his voice by confronting the raw, painful memories. He must stop observing life and start living it.",
+        "connection_to_theme": "His artistic sensitivity makes him highly susceptible to the house's emotional manipulation."
+      },
+      {
+        "name": "MARTHA",
+        "role": "The Keeper of Secrets/Matriarchal Figure",
+        "arc": "From denial and self-protection (hiding family truths) to radical honesty. She must confess a foundational lie about the family's past, which is key to breaking the haunting.",
+        "connection_to_theme": "Her secrets are literally woven into the house's structure."
+      }
+    ],
+    "chapter_roadmap": [
+      {
+        "chapter": 1,
+        "pov": "Elara",
+        "location": "The Estate Gates/Entrance Hall",
+        "objective": "Establish the oppressive atmosphere and the family's strained dynamic.",
+        "conflict": "Initial unsettling discovery (e.g., a portrait that shifts).",
+        "emotional_purpose": "Curiosity mixed with dread.",
+        "what_changes": "The initial sense of safety is shattered; the house is immediately hostile."
+      },
+      {
+        "chapter": 5,
+        "pov": "Liam",
+        "location": "Library/Study (Memory Room)",
+        "objective": "Investigate a specific memory\u2014a death that was not natural.",
+        "conflict": "A direct confrontation with the emotional residue of the dead; Liam experiences sensory overload.",
+        "emotional_purpose": "Fear, confusion, and growing paranoia.",
+        "what_changes": "The family realizes the haunting is targeted, not random."
+      },
+      {
+        "chapter": 12,
+        "pov": "Martha",
+        "location": "Nursery/Bedroom (Memory Room)",
+        "objective": "Discover a key piece of physical evidence that contradicts the official family history.",
+        "conflict": "Internal struggle: Martha must choose between protecting the family's reputation and revealing the truth.",
+        "emotional_purpose": "Tension, moral dilemma, mounting dread.",
+        "what_changes": "The central secret is revealed; the stakes are raised from mystery to survival."
+      },
+      {
+        "chapter": 18,
+        "pov": "All Three",
+        "location": "The Atrium/Central Nexus (Midpoint)",
+        "objective": "Understand the house's mechanism: it feeds on unresolved grief.",
+        "conflict": "A collective psychological attack; they are forced to relive their worst memories simultaneously.",
+        "emotional_purpose": "Overwhelming despair, realization of the true nature of the threat.",
+        "what_changes": "They realize that solving the mystery is useless; they must *feel* the truth."
+      },
+      {
+        "chapter": 25,
+        "pov": "Elara/Liam",
+        "location": "The Source Room (Climax)",
+        "objective": "Break the cycle by confronting the original trauma.",
+        "conflict": "A physical and emotional battle against the house's manifestation of guilt. Liam must use his art to externalize the pain, forcing Martha to confess the truth.",
+        "emotional_purpose": "Catharsis, terror, ultimate release.",
+        "what_changes": "The cycle is broken; they are physically exhausted but emotionally free."
+      }
+    ],
+    "timeline": {
+      "pre_story_events": [
+        "The original tragedy (50+ years ago): A traumatic event involving a death, cover-up, and the establishment of Nevermore's emotional trap.",
+        "The family's initial state: They are already fractured by grief over an unrelated loss, making them emotionally vulnerable upon arrival."
+      ],
+      "story_timeline": "A compressed period (e.g., 7 days) during which the investigation and confrontation take place."
+    },
+    "conflict_map": {
+      "escalation_curve": [
+        {
+          "stage": "Act I",
+          "type": "Minor/Psychological",
+          "example": "Objects moving, whispers, unsettling dreams."
+        },
+        {
+          "stage": "Act II (Rising)",
+          "type": "Personal/Emotional",
+          "example": "The house physically manifesting memories; family members accusing each other of withholding truth."
+        },
+        {
+          "stage": "Act II (Peak)",
+          "type": "Existential/Physical",
+          "example": "The house trapping them in a specific, dangerous memory loop; the threat becomes life-or-death."
+        },
+        {
+          "stage": "Act III (Climax)",
+          "type": "Ultimate Confrontation",
+          "example": "Confronting the original sin of Nevermore itself."
+        }
+      ]
+    },
+    "emotional_pacing_graph": {
+      "act_i": "Low Dread -> Rising Tension -> Moderate Fear (Ending on a hook/discovery)",
+      "act_ii": "High Tension -> Deep Despair -> False Resolution (Midpoint) -> Escalating Panic",
+      "act_iii": "Extreme Terror -> Cathartic Release -> Quiet Melancholy (Resolution)"
+    },
+    "theme_map": {
+      "protagonist_arc": "From Control to Acceptance.",
+      "scene_integration": "Every memory room must contain a physical object or piece of art that represents an unresolved truth, forcing the character to confront their own denial.",
+      "dialogue_focus": "Dialogue should revolve around 'What if?' and 'If only...' statements, which are then shattered by hard truths."
+    }
+  }
+}

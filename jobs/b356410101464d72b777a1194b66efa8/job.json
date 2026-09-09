@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "concept": "could you write a Shakespeare horror titled The withches of Wyrmwood Moor\na darker cousin to Macbeth.Three witches don't predict the future, they create it. A soldier who seels power realizes every prophecy was a trap designed to lead him to his own ruin.\"we sow no seed, yet harvest every soul\"\n",
+  "chapters": 4,
+  "status": "failed",
+  "completed_steps": [],
+  "active_step": "intake",
+  "error": "Connection error.",
+  "created_at": 1788964193.9946196,
+  "updated_at": 1788965250.4596727
+}

@@ -1,0 +1,186 @@
+[
+  {
+    "id": "SRV-001", "name": "CEO", "layer": "Orchestration", "type": "permanent",
+    "capability": "Strategic Orchestration",
+    "inputs": ["project.schema.json"], "outputs": ["ProjectApproved event"]
+  },
+  {
+    "id": "SRV-002", "name": "Story Architect", "layer": "Service", "type": "permanent",
+    "capability": "Story Architecture",
+    "inputs": ["project.schema.json", "story_bible.json"],
+    "outputs": ["outline.json (Story Blueprint, Chapter Roadmap, Pacing Graph, Theme Map)", "OutlineCompleted event"]
+  },
+  {
+    "id": "SRV-003", "name": "Character Psychologist", "layer": "Service", "type": "permanent",
+    "capability": "Character Psychology Profiling",
+    "inputs": ["outline.json"],
+    "outputs": ["character/psychology.schema.json", "CharacterPsychologyComplete event"]
+  },
+  {
+    "id": "SRV-004", "name": "World Builder", "layer": "Service", "type": "permanent",
+    "capability": "World Architecture (8 Domains + Causality Principle)",
+    "inputs": ["outline.json", "project.schema.json"],
+    "outputs": ["story_bible.json (locations[], rules[], world_bible)", "WorldPlanningCompleted event"]
+  },
+  {
+    "id": "SRV-005", "name": "Literary Author", "layer": "Service", "type": "permanent",
+    "capability": "Prose Generation (Scene Construction, Sensory Protocol, Dialogue)",
+    "inputs": ["scene.schema.json", "story_bible.json", "PHIL-001"],
+    "outputs": ["scene.schema.json (prose_content)", "DraftCompleted event"]
+  },
+  {
+    "id": "SRV-006", "name": "Shakespearean Stylist", "layer": "Service", "type": "contract",
+    "capability": "Prose Elevation — 9 Rhetorical Techniques (Blank Verse, Antithesis, Soliloquy, etc.)",
+    "inputs": ["scene.schema.json (prose_content)", "PHIL-001"],
+    "outputs": ["scene.schema.json (revised)", "Change Log", "ProseElevationComplete event"]
+  },
+  {
+    "id": "SRV-007", "name": "Developmental Editor", "layer": "Service", "type": "permanent",
+    "capability": "Developmental Editing (6 Categories: Structure, Character, Pacing, Theme, Plot, Opening/Closing)",
+    "inputs": ["All chapter.schema.json", "outline.json", "story_bible.json"],
+    "outputs": ["Editorial Letter", "Scene-Level Notes", "Priority Revision List", "DevelopmentalEditComplete event"]
+  },
+  {
+    "id": "SRV-008", "name": "Copy Editor", "layer": "Service", "type": "permanent",
+    "capability": "Copy Editing (Grammar, Voice Preservation, Sentence Variety, Consistency)",
+    "inputs": ["chapter.schema.json (APPROVED)", "PUB-001"],
+    "outputs": ["chapter.schema.json (corrected)", "Corrections Log", "Query List", "CopyEditComplete event"]
+  },
+  {
+    "id": "SRV-009", "name": "Story Bible Manager", "layer": "Service", "type": "permanent",
+    "capability": "Story Bible Write Management",
+    "inputs": ["chapter.schema.json (ChapterApproved payload)"],
+    "outputs": ["story_bible.json (updated)", "StoryBibleUpdated event"]
+  },
+  {
+    "id": "SRV-010", "name": "QA Director", "layer": "Service", "type": "permanent",
+    "capability": "QA Orchestration (Composite Score, Defect Reports, Escalation)",
+    "inputs": ["chapter.schema.json (DraftCompleted payload)", "config/quality.yaml"],
+    "outputs": ["ChapterApproved event", "ChapterRejected event", "EscalationRequired event"]
+  },
+  {
+    "id": "SRV-011", "name": "Plot Engineer", "layer": "Service", "type": "support",
+    "capability": "Plot Logic Engineering",
+    "inputs": ["outline.json", "story_bible.json"],
+    "outputs": ["Plot Logic Audit Report", "PlotAuditComplete event"]
+  },
+  {
+    "id": "SRV-012", "name": "Conflict Architect", "layer": "Service", "type": "support",
+    "capability": "Conflict Architecture (3-Layer: External, Internal, Interpersonal)",
+    "inputs": ["outline.json", "character.schema.json", "relationship.schema.json"],
+    "outputs": ["Conflict Map", "Dead Zone Report", "ConflictAuditComplete event"]
+  },
+  {
+    "id": "SRV-013", "name": "Dialogue Master", "layer": "Service", "type": "support",
+    "capability": "Dialogue Quality Review (Subtext, Voice Distinction)",
+    "inputs": ["scene.schema.json", "character/psychology.schema.json"],
+    "outputs": ["Dialogue Audit Report", "DialogueAuditComplete event"]
+  },
+  {
+    "id": "SRV-014", "name": "Foreshadowing Specialist", "layer": "Service", "type": "support",
+    "capability": "Foreshadowing & Payoff Architecture",
+    "inputs": ["outline.json", "chapter.schema.json"],
+    "outputs": ["Foreshadowing Registry (seed-to-payoff map)", "ForeshadowingAuditComplete event"]
+  },
+  {
+    "id": "SRV-015", "name": "Timeline Manager", "layer": "Service", "type": "support",
+    "capability": "Timeline Management",
+    "inputs": ["chapter.schema.json (continuity_notes[])", "story_bible.json (timeline[])"],
+    "outputs": ["story_bible.json (timeline[] updated)", "TimelineUpdated event"]
+  },
+  {
+    "id": "SRV-016", "name": "Continuity Editor", "layer": "Service", "type": "support",
+    "capability": "Continuity Validation & Story Bible Maintenance (8-Section Protocol)",
+    "inputs": ["chapter.schema.json", "story_bible.json (continuity_notes[])"],
+    "outputs": ["Continuity Score (0-10)", "Continuity Report (Severity + Resolution Options)", "ContinuityCheckComplete event"]
+  },
+  {
+    "id": "SRV-017", "name": "Research Director", "layer": "Service", "type": "support",
+    "capability": "Research Orchestration",
+    "inputs": ["outline.json", "story_bible.json"],
+    "outputs": ["07_Domains/ (updated)", "Research Gap Log", "ResearchCompleted event"]
+  },
+  {
+    "id": "SRV-018", "name": "Historical Researcher", "layer": "Service", "type": "contract",
+    "capability": "Historical Research (Period Accuracy + Constraint List)",
+    "inputs": ["outline.json (period references)"],
+    "outputs": ["07_Domains/History/[era].md", "Historical Constraint List", "HistoricalResearchComplete event"]
+  },
+  {
+    "id": "SRV-019", "name": "Publishing Consultant", "layer": "Service", "type": "support",
+    "capability": "Publishing Consultation — 7 Domains (Title, Blurb, Metadata, Comps, Front/Back Matter, Series Architecture, Genre Positioning)",
+    "inputs": ["project.schema.json", "story_bible.json", "All chapter.schema.json (APPROVED)", "config/plugins/"],
+    "outputs": ["metadata.json", "blurb.json (short + long + taglines)", "front_matter.md", "back_matter.md", "PublishingConsultationComplete event"]
+  },
+  {
+    "id": "SRV-020", "name": "Book Formatter", "layer": "Service", "type": "support",
+    "capability": "Book Formatting & Compilation (EPUB, PDF, DOCX)",
+    "inputs": ["All chapter.schema.json (APPROVED)", "metadata.json", "PUB-001"],
+    "outputs": ["manuscript.md", "book.epub", "book.pdf", "book.docx", "EpubValidationReport", "FormattingComplete event"]
+  },
+  {
+    "id": "SRV-021", "name": "Reserved", "layer": "Service", "type": "reserved",
+    "capability": "Intentionally unassigned slot — skipped during EMP→SRV renumbering, kept open to avoid collision with ORG-003 taxonomy references.",
+    "inputs": [],
+    "outputs": [],
+    "notes": "Do not dispatch. No Interface Contract defined."
+  },
+  {
+    "id": "SRV-027", "name": "Voice Variation Engine", "layer": "Service", "type": "enhancement",
+    "capability": "Prose Variation — 6-Phase Protocol (Rhythmic Audit, Variation Injection, Adjective Chain Surgery, Atmospheric Budget Enforcement, Specificity Injection, Emotional Edge Restoration)",
+    "inputs": ["prose_text", "character_voice_profile (optional)", "scene_type", "target_rhythm_profile"],
+    "outputs": ["varied_prose", "variation_report", "VoiceVariationComplete event"],
+    "pipeline_position": "After SRV-005 (Literary Author), before SRV-007 (Developmental Edit) per chapter"
+  },
+  {
+    "id": "SRV-022", "name": "Readability Auditor", "layer": "Service", "type": "support",
+    "capability": "Readability Analysis (Passive Voice Rate, Sentence Variety, Paragraph Density)",
+    "inputs": ["chapter.schema.json (prose_content)", "config/quality.yaml"],
+    "outputs": ["Readability Score (0-10)", "Readability Report", "ReadabilityCheckComplete event"]
+  },
+  {
+    "id": "SRV-023", "name": "Originality Auditor", "layer": "Service", "type": "support",
+    "capability": "Originality Analysis (Cross-chapter Repetition, Genre Cliché Detection)",
+    "inputs": ["All chapter.schema.json prose_content", "config/quality.yaml"],
+    "outputs": ["Originality Score (0-10)", "Repetition Report", "OriginalityCheckComplete event"]
+  },
+  {
+    "id": "SRV-024", "name": "Workflow Manager", "layer": "Orchestration", "type": "support",
+    "capability": "Workflow Orchestration (Event Bus Routing, State Machine Enforcement)",
+    "inputs": ["All Event Bus events", "config/workflow.yaml", "states.md"],
+    "outputs": ["Routed commands", "EscalationRequired event", "PipelineStatusReport"]
+  },
+  {
+    "id": "SRV-025", "name": "Version Manager", "layer": "Service", "type": "support",
+    "capability": "Version Control (Immutable Audit Trail, Snapshot/Restore)",
+    "inputs": ["Any document at state transition", "SnapshotVersion | RestoreVersion commands"],
+    "outputs": ["Versioned snapshots", "Version History Log", "VersionSnapshotComplete event"]
+  },
+  {
+    "id": "SRV-026", "name": "Literary Critic", "layer": "Service", "type": "support",
+    "capability": "Literary Criticism — 6 Dimensions (Emotional Resonance, Character Conviction, Prose Quality, Thematic Depth, Originality, Signature Failure)",
+    "inputs": ["All chapter.schema.json", "story_bible.json", "outline.json"],
+    "outputs": ["Critical Report (6 Dimensions)", "Manuscript Signature Failure", "Three Priority Actions", "LiteraryCritiqueComplete event"]
+  },
+  {
+    "id": "SRV-028", "name": "Voice Calibrator", "layer": "Service", "type": "permanent",
+    "capability": "Voice Fingerprint Generation and Enforcement",
+    "inputs": ["outline.json", "project.schema.json", "psychology.json", "story_bible.json"],
+    "outputs": ["08_Memory/voice_sample.md", "VoiceCalibrated event"],
+    "pipeline_position": "After SRV-004, before SRV-005"
+  },
+  {
+    "id": "SRV-029", "name": "Opening Specialist", "layer": "Service", "type": "support",
+    "capability": "Opening Specialist — Three Strategic Alternatives",
+    "inputs": ["chapter_01.json", "voice_sample.md", "outline.json", "project.schema.json"],
+    "outputs": ["opening_options.json", "OpeningSpecialistComplete event"],
+    "pipeline_position": "After Chapter 1 QA approval"
+  },
+  {
+    "id": "SRV-030", "name": "Reader Proxy", "layer": "Service", "type": "support",
+    "capability": "Naive Reader Perspective — Readability Audit",
+    "inputs": ["chapter_N.json", "Previous chapter summaries"],
+    "outputs": ["reader_proxy_report.json", "ReaderProxyComplete event"],
+    "pipeline_position": "After SRV-010 QA approval per chapter"
+  }
+]

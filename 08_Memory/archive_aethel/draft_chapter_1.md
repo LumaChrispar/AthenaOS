@@ -1,0 +1,11 @@
+# Chapter 1: The Dust and the Price (Draft v0.9 - Unvalidated)
+
+The perpetual twilight of Aethel was not a time of day; it was a condition, a heavy cloak woven from smog, neglect, and too much unanswered magic. Elara Vane walked through the mid-level markets—a labyrinth of decaying brass, wet cobblestone, and vendors selling everything from purified memories to bottled silence. She moved with the practiced slouch of someone who had learned early that conspicuous energy is an invitation to notice, and being noticed is dangerous.
+
+Her breath hitched slightly when a group of uniformed City Wardens marched past, their polished boots echoing off the slick stones. They carried stun-rifles charged with blue electrical arcs, weapons overkill for mere law enforcement. The sheer waste of power in these magnificent, gaudy tools was a source of quiet despair to her. She kept her head down, focusing on the single objective: finding passage past this sector before the curfew signal began its agonizingly slow descent toward zero.
+
+She needed coin—simple, mundane copper and silver bits that did not demand a memory in exchange. A small stall near a polluted fountain advertised 'Restored Sentiment' and she stopped. The merchant, whose face was perpetually obscured by the hanging shadows of his own awning, smiled too widely. "Lost something, dearie? I can polish it up for you."
+
+Elara felt a cold knot tighten in her stomach—a familiar, useless fear. She knew this feeling. It always preceded trouble. She bought nothing, but she left the stall with an unnerving sense of being watched by its shadows. The Merchant's true payment mechanism remained unknown to her, only that it smelled like ozone and regret.
+
+Later, in a cramped apartment overlooking the polluted river (LOC-001), Elara found a small picture frame hidden beneath layers of grime—a photo of two people smiling on a beach of white sand. The image was utterly anachronistic; Aethel had no such beaches. She stared at it for hours, running her thumb over the glass, wishing she could recall the exact warmth of that moment, but only a faint ache remained where the memory used to be. It was dull, like old velvet. This lack of *feeling* about the photo was what worried her most. The memory felt edited.

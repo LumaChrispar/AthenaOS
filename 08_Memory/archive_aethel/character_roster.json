@@ -1,0 +1,34 @@
+[
+  {
+    "id": "CHAR-PROTAG-UUID",
+    "name": "Protagonist (The Flawed Hero)",
+    "aliases": ["Elara Vane"],
+    "status": "active",
+    "arc_progress": 0,
+    "appearance": {
+      "$ref": "character/appearance.schema.json"
+    },
+    "psychology": {
+      "$ref": "character/psychology.schema.json"
+    },
+    "history": "A capable individual haunted by a past failure or loss, making them susceptible to Faustian bargains.",
+    "abilities": ["Exceptional street knowledge", "Resourcefulness"],
+    "inventory": []
+  },
+  {
+    "id": "CHAR-MERCH-UUID",
+    "name": "The Merchant of Shadows (M.O.S.)",
+    "aliases": ["The Curator", "Whisper Seller"],
+    "status": "active",
+    "arc_progress": 100,
+    "appearance": {
+      "$ref": "character/appearance.schema.json"
+    },
+    "psychology": {
+      "$ref": "character/psychology.schema.json"
+    },
+    "history": "An entity from beyond the known world, operating purely on a transactional metaphysical ledger.",
+    "abilities": ["Omniscient knowledge of desire", "Metaphysical trading"],
+    "inventory": []
+  }
+]
