@@ -1,0 +1,26 @@
+{
+  "decision": "APPROVED",
+  "rationale": "The concept 'The Witches of Wyrmwood Moor' is a strong, actionable premise for autonomous draft generation. It presents a clear Shakespearean horror framework (Macbeth-adjacent), a defined antagonist force (witches as architects of fate), a protagonist with a clear arc (soldier seeking power → realization of entrapment), and a thematic hook ('we sow no seed, yet harvest every soul'). No commercial gates block this local draft request. All missing parameters (length, chapter count, subgenre specifics) can be resolved via reasonable planning assumptions recorded below.",
+  "assumptions": [
+    "Format: Full-length novel manuscript (not a novella or short story), targeting ~90,000 words.",
+    "Structure: 30 chapters at ~3,000 words each (aligning with runtime brief default).",
+    "Subgenre: Gothic Horror / Dark Historical Fantasy / Shakespearean Tragedy pastiche.",
+    "POV: Close third-person limited, primarily following the soldier (protagonist), with atmospheric interludes from the witches' perspective.",
+    "Setting: Early 17th-century British Isles (Wyrmwood Moor, fictional), post-battlefield, perpetual twilight atmosphere.",
+    "Tone: Elevated, archaic-adjacent prose (accessible modern English with Shakespearean rhythm), visceral horror, psychological dread.",
+    "Protagonist: Captain Alaric Vane, a battle-hardened soldier returning from continental wars, hungry for legacy and land.",
+    "Antagonists: The Three Weird Sisters of Wyrmwood — Maw (the Past), Spindle (the Present), Shear (the Future) — ancient entities who weave doom as prophecy.",
+    "Arc: Vane seeks the witches for a prophecy of kingship; each 'prophecy' fulfilled is a manipulation tightening the noose; climax at the Moor where he becomes the harvest.",
+    "Thematic Core: Agency vs. Fate, the cost of ambition, the horror of self-fulfilling damnation.",
+    "Deliverable: Single manuscript.md file with front matter, 30 chapters, and brief afterword."
+  ],
+  "planning_instructions": [
+    "Architect (SRV-002): Develop a 30-chapter beat sheet mapping Vane's descent, the witches' three-act manipulation, and the mirroring of Macbeth beats inverted (prophecy as trap, not revelation).",
+    "Architect: Define the 'Rules of the Moor' — the metaphysical mechanics of how the witches 'create' fate (contracts, blood, names, time-loops).",
+    "Architect: Design 3-4 key supporting characters (loyal lieutenant, skeptical priest, prior victim) to serve as foils and casualties.",
+    "Lorekeeper (SRV-003): Establish a style guide for 'Shakespearean Horror' voice: iambic cadence in prose, motif lexicon (blood, seed, harvest, thread, bone, mist), and period-accurate military/religious terminology.",
+    "Lorekeeper: Create a glossary of Wyrmwood-specific terms (The Weave, The Harvest, The Sowing, The Moor's Law).",
+    "Prose Director (SRV-004): Draft Chapter 1 (The Return) and Chapter 2 (The First Knot) as tone-setting samples for QA calibration before full production.",
+    "QA Director (SRV-010): Define acceptance criteria: atmospheric density, protagonist agency illusion, witch dialogue distinctiveness, horror escalation pacing, thematic payoff in finale."
+  ]
+}

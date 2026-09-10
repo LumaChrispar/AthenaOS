@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scene Schema",
+  "description": "Standardized data model for the smallest unit of narrative execution in Athena OS.",
+  "type": "object",
+  "properties": {
+    "scene_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "chapter_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The chapter this scene belongs to"
+    },
+    "location_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "In-universe time"
+    },
+    "pov_character": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "characters_present": {
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" }
+    },
+    "goal": {
+      "type": "string",
+      "description": "The POV character's micro-goal for this scene"
+    },
+    "conflict": {
+      "type": "string",
+      "description": "The obstacle preventing the goal"
+    },
+    "disaster": {
+      "type": "string",
+      "description": "How the scene ends (usually badly) to drive the plot forward"
+    },
+    "scene_number": {
+      "type": "integer",
+      "description": "Sequential scene number within the chapter (1, 2, 3, ...)",
+      "minimum": 1
+    },
+    "scene_title": {
+      "type": "string",
+      "description": "Brief descriptive title (3-6 words) for the scene header, e.g., \"The Interrogation Begins\"",
+      "minLength": 5,
+      "maxLength": 60
+    },
+    "prose_content": {
+      "type": "string",
+      "description": "The actual written text of the scene. MUST follow SRV-005 Output Formatting Requirements: (1) Begin with '### Scene [N]: [Title]' header. (2) All dialogue in markdown blockquotes (>) with tags/beats inside. (3) No narrative prose inside dialogue blockquotes."
+    }
+  },
+  "required": ["scene_id", "chapter_id", "pov_character", "goal", "conflict", "disaster", "scene_number", "scene_title", "prose_content"]
+}

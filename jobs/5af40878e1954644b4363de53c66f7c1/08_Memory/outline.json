@@ -1,0 +1,203 @@
+{
+  "title": "The Witches of Wyrmwood Moor",
+  "beat_sheets": [
+    {
+      "act": 1,
+      "name": "The Sowing",
+      "beats": [
+        {
+          "beat_id": 1,
+          "goal": "Establish Vane's return from war, his hunger for legacy, and the Moor's ominous presence",
+          "conflict": "Vane's lands are ruined; his father dead; the Moor whispers at the edge of his estate",
+          "outcome": "Vane rides to Wyrmwood Moor seeking the Weird Sisters, dismissing local warnings"
+        },
+        {
+          "beat_id": 2,
+          "goal": "First encounter with the Three Sisters; receive the first prophecy",
+          "conflict": "The Sisters speak in riddles; Vane demands clarity; they name a price — a drop of blood",
+          "outcome": "Prophecy: 'You shall hold the land that drinks the king's blood.' Vane bleeds into the chalice"
+        },
+        {
+          "beat_id": 3,
+          "goal": "Introduce Lieutenant Corwin as foil; show Vane's growing obsession",
+          "conflict": "Corwin urges return to duty; Vane interprets prophecy as promise of kingship",
+          "outcome": "Vane sends Corwin away with a letter to the king — a calculated move toward treason"
+        },
+        {
+          "beat_id": 4,
+          "goal": "Introduce Father Anselm; establish the Moor's history and the Sisters' true nature",
+          "conflict": "Anselm warns Vane: the Sisters don't predict, they engineer; Vane threatens him",
+          "outcome": "Anselm gives Vane a blessed iron nail — 'for when the thread pulls tight'"
+        },
+        {
+          "beat_id": 5,
+          "goal": "Second prophecy; Vane manipulates events to fulfill it",
+          "conflict": "Prophecy: 'The loyal blade shall turn at the third crow.' Vane engineers a scenario",
+          "outcome": "Corwin refuses to kill a prisoner; Vane frames it as betrayal; Corwin is arrested"
+        },
+        {
+          "beat_id": 6,
+          "goal": "Introduce Mara, a prior victim; reveal the cost of the Sisters' bargains",
+          "conflict": "Mara finds Vane; shows her missing tongue; warns him the prophecy is a snare",
+          "outcome": "Vane dismisses her as mad; but keeps the iron nail close"
+        },
+        {
+          "beat_id": 7,
+          "goal": "Third prophecy; Vane commits his first murder to secure the path",
+          "conflict": "Prophecy: 'The crown passes through a brother's heart.' Vane's half-brother visits",
+          "outcome": "Vane poisons his half-brother; the death looks natural; Vane inherits the title"
+        },
+        {
+          "beat_id": 8,
+          "goal": "The Sisters reveal the Weave — show Vane the threads of his future",
+          "conflict": "Vane sees his rise but not the end; the Sisters refuse to show the final thread",
+          "outcome": "Vane demands the final prophecy; they agree — for his true name spoken willingly"
+        },
+        {
+          "beat_id": 9,
+          "goal": "Vane speaks his true name; receives the fourth prophecy",
+          "conflict": "The name binds him; Prophecy: 'No blade of woman born shall end you'",
+          "outcome": "Vane feels invincible; begins open rebellion; the Moor's mist spreads to his lands"
+        },
+        {
+          "beat_id": 10,
+          "goal": "Act 1 climax — Vane's forces march; the first harvest begins",
+          "conflict": "King's army approaches; Vane realizes the prophecy required his rebellion",
+          "outcome": "Vane wins the battle but Corwin escapes; the Sisters whisper: 'One thread cut'"
+        }
+      ]
+    },
+    {
+      "act": 2,
+      "name": "The Weaving",
+      "beats": [
+        {
+          "beat_id": 11,
+          "goal": "Vane consolidates power; the Moor's influence grows",
+          "conflict": "Crops fail; livestock birth monstrosities; soldiers hear whispers in the mist",
+          "outcome": "Vane executes dissenters; the Sisters appear in his war tent, measuring thread"
+        },
+        {
+          "beat_id": 12,
+          "goal": "Fifth prophecy; a false security that masks a trap",
+          "conflict": "Prophecy: 'Wyrmwood's heart shall shield you till the forest walks'",
+          "outcome": "Vane fortifies the Moor; cuts down sacred trees; the forest bleeds black sap"
+        },
+        {
+          "beat_id": 13,
+          "goal": "Corwin returns with Anselm and Mara; they know the Sisters' weakness",
+          "conflict": "Anselm reveals the Sisters need a willing vessel for the Harvest; Vane is the vessel",
+          "outcome": "Vane imprisons them; but doubt seeds — he dreams of threads around his throat"
+        },
+        {
+          "beat_id": 14,
+          "goal": "Sixth prophecy; Vane's paranoia turns him against his own officers",
+          "conflict": "Prophecy: 'The closest hand shall deal the deepest wound'",
+          "outcome": "Vane kills his most loyal captain; the man's dying words: 'You did this to yourself'"
+        },
+        {
+          "beat_id": 15,
+          "goal": "Mara escapes; reveals the Sisters' origin — they were once human, bound to the Moor",
+          "conflict": "Mara steals Vane's blood-sample from the Sisters' chalice; the contract can be broken",
+          "outcome": "Vane hunts her; she flees into the Moor; the Sisters laugh — 'The mouse runs to the trap'"
+        },
+        {
+          "beat_id": 16,
+          "goal": "Seventh prophecy; the king's army surrounds Wyrmwood",
+          "conflict": "Prophecy: 'Fire shall not touch you, nor water drown, nor earth swallow'",
+          "outcome": "Vane walks through the siege unharmed; but his men die by the hundreds"
+        },
+        {
+          "beat_id": 17,
+          "goal": "Anselm performs a ritual to sever one thread; partial success",
+          "conflict": "The ritual requires a sacrifice; Anselm offers his own sight",
+          "outcome": "One prophecy fractures — 'No blade of woman born' now reads 'No blade... born'"
+        },
+        {
+          "beat_id": 18,
+          "goal": "Vane confronts the Sisters; demands the final prophecy",
+          "conflict": "They refuse unless he brings them the heart of one who loves him",
+          "outcome": "Vane realizes no one loves him; he rides to find Mara — the only one who tried to save him"
+        },
+        {
+          "beat_id": 19,
+          "goal": "Vane finds Mara; she offers her heart willingly to break the contract",
+          "conflict": "Mara: 'I loved the man you were. Kill me, and you kill him forever'",
+          "outcome": "Vane cannot kill her; he brings her to the Sisters alive — 'Take her instead'"
+        },
+        {
+          "beat_id": 20,
+          "goal": "Act 2 climax — The Sisters accept Mara; the final prophecy is spoken",
+          "conflict": "Prophecy: 'The harvest comes when the sower becomes the seed'",
+          "outcome": "Maw cuts Mara's thread; Spindle spins Vane's name into the Weave; Shear smiles"
+        }
+      ]
+    },
+    {
+      "act": 3,
+      "name": "The Harvest",
+      "beats": [
+        {
+          "beat_id": 21,
+          "goal": "Vane realizes the truth — every prophecy was a step toward this moment",
+          "conflict": "The 'king's blood' was his half-brother's (royal bastard); 'forest walks' = his men carrying wood",
+          "outcome": "Vane's mind fractures; he sees the Weave — his entire life a pattern woven by the Sisters"
+        },
+        {
+          "beat_id": 22,
+          "goal": "Corwin leads the assault on the Moor; the forest does walk",
+          "conflict": "The trees move; roots drag men down; the Moor fights for the Sisters",
+          "outcome": "Corwin reaches the standing stones; Vane waits with the iron nail"
+        },
+        {
+          "beat_id": 23,
+          "goal": "Vane and Corwin's final confrontation; brother against brother",
+          "conflict": "Corwin begs Vane to break the contract; Vane cannot — his name is woven in",
+          "outcome": "Corwin wounds Vane with a blade forged from cold iron — 'Not of woman born, but of earth'"
+        },
+        {
+          "beat_id": 24,
+          "goal": "The Sisters reveal the final truth: Vane was never the king — he was the sacrifice",
+          "conflict": "The Harvest requires a soul who sought power and found only ruin",
+          "outcome": "The Moor swallows Vane's army; the mist takes shape — thousands of prior harvests"
+        },
+        {
+          "beat_id": 25,
+          "goal": "Anselm's final ritual; he burns his own life to sever the Weave",
+          "conflict": "The Sisters attack Anselm; he holds the line long enough",
+          "outcome": "The Weave tears; Vane feels the threads snap; the Sisters scream — a sound like tearing silk"
+        },
+        {
+          "beat_id": 26,
+          "goal": "Vane's moment of choice — take the Sisters' offer of power, or destroy the loom",
+          "conflict": "Maw offers: 'Rule the Moor. Weave your own fate.' Spindle: 'Live forever.' Shear: 'Never die.'",
+          "outcome": "Vane drives the iron nail into the central loom-stone; the Moor shrieks"
+        },
+        {
+          "beat_id": 27,
+          "goal": "The Moor collapses; the Sisters unravel; Vane holds the tear open for others to escape",
+          "conflict": "The ground swallows the standing stones; Mara's body dissolves into light",
+          "outcome": "Corwin drags Vane clear; the Moor becomes a mundane bog; the Sisters are gone"
+        },
+        {
+          "beat_id": 28,
+          "goal": "Aftermath — Vane lives but is broken; the cost of the harvest",
+          "conflict": "Vane's wound won't heal; he sees threads everywhere; cannot rule, cannot fight",
+          "outcome": "Vane abdicates to Corwin; retires to a monastery at the Moor's edge"
+        },
+        {
+          "beat_id": 29,
+          "goal": "Epilogue — years later; a new soldier rides toward the Moor",
+          "conflict": "The Moor is quiet, but a single thread glints in the mist",
+          "outcome": "Vane watches from the monastery window; his fingers twitch toward the iron nail"
+        },
+        {
+          "beat_id": 30,
+          "goal": "Final image — the cycle continues; the harvest never ends",
+          "conflict": "A voice in the wind: 'We sow no seed, yet harvest every soul'",
+          "outcome": "Vane closes the shutters. The nail grows warm in his pocket. The end."
+        }
+      ]
+    }
+  ]
+}

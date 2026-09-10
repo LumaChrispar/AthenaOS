@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Relationship Schema",
+  "description": "Decoupled schema for tracking the dynamic relationship between two entities.",
+  "type": "object",
+  "properties": {
+    "relationship_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "person_a": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "person_b": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "trust_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "conflict_level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "history": {
+      "type": "string",
+      "description": "Brief summary of their shared past"
+    },
+    "secrets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "holder": { "type": "string", "format": "uuid" },
+          "secret": { "type": "string" }
+        }
+      }
+    },
+    "current_status": {
+      "type": "string",
+      "description": "e.g., Active hostility, uneasy truce, romantic tension"
+    },
+    "future_direction": {
+      "type": "string",
+      "description": "Where this relationship needs to go narratively"
+    }
+  },
+  "required": ["relationship_id", "person_a", "person_b", "trust_level", "conflict_level"]
+}

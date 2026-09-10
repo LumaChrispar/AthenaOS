@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "concept": "could you write a Shakespeare horror titled The withches of Wyrmwood Moor\na darker cousin to Macbeth.Three witches don't predict the future, they create it. A soldier who seels power realizes every prophecy was a trap designed to lead him to his own ruin.\"we sow no seed, yet harvest every soul\"",
+  "chapters": null,
+  "status": "failed",
+  "completed_steps": [
+    "intake",
+    "architecture"
+  ],
+  "active_step": "characters",
+  "error": "The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.",
+  "created_at": 1789001662.5394983,
+  "updated_at": 1789001927.6065834
+}

@@ -1,0 +1,26 @@
+
+--- STAGE 1: CONCEPT & INTAKE (SRV-001) ---
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\5af40878e1954644b4363de53c66f7c1\08_Memory\intake_brief.json
+[SRV-001] Sending task (model: nvidia/nemotron-3-ultra-550b-a55b:free, temp: 0.15)...
+Error calling model API: 'NoneType' object is not subscriptable
+
+--- STAGE 1: CONCEPT & INTAKE (SRV-001) ---
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\5af40878e1954644b4363de53c66f7c1\08_Memory\intake_brief.json
+[SRV-001] Sending task (model: nvidia/nemotron-3-ultra-550b-a55b:free, temp: 0.15)...
+Error calling model API: 'NoneType' object is not subscriptable
+
+--- STAGE 1: CONCEPT & INTAKE (SRV-001) ---
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\5af40878e1954644b4363de53c66f7c1\08_Memory\intake_brief.json
+[SRV-001] Sending task (model: nvidia/nemotron-3-ultra-550b-a55b:free, temp: 0.15)...
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\5af40878e1954644b4363de53c66f7c1\08_Memory\ceo_intake_decision.json
+Intake decision: APPROVED
+
+--- PHASE 1: STORY ARCHITECTURE (SRV-002) ---
+[SRV-002] Sending task (model: nvidia/nemotron-3-ultra-550b-a55b:free, temp: 0.15)...
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\5af40878e1954644b4363de53c66f7c1\08_Memory\outline.json
+Phase 1 Complete. Triggered event: OutlineCompleted
+
+--- PHASE 2: CHARACTER PSYCHOLOGY (SRV-003) ---
+[SRV-003] Sending task (model: nvidia/nemotron-3-ultra-550b-a55b:free, temp: 0.5)...
+Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
+Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
