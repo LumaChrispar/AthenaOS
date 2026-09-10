@@ -1,8 +1,0 @@
-{
-  "provider": "lmstudio",
-  "base_url": "http://127.0.0.1:1234/v1",
-  "model": "google/gemma-4-e4b",
-  "max_calls_per_job": 200,
-  "max_output_tokens": 100000,
-  "timeout_seconds": 900
-}
