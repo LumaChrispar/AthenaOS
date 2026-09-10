@@ -20,7 +20,31 @@ def progress_messages(state, log):
         if line.startswith('--- ') and line.endswith(' ---'):
             stage = line.strip('- ').split(' (SRV-', 1)[0]
             text = stage.replace('PHASE: ', '').replace('PHASE ', 'Planning step ').replace('STAGE ', 'Step ').capitalize()
-            messages.append({'text': text, 'kind': 'activity'})
+            phrases = {
+                'concept & intake': 'I’m turning your idea into a writing brief.',
+                'story architecture': 'I’m building the outline: the turning points, the tension, and where the story ends.',
+                'character psychology': 'I’m developing the characters—their motives, contradictions, and how they change.',
+                'world building': 'I’m establishing the setting and the rules of your story’s world.',
+                'voice calibration': 'I’m finding the narrative voice for this book.',
+                'prose drafting': 'I’m writing the chapter from its outline.',
+                'voice variation': 'I’m refining the rhythm and voice of the prose.',
+                'dialogue audit': 'I’m reviewing the dialogue for character and subtext.',
+                'dialogue rewrite': 'I’m revising the dialogue using the review notes.',
+                'continuity check': 'I’m checking the chapter against the established story facts.',
+                'developmental edit': 'I’m reviewing the chapter’s structure, pacing, and character development.',
+                'qa check': 'I’m checking whether this chapter meets the quality requirements.',
+                'copy edit': 'I’m polishing the approved chapter’s wording and mechanics.',
+                'post-chapter extraction': 'I’m recording the chapter’s events so the next chapters can stay consistent.',
+                'revision': 'I’m revising this chapter to address the review findings.',
+            }
+            for heading, phrase in phrases.items():
+                if heading in stage.lower():
+                    text = phrase
+                    break
+            chapter = re.search(r'CHAPTER (\d+)', stage)
+            if chapter:
+                text = f'Chapter {chapter[1]} · ' + text
+            messages.append({'text': text, 'kind': 'activity', 'stage': stage})
         elif re.match(r'Chapter \d+ PASSED', line):
             messages.append({'text': line.replace('PASSED', 'passed its review'), 'kind': 'success'})
         elif line.startswith('Intake has conditions;'):

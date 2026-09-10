@@ -17,6 +17,8 @@ from orchestrator import Orchestrator
 from llm_client import AthenaLLMClient
 from types import SimpleNamespace
 from unittest.mock import Mock
+from book_library import edit_book, continue_book
+from job_runner import atomic_json
 
 
 class FakeModel:
@@ -208,6 +210,53 @@ class WorkflowTests(unittest.TestCase):
                 return await super(LockProbe, inner).run_ceo_intake(concept)
         with contextlib.redirect_stdout(io.StringIO()):
             asyncio.run(JobRunner(job, LockProbe).run())
+
+    def test_saved_chapter_roadmap_recovers_without_new_outline_call(self):
+        job = create_job(self.root, 'A story', 2)
+        MemoryManager(str(job)).save_artifact('outline.json', json.dumps({
+            'title': 'Recovered', 'chapter_roadmap': [{'goal': 'Arrive'}, {'goal': 'Resolve'}]}))
+        self.run_job(job)
+        self.assertNotIn('SRV-002', self.model.calls)
+        outline = json.loads((job / '08_Memory/outline.json').read_text())
+        self.assertEqual(len(outline['beat_sheets'][0]['beats']), 2)
+
+    def test_edit_and_continue_preserves_prose_and_adds_chapters(self):
+        job = create_job(self.root, 'A story', 2)
+        self.run_job(job)
+        edit_book(job, {'kind': 'chapter', 'number': 1, 'title': 'My title', 'text': 'My revised opening.'})
+        self.assertIn('My revised opening.', (job / '08_Memory/manuscript.md').read_text())
+        self.assertTrue(list((job / 'revisions').glob('*/08_Memory/manuscript.md')))
+        drafting = self.model.calls.count('SRV-005')
+        continue_book(job, 'A return to the sea', 2)
+        self.run_job(job)
+        # SRV-005 handles both the draft and dialogue rewrite for each new chapter.
+        self.assertEqual(self.model.calls.count('SRV-005'), drafting * 2)
+        manuscript = (job / '08_Memory/manuscript.md').read_text()
+        self.assertIn('My revised opening.', manuscript)
+        self.assertIn('Chapter 4:', manuscript)
+        self.assertEqual(json.loads((job / 'job.json').read_text())['status'], 'completed')
+
+    def test_deleted_job_never_starts_model(self):
+        job = create_job(self.root, 'A story')
+        state = json.loads((job / 'job.json').read_text())
+        state['deleted_at'] = 123
+        atomic_json(job / 'job.json', state)
+        self.run_job(job)
+        self.assertEqual(self.model.calls, [])
+
+    def test_truncated_output_is_not_repeated_unchanged(self):
+        job = create_job(self.root, 'A story')
+        client = AthenaLLMClient.__new__(AthenaLLMClient)
+        client.capability_model = {}
+        client.default_model, client.default_temp = 'fake', 0.5
+        client.usage_path = str(job / '08_Memory/usage.json')
+        client.max_calls, client.max_output_tokens = 10, 100
+        client.client = Mock()
+        client.client.chat.completions.create.return_value = SimpleNamespace(usage=None,
+            choices=[SimpleNamespace(finish_reason='length', message=SimpleNamespace(content='{"partial":'))])
+        with self.assertRaisesRegex(RuntimeError, 'context limit'):
+            client.execute_prompt('SRV-001', 'system', 'user')
+        self.assertEqual(client.client.chat.completions.create.call_count, 1)
 
 
 if __name__ == '__main__':

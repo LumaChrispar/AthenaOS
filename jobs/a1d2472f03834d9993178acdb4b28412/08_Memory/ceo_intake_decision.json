@@ -1,0 +1,23 @@
+{
+  "decision": "APPROVED",
+  "rationale": "The concept is highly actionable for autonomous draft generation. It presents a clear, commercially viable hook (Macbeth-inspired horror with inverted prophecy mechanics), a defined protagonist arc (soldier seeking power → realization of entrapment), and a strong thematic core (agency vs. manipulation). No unresolved obstacles prevent writing. The user has authorized local manuscript draft mode, so commercial gates are advisory only.",
+  "assumptions": [
+    "Format: Full-length novel (not novella or short story) to support the tragic arc and atmospheric horror buildup.",
+    "Target audience: Adult horror/fantasy crossover readers; fans of grimdark fantasy, folk horror, and Shakespearean retellings (e.g., readers of T. Kingfisher, Genevieve Gornichec, or Grady Hendrix).",
+    "Subgenre: Folk horror / historical horror / dark fantasy. Setting: Early 11th-century Scotland (roughly Macbeth's historical period), Wyrmwood Moor as a liminal, cursed landscape.",
+    "Length: ~90,000 words (30 chapters × ~3,000 words), aligning with default_words_per_chapter and standard commercial novel length.",
+    "POV: Close third-person, primarily following the soldier (named Alasdair MacCowan), with intermittent witch interludes in a choral, incantatory voice.",
+    "Structure: Three acts mirroring the weird sisters — Act I: The Sowing (prophecies delivered, ambition kindled), Act II: The Tending (prophecies 'fulfilled' through manipulation, Alasdair's rise), Act III: The Harvest (revelation of the trap, inevitable ruin).",
+    "The witches (the Weird of Wyrmwood) are ancient, pre-Christian entities who feed on the corruption of ambition; they do not foresee — they engineer.",
+    "Tone: Atmospheric, visceral, psychologically unsettling; prose style elevated but accessible, with rhythmic echoes of Shakespearean cadence in witch passages.",
+    "No outline required before drafting; the Architect (SRV-002) will generate a detailed chapter-by-chapter outline as the first planning deliverable."
+  ],
+  "planning_instructions": [
+    "Architect (SRV-002): Produce a 30-chapter outline with act breaks, key plot beats, witch interlude placement, and thematic throughlines. Ensure each prophecy in Act I has a visible 'fulfillment' in Act II that is revealed as engineered in Act III.",
+    "Worldbuilding (SRV-003): Develop Wyrmwood Moor as a character — its history, the standing stones, the bog bodies, the old religion the witches serve. Create a glossary of Scots/Archaic terms for flavor.",
+    "Character Lead (SRV-004): Flesh out Alasdair — his wound (literal or psychological), his specific ambition (thaneship? kingship? something darker?), his relationships (wife? rival? loyal lieutenant?) that the witches will weaponize.",
+    "Prose Director (SRV-005): Establish voice guidelines — narrative distance, witch chorus style, battle scene visceralness, internal monologue for Alasdair's corruption arc.",
+    "Continuity (SRV-006): Track all prophecies, their apparent fulfillments, and their true engineered mechanisms to ensure Act III revelations land without contradiction.",
+    "QA Director (SRV-010): Define horror-specific quality metrics — dread accumulation, payoff satisfaction, thematic resonance — for final scorecard."
+  ]
+}

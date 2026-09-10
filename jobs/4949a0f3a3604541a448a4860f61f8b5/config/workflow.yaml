@@ -1,0 +1,14 @@
+# config/workflow.yaml
+# Global workflow configuration for the Event Bus and State Machine.
+
+workflow:
+  max_revision_loops: 3
+  timeout_seconds_per_service: 300
+  deadletter_queue_enabled: true
+
+  # If a chapter is rejected 3 times by QA, it escalates to this service.
+  escalation_service: SRV-001 # Escalate to CEO (SRV-001) for executive decision
+
+  event_bus:
+    driver: memory # or redis, kafka for scale
+    log_level: info

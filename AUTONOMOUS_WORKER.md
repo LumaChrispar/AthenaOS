@@ -14,7 +14,7 @@ python athena.py ui
 
 Open **http://127.0.0.1:8765**. Open **Settings** in the sidebar, select Ollama
 or LM Studio, use **Find models**, choose your model, and **Save settings**.
-Return to **Create a book**, describe your story, and select **Create my book**.
+Return to **New conversation**, describe your story, and send your first message.
 Settings has its own address at **http://127.0.0.1:8765/settings**.
 It also controls maximum requests per book, output tokens per response, and
 response timeout. These UI defaults are stored in `config/ui_settings.json`
@@ -23,6 +23,23 @@ CLI jobs continue to use `config/models.yaml` and explicit CLI overrides.
 The sidebar lists your books; each book shows saved progress, usage, errors,
 and an activity log. Completed books can be read or downloaded as Markdown.
 No Node.js build or additional web framework is needed.
+
+### Conversations
+
+The home screen is a message composer: describe your book and optionally set a
+chapter count before sending. Each book opens as a conversation at `/books/JOB_ID`.
+The original brief appears as your first message. Writing activity is translated
+from actual worker logs and saved state into readable updates; the original log
+remains under **Technical details**. These updates do not consume model requests.
+
+The follow-up composer sends questions to the book's selected model, with the
+saved brief, outline, world information, and recent conversation as context.
+Replies are stored in `jobs/JOB_ID/conversation.json`. This is a discussion:
+suggested revisions are not automatically applied to the manuscript. Follow-up
+requests may incur provider charges, and use a separate `chat_usage.json` ledger,
+capped at the smaller of 50 requests or the job's configured request limit, with
+up to 2,048 output tokens per response. Book generation keeps its own budget.
+No real model requests are made by the automated conversation tests.
 
 For **LM Studio**, load a model and start its server in the Developer tab.
 The default endpoint is `http://127.0.0.1:1234/v1`. If you enabled authentication,

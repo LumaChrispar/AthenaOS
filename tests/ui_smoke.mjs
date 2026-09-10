@@ -75,13 +75,56 @@ try {
   await evaluate('document.getElementById("new-book").click()');
   assert.equal(await evaluate('location.pathname'), '/');
   assert.equal(await evaluate('document.getElementById("concept").value'), 'A lighthouse keeper receives letters from tomorrow.');
+  const home = await send('Page.captureScreenshot', {format: 'png'});
+  await writeFile('artifacts/athena-chat-home.png', Buffer.from(home.data, 'base64'));
+  const jobs = await (await fetch(url + '/api/jobs')).json();
+  if (jobs.length) {
+    await evaluate(`selectBook(${JSON.stringify(jobs[0].id)})`);
+    for (let i = 0; i < 50; i++) { if (await evaluate('document.getElementById("activity-messages").children.length > 0')) break; await sleep(100); }
+    assert.equal(await evaluate('document.getElementById("detail-view").hidden'), false);
+    assert.equal(await evaluate('document.getElementById("book-concept").textContent'), jobs[0].concept);
+    assert.ok(await evaluate('document.getElementById("activity-messages").children.length > 0'));
+    assert.equal(await evaluate('document.querySelector(".technical-log").open'), false);
+    await evaluate('document.getElementById("chat-input").value="A draft question, not sent."; showSettings();');
+    await evaluate(`selectBook(${JSON.stringify(jobs[0].id)})`);
+    assert.equal(await evaluate('document.getElementById("chat-input").value'), 'A draft question, not sent.');
+    const thread = await send('Page.captureScreenshot', {format: 'png'});
+    await writeFile('artifacts/athena-chat-thread.png', Buffer.from(thread.data, 'base64'));
+  }
   await evaluate('document.getElementById("settings-link").click()');
   await send('Emulation.setDeviceMetricsOverride', {width: 390, height: 844, deviceScaleFactor: 1, mobile: true});
   await sleep(100);
   assert.equal(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), true, 'Mobile layout fits the viewport');
   const mobile = await send('Page.captureScreenshot', {format: 'png', captureBeyondViewport: true});
   await writeFile('artifacts/athena-ui-mobile.png', Buffer.from(mobile.data, 'base64'));
+  await evaluate('showCreate(); document.getElementById("toggle-library").click()');
+  assert.equal(await evaluate('document.body.classList.contains("library-open")'), true);
+  await evaluate('document.getElementById("new-book").click()');
+  assert.equal(await evaluate('document.body.classList.contains("library-open")'), false);
+  if (jobs.length) {
+    await evaluate(`selectBook(${JSON.stringify(jobs[0].id)})`);
+    await sleep(150);
+    assert.equal(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'), true);
+    const mobileThread = await send('Page.captureScreenshot', {format: 'png'});
+    await writeFile('artifacts/athena-chat-mobile.png', Buffer.from(mobileThread.data, 'base64'));
+  }
   assert.deepEqual(errors, [], 'No browser JavaScript exceptions');
+  // Exercise the new editor without saving or touching any user's book.
+  await evaluate(`editorContent = {concept: 'Fixture idea', chapters: [{number: 1, title: 'Opening', prose: 'Fixture chapter text.'}]};
+    document.getElementById('edit-chapter').replaceChildren(new Option('Chapter 1', '1'));
+    loadEditorChapter(); document.getElementById('editor-dialog').showModal();`);
+  assert.equal(await evaluate('document.getElementById("edit-text").value'), 'Fixture chapter text.');
+  await evaluate('document.getElementById("edit-text").value="Unsaved change"; document.getElementById("edit-text").dispatchEvent(new Event("input"))');
+  assert.equal(await evaluate('document.getElementById("edit-chapter").disabled'), true);
+  assert.equal(await evaluate('document.getElementById("editor-dialog").getBoundingClientRect().width <= innerWidth'), true);
+  await evaluate('document.querySelector("[data-close=editor-dialog]").click()');
+  assert.equal(await evaluate('document.getElementById("editor-dialog").open'), false);
+  await evaluate('document.getElementById("continue-dialog").showModal()');
+  assert.equal(await evaluate('document.getElementById("continue-form").checkValidity()'), false);
+  await evaluate('document.getElementById("continuation-text").value="Follow the next generation"');
+  assert.equal(await evaluate('document.getElementById("continue-form").checkValidity()'), true);
+  await evaluate('document.querySelector("[data-close=continue-dialog]").click()');
+  assert.deepEqual(errors, [], 'New book controls have no JavaScript exceptions');
   console.log('Browser checks passed: page loads, provider selection, form validation, mobile layout. Screenshots in artifacts/. No generation started.');
 } finally {
   socket?.close();

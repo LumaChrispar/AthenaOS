@@ -91,26 +91,14 @@ class JobRunner:
         self.save()
 
     async def run(self):
-        # OS-held lock releases on crashes; the file itself may safely remain.
-        lock = (self.job / '.worker.lock').open('a+b')
-        try:
-            lock.seek(0)
-            if os.name == 'nt':
-                import msvcrt
-                if not lock.read(1):
-                    lock.write(b'0')
-                    lock.flush()
-                lock.seek(0)
-                msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except OSError:
-            lock.close()
-            raise RuntimeError('Another worker is already running this job.')
+        from job_lock import job_lock
+        with job_lock(self.job):
+            await self.run_locked()
+
+    async def run_locked(self):
         try:
             self.state = json.loads(self.state_path.read_text(encoding='utf-8'))
-            if self.state['status'] == 'completed':
+            if self.state['status'] == 'completed' or self.state.get('deleted_at'):
                 return
             self.state.update(status='running', error=None)
             self.save()
@@ -126,6 +114,10 @@ class JobRunner:
             await self.step('characters', orch.run_phase_2_psychology)
             await self.step('world', orch.run_phase_3_world)
             await self.step('voice', orch.run_voice_calibration)
+            if self.state.get('rebuild_canon'):
+                await self.step('rebuild_canon', orch.rebuild_edited_canon, self.state['rebuild_canon'])
+            if self.state.get('continuation'):
+                await self.step('continuation', orch.plan_continuation, self.state['continuation'])
             count = orch.pipeline_state.get('total_chapters', 0)
             if not isinstance(count, int) or count < 1:
                 raise ValueError('Outline must contain at least one chapter.')
@@ -146,5 +138,3 @@ class JobRunner:
                               error=str(error) or type(error).__name__)
             self.save()
             raise
-        finally:
-            lock.close()

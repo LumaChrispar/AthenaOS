@@ -6,6 +6,7 @@ from service_loader import load_service, format_system_prompt
 from memory_manager import MemoryManager
 from context_builder import ContextBuilder, build_scene_brief
 from job_runner import atomic_json
+from outline_format import normalize_outline
 import yaml
 
 
@@ -128,8 +129,11 @@ class Orchestrator:
         service_data = load_service("SRV-002", self.base_dir)
         system_prompt = format_system_prompt(service_data)
         
-        # Load the project schema to give the model the required format
-        project_schema = self.memory.load_schema("project.schema.json")
+        # The project-management schema is not a chapter outline contract.
+        system_prompt += ('\nRuntime output contract takes precedence: return only a compact JSON object '
+                          'with title and beat_sheets. Each act has act, name, beats; '
+                          'each beat represents one chapter with beat_id, goal, conflict, outcome. '
+                          'Do not include budgets, deadlines, or project-management fields.')
         intake_brief = self.memory.load_artifact('intake_brief.json')
         intake_decision = self.memory.load_artifact('ceo_intake_decision.json')
         
@@ -148,28 +152,76 @@ class Orchestrator:
         Include all chapters through the resolution, and a title.
         
         OUTPUT FORMAT:
-        You must output the exact JSON structure defined in your Interface Contract.
-        Use this schema as a guideline if needed:
-        {project_schema}
+        Return only {{"title":"Book title", "beat_sheets":[{{"act":1,"name":"Act name",
+        "beats":[{{"beat_id":1,"goal":"Chapter objective","conflict":"Obstacle","outcome":"Result"}}]}}]}}.
+        Expand the beats to cover the entire story. Keep each field concise.
         """
         
-        response = self.llm.execute_prompt("SRV-002", system_prompt, user_prompt)
-        self.memory.save_artifact("outline.json", response)
+        # Recover a usable outline left by an older runtime before spending another call.
+        outline = None
+        job_state_path = os.path.join(self.base_dir, 'job.json')
+        requested = None
+        if os.path.exists(job_state_path):
+            with open(job_state_path, encoding='utf-8') as stream:
+                requested = json.load(stream).get('chapters')
+        try:
+            outline = normalize_outline(parse_json(self.memory.load_artifact('outline.json')))
+            if requested and sum(len(act['beats']) for act in outline['beat_sheets']) != requested:
+                outline = None
+        except (ValueError, KeyError, TypeError):
+            pass
+        if outline is None:
+            response = self.llm.execute_prompt("SRV-002", system_prompt, user_prompt)
+            outline = normalize_outline(parse_json(response))
         
         # Extract total chapters from outline
         try:
-            outline = parse_json(response)
             total_chapters = sum(len(act['beats']) for act in outline['beat_sheets'])
             if total_chapters < 1:
                 raise ValueError('No chapter beats in outline.')
+            if requested and total_chapters != requested:
+                raise ValueError(f'Expected {requested} chapter beats, received {total_chapters}.')
             self.pipeline_state["total_chapters"] = total_chapters
         except (ValueError, KeyError, TypeError) as error:
-            raise ValueError('Outline must contain beat_sheets with chapter beats.') from error
+            raise ValueError(f'Invalid outline: {error}') from error
+        self.memory.save_artifact('outline.json', json.dumps(outline))
         
         self.pipeline_state["last_completed_phase"] = "phase_1"
         self.pipeline_state["concept"] = concept
         self.save_pipeline_state()
         print("Phase 1 Complete. Triggered event: OutlineCompleted")
+
+    async def plan_continuation(self, request):
+        print('\n--- CONTINUATION: STORY ARCHITECTURE (SRV-002) ---')
+        outline = normalize_outline(parse_json(self.memory.load_artifact('outline.json')))
+        existing = [beat for act in outline['beat_sheets'] for beat in act['beats']]
+        start, extra = request['start'], request['extra']
+        if len(existing) == start:
+            response = self.llm.execute_prompt('SRV-002',
+                'Plan additional chapters after an existing book. Preserve all established events. '
+                'Return only JSON with beat_sheets: acts with act, name, beats; each beat has '
+                'beat_id, goal, conflict, outcome. Include only the NEW chapters.',
+                json.dumps({'instructions': request['instructions'], 'additional_chapters': extra,
+                            'outline': outline, 'summaries': self.memory.load_chapter_summaries_up_to(start),
+                            'last_chapter': parse_json(self.memory.load_artifact(f'chapter_{start:02d}.json'))}))
+            addition = normalize_outline(parse_json(response))
+            if sum(len(act['beats']) for act in addition['beat_sheets']) != extra:
+                raise ValueError('Continuation outline must match the additional chapter count.')
+            outline['beat_sheets'].extend(addition['beat_sheets'])
+            self.memory.save_artifact('outline.json', json.dumps(outline))
+        elif len(existing) != start + extra:
+            raise ValueError('Saved continuation outline has an unexpected chapter count.')
+        self.pipeline_state['total_chapters'] = start + extra
+        self.save_pipeline_state()
+        self.context_builder.outline = None
+
+    async def rebuild_edited_canon(self, numbers):
+        print('\n--- REBUILDING STORY FACTS AFTER YOUR EDITS ---')
+        baseline = self.memory.load_artifact('story_bible_initial.json')
+        self.memory.save_artifact('story_bible.json', baseline)
+        self.memory.save_artifact('foreshadowing_registry.json', '{"seeds": []}')
+        for number in numbers:
+            await self.post_chapter_extraction(number)
 
     async def run_phase_2_psychology(self):
         """SRV-003: Character Psychologist"""
@@ -218,6 +270,7 @@ class Orchestrator:
         
         response = self.llm.execute_prompt("SRV-004", system_prompt, user_prompt)
         self.memory.save_artifact("story_bible.json", response)
+        self.memory.save_artifact('story_bible_initial.json', response)
         
         self.pipeline_state["last_completed_phase"] = "phase_3"
         self.save_pipeline_state()

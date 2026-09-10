@@ -1,0 +1,62 @@
+connection:
+  provider: lmstudio
+  base_url: http://127.0.0.1:1234/v1
+  timeout_seconds: 900
+models:
+- id: architecture-reasoning
+  provider: openrouter
+  model: nvidia/nemotron-3-ultra-550b-a55b:free
+  capabilities:
+  - SRV-001
+  - SRV-002
+  - SRV-007
+  - SRV-010
+  - SRV-016
+  temperature: 0.15
+  note: Low temperature for structural and logical tasks requiring consistency
+- id: character-world-building
+  provider: openrouter
+  model: nvidia/nemotron-3-ultra-550b-a55b:free
+  capabilities:
+  - SRV-003
+  - SRV-004
+  - SRV-011
+  - SRV-012
+  - SRV-015
+  temperature: 0.5
+  note: "Mid temperature \u2014 creative but anchored to established facts"
+- id: prose-generation
+  provider: openrouter
+  model: nvidia/nemotron-3-ultra-550b-a55b:free
+  capabilities:
+  - SRV-005
+  - SRV-006
+  - SRV-008
+  - SRV-013
+  temperature: 0.75
+  note: "Higher temperature for prose \u2014 needs variability and surprise"
+- id: voice-variation
+  provider: openrouter
+  model: nvidia/nemotron-3-ultra-550b-a55b:free
+  capabilities:
+  - SRV-027
+  - SRV-028
+  temperature: 0.9
+  note: "Highest temperature \u2014 deliberate controlled unpredictability"
+- id: analysis-critique
+  provider: openrouter
+  model: nvidia/nemotron-3-ultra-550b-a55b:free
+  capabilities:
+  - SRV-009
+  - SRV-014
+  - SRV-019
+  - SRV-022
+  - SRV-023
+  - SRV-026
+  temperature: 0.2
+  note: Low temperature for analytical roles producing factual reports
+default_temperature: 0.5
+max_calls_per_job: 200
+max_output_tokens: 100000
+default_model: google/gemma-4-e4b
+use_default_model_for_all_services: true

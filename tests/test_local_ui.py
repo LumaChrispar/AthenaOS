@@ -51,7 +51,7 @@ class LocalUiTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         for folder in ('config', '06_Services', '08_Memory/schemas', 'ui'):
-            shutil.copytree(ROOT / folder, self.root / folder)
+            shutil.copytree(ROOT / folder, self.root / folder, ignore=shutil.ignore_patterns('ui_settings.json'))
         self.launcher = Mock()
         self.server = AthenaServer(self.root, 0, self.launcher)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
@@ -70,6 +70,42 @@ class LocalUiTests(unittest.TestCase):
             headers['X-Athena-Token'] = self.server.token
         req = Request(self.url + path, data=json.dumps(data).encode() if data is not None else None, headers=headers)
         return urlopen(req, timeout=10)
+
+    def test_delete_restore_edit_and_update_resume_settings(self):
+        job = create_job(self.root, 'Original idea')
+        identifier = job.name
+        with self.request(f'/api/jobs/{identifier}/edit', {'kind': 'brief', 'text': 'Revised idea'}):
+            pass
+        self.assertEqual(json.loads((job / 'job.json').read_text())['concept'], 'Revised idea')
+        with self.request(f'/api/jobs/{identifier}/delete', {}):
+            pass
+        with self.request('/api/jobs') as response:
+            self.assertEqual(json.load(response), [])
+        with self.request('/api/trash') as response:
+            self.assertEqual(json.load(response)[0]['id'], identifier)
+        with self.assertRaises(HTTPError):
+            self.request(f'/api/jobs/{identifier}/resume', {})
+        with self.request(f'/api/jobs/{identifier}/restore', {}):
+            pass
+        with self.request('/api/settings', {'provider': 'ollama', 'model': 'replacement-model'}):
+            pass
+        with self.request(f'/api/jobs/{identifier}/resume', {'use_current_settings': True}):
+            pass
+        import yaml
+        config = yaml.safe_load((job / 'config/models.yaml').read_text())
+        self.assertEqual(config['default_model'], 'replacement-model')
+        self.launcher.assert_called_once()
+
+    def test_running_worker_prevents_library_mutations(self):
+        from job_lock import job_lock
+        job = create_job(self.root, 'Original idea')
+        with job_lock(job):
+            for action, data in [('delete', {}), ('edit', {'kind': 'brief', 'text': 'Changed'}), ('resume', {})]:
+                with self.assertRaises(HTTPError) as caught:
+                    self.request(f'/api/jobs/{job.name}/{action}', data)
+                self.assertEqual(caught.exception.code, 400)
+        self.assertEqual(json.loads((job / 'job.json').read_text())['concept'], 'Original idea')
+        self.launcher.assert_not_called()
 
     def test_real_sdk_uses_local_endpoint_for_every_role_without_cloud_credentials(self):
         stub = ThreadingHTTPServer(('127.0.0.1', 0), ModelStub)
@@ -143,12 +179,21 @@ class LocalUiTests(unittest.TestCase):
                 connection_settings('lmstudio', endpoint)
 
     def test_ui_assets_and_bootstrap_are_served(self):
-        for path in ('/', '/settings', '/app.js', '/style.css', '/settings.css'):
+        for path in ('/', '/settings', '/books/' + 'a' * 32, '/app.js', '/style.css', '/settings.css', '/chat.css'):
             with self.request(path) as response:
                 self.assertEqual(response.status, 200)
                 self.assertTrue(response.read())
         with self.request('/api/bootstrap') as response:
             self.assertEqual(json.load(response)['token'], self.server.token)
+
+    def test_book_messages_endpoint_returns_history_without_starting_worker(self):
+        job = create_job(self.root, 'A quiet mystery', 4)
+        history = [{'id': 'a', 'role': 'assistant', 'text': 'An idea to discuss.'}]
+        with patch('web_ui.reply_to_book', return_value=history) as reply:
+            with self.request(f'/api/jobs/{job.name}/messages', {'message': 'What about the setting?'}) as response:
+                self.assertEqual(json.load(response)['conversation'], history)
+            reply.assert_called_once_with(job.resolve(), 'What about the setting?')
+        self.launcher.assert_not_called()
 
     def test_saved_settings_apply_to_new_jobs_and_preserve_existing_jobs(self):
         settings = {'provider': 'ollama', 'model': 'local-a', 'max_calls_per_job': 75,

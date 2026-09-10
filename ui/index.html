@@ -1,31 +1,32 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Athena · Writing studio</title><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/settings.css"><script src="/app.js" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Athena · Writing studio</title><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/settings.css"><link rel="stylesheet" href="/chat.css"><script src="/app.js" defer></script></head>
 <body>
 <aside>
   <a class="brand" href="/" aria-label="Athena home"><span class="monogram">A</span> ATHENA</a>
   <p class="eyebrow">YOUR WRITING STUDIO</p>
-  <button id="new-book" class="nav active">＋ &nbsp; Create a book</button>
+  <button id="new-book" class="nav active">＋ &nbsp; New conversation</button>
   <a id="settings-link" class="nav settings-nav" href="/settings">⚙ &nbsp; Settings</a>
   <div class="shelf-heading"><span>YOUR BOOKS</span><span id="book-count">0</span></div>
   <div id="books" aria-label="Your books"><p class="muted">Your stories will appear here.</p></div>
+  <button id="open-trash" class="nav">Trash</button>
   <div class="sidebar-footer"><span class="dot"></span> Local workspace<p>Your ideas. Your library.</p></div>
 </aside>
 <main>
-  <header><span>From an idea to the last page.</span><span class="workspace-tag">ATHENA / STUDIO</span></header>
+  <header><button id="toggle-library" class="secondary" aria-label="Toggle book library" aria-expanded="false">☰</button><span class="header-brand">Athena <span class="muted">/ writing companion</span></span><span class="workspace-tag">YOUR NEXT CHAPTER</span></header>
   <div id="notice" role="status" aria-live="polite" hidden></div>
   <section id="create-view">
-    <p class="eyebrow">A NEW CHAPTER STARTS HERE</p>
-    <h1>What story will<br>you tell?</h1>
-    <p class="intro">Bring the idea. Athena will plan, write, and revise it into a manuscript you can make your own.</p>
-    <form id="book-form">
-      <label for="concept">Describe your book</label>
-      <textarea id="concept" required maxlength="30000" rows="6" placeholder="A lighthouse keeper begins receiving letters from tomorrow. A quiet mystery about grief, second chances, and the things we leave unsaid…"></textarea>
-      <p class="hint">Include a theme, audience, characters, or tone. Leave the rest to Athena.</p>
-      <div class="model-summary"><div><span class="eyebrow">WRITING MODEL</span><p id="saved-model">Loading settings…</p></div><a id="configure-model" href="/settings">Change settings ↗</a></div>
-      <div class="length-row"><div><label for="chapters">Chapter count <span class="muted">(optional)</span></label><input id="chapters" type="number" min="1" max="200" placeholder="Let Athena decide"></div><p class="hint">Try 3 chapters for a first run.<br>Speed and writing quality depend on your model and hardware.</p></div>
-      <div class="form-footer"><span>Plan → Write → Review → Manuscript</span><button type="submit" id="start">Create my book <span>↗</span></button></div>
-    </form>
+    <div class="welcome"><span class="welcome-mark">A</span><p class="eyebrow">A LITTLE IDEA. A WHOLE NEW WORLD.</p><h1>What are we<br>writing today?</h1><p class="intro">Tell me the story you have in mind.<br>We’ll take it from the first spark to the last page.</p></div>
+    <div class="start-area">
+      <div class="suggestions" aria-label="Story starters"><button type="button" data-prompt="Write a gothic mystery about a house that remembers everyone who has lived in it.">A haunting mystery ↗</button><button type="button" data-prompt="Write a hopeful adventure about two unlikely friends searching for a lost city.">An unlikely adventure ↗</button><button type="button" data-prompt="Write a character-driven story about starting over, forgiveness, and finding a place to belong.">A story of second chances ↗</button></div>
+      <form id="book-form" class="composer">
+        <label class="visually-hidden" for="concept">Describe the book you want Athena to write</label>
+        <textarea id="concept" required maxlength="30000" rows="3" placeholder="Tell Athena about your book…"></textarea>
+        <div class="composer-toolbar"><div class="chapter-control"><label for="chapters">Chapters</label><input id="chapters" type="number" min="1" max="200" placeholder="Auto" aria-label="Chapter count, leave blank for automatic"></div><button type="submit" id="start" class="send-button" aria-label="Start writing this book">↑</button></div>
+      </form>
+      <div class="composer-caption"><span id="saved-model">Loading settings…</span><a id="configure-model" href="/settings">Settings</a></div>
+      <p class="composer-note">Your first message starts the book. Athena’s progress will appear in the conversation.</p>
+    </div>
   </section>
   <section id="settings-view" hidden>
     <p class="eyebrow">MAKE ATHENA YOUR OWN</p>
@@ -61,15 +62,36 @@
     </form>
   </section>
   <section id="detail-view" hidden>
-    <p class="eyebrow">YOUR MANUSCRIPT</p><h1 id="book-title">Work in progress</h1><p id="book-concept" class="intro"></p>
-    <div class="status-row"><span id="status" class="badge"></span><span id="book-model" class="muted"></span></div>
-    <div class="progress-card"><h2 id="active-step">Getting ready</h2><p id="progress-text" class="muted"></p><div id="metrics" class="metrics"></div></div>
-    <p id="job-error" role="alert" hidden></p>
-    <div class="actions"><button id="resume" class="secondary">Resume worker</button><a id="download" class="button" hidden>Download manuscript ↓</a><button id="read" class="secondary" hidden>Read manuscript</button></div>
-    <p class="hint">You can close this page while Athena writes. Keep your computer awake and your model server running.</p>
-    <article id="reader" hidden><pre id="manuscript"></pre></article>
-    <details><summary>Activity log</summary><pre id="log">Waiting for activity…</pre><p id="job-id" class="hint"></p></details>
+    <div class="conversation-heading"><div><h1 id="book-title">Your book</h1><span id="book-model" class="muted"></span></div><span id="status" class="badge"></span></div>
+    <div id="metrics" class="metrics"></div>
+    <div id="thread-scroll" class="thread-scroll">
+      <div class="thread">
+        <article class="message user-message"><div class="message-label">You</div><div id="book-concept" class="message-body"></div></article>
+        <div class="activity-heading"><span class="avatar">A</span><div><strong>Athena</strong><span>Writing activity · live updates</span></div></div>
+        <div id="activity-messages" aria-label="Writing activity" aria-live="polite" aria-relevant="additions text"></div>
+        <div class="actions"><button id="resume" class="secondary">Resume writing ↗</button><button id="resume-current" class="secondary">Resume with current settings</button><a id="download" class="button" hidden>Download manuscript ↓</a><button id="read" class="secondary" hidden>Read manuscript</button><button id="edit-book" class="secondary">Edit book</button><button id="continue-book" class="secondary" hidden>Continue story</button><button id="delete-book" class="secondary">Delete book</button></div>
+        <article id="reader" hidden><pre id="manuscript"></pre></article>
+        <details class="technical-log"><summary>Technical details</summary><p id="active-step"></p><p id="progress-text" class="hint"></p><pre id="log">Waiting for activity…</pre><p id="job-id" class="hint"></p></details>
+        <div id="chat-messages" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
+        <div id="chat-pending" class="reply-pending" hidden><span class="avatar">A</span><span>Athena is thinking<span class="thinking-dots">…</span></span></div>
+      </div>
+    </div>
+    <div class="reply-area"><form id="chat-form" class="composer"><label for="chat-input" class="visually-hidden">Message Athena about this book</label><textarea id="chat-input" maxlength="8000" rows="2" required placeholder="Ask Athena about your story or its progress…"></textarea><div class="composer-toolbar"><span class="hint">A conversation about your book</span><button id="send-chat" type="submit" class="send-button" aria-label="Send message">↑</button></div></form><p class="composer-note">Replies use your book’s model. Chat can discuss ideas and suggest text; it doesn’t edit the manuscript.</p></div>
   </section>
   <footer>Made for stories that deserve to be told.</footer>
 </main>
+<dialog id="editor-dialog" class="book-dialog"><form id="editor-form">
+  <h2>Edit your book</h2><p class="hint">Earlier versions are backed up in the book’s revisions folder. Save changes, then resume when you’re ready.</p>
+  <label for="edit-chapter">What would you like to edit?</label><select id="edit-chapter"></select>
+  <label for="edit-title">Chapter title</label><input id="edit-title" maxlength="300">
+  <label for="edit-text">Text</label><textarea id="edit-text" rows="15" required></textarea>
+  <div class="actions"><button type="submit" id="save-edit">Save changes</button><button type="button" class="secondary" data-close="editor-dialog">Cancel</button></div>
+</form></dialog>
+<dialog id="continue-dialog" class="book-dialog"><form id="continue-form">
+  <h2>Where does the story go next?</h2><p class="hint">Your existing chapters stay in place. Athena plans and writes the additional chapters, then updates the manuscript.</p>
+  <label for="continuation-text">Instructions</label><textarea id="continuation-text" rows="5" maxlength="8000" required></textarea>
+  <label for="extra-chapters">Additional chapters</label><input id="extra-chapters" type="number" min="1" max="200" value="1" required>
+  <div class="actions"><button type="submit" id="start-continuation">Continue writing</button><button type="button" class="secondary" data-close="continue-dialog">Cancel</button></div>
+</form></dialog>
+<dialog id="trash-dialog" class="book-dialog"><h2>Deleted books</h2><p class="hint">Deleted books are hidden from your library and kept here for recovery.</p><div id="trash-books"></div><button class="secondary" data-close="trash-dialog">Close</button></dialog>
 </body></html>

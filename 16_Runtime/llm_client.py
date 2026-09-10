@@ -3,7 +3,7 @@ import yaml
 import time
 import asyncio
 from functools import wraps
-from openai import OpenAI
+from openai import OpenAI, APIConnectionError, APITimeoutError
 import json
 from job_runner import atomic_json
 from providers import connection_settings, api_key_for
@@ -115,7 +115,10 @@ class AthenaLLMClient:
                 usage['completion_tokens'] += response.usage.completion_tokens or 0
                 atomic_json(self.usage_path, usage)
             if response.choices[0].finish_reason == 'length':
-                raise ValueError('Model output was truncated; increase max_output_tokens in job config.')
+                raise RuntimeError('The model reached its response or context limit before finishing. '
+                                   'In Settings, check the output limit; for a local model, also check '
+                                   'its loaded context length in LM Studio or Ollama. Then use Resume '
+                                   'with current settings. Repeating this same request unchanged will not fix it.')
             content = response.choices[0].message.content
             if not content or not content.strip():
                 raise ValueError('Model returned empty content.')
@@ -124,6 +127,16 @@ class AthenaLLMClient:
                 content = content.split('\n', 1)[1].rsplit('```', 1)[0].strip()
             return content
         except Exception as e:
+            if isinstance(e, APIConnectionError):
+                cause = type(e.__cause__).__name__ if e.__cause__ else 'unknown transport error'
+                detail = ('Response timed out. Increase the response timeout or reduce the request size.'
+                          if isinstance(e, APITimeoutError) else
+                          'Connection failed. Check your internet connection and OpenRouter availability.'
+                          if getattr(self, 'provider', '') == 'openrouter' else
+                          'Connection failed. Check that your local model server is running and the model is loaded.')
+                message = f'{detail} Transport: {cause}. Saved steps are kept; resume when the connection is ready.'
+                print(message)
+                raise RuntimeError(message) from e
             print(f"Error calling model API: {e}")
             raise
 

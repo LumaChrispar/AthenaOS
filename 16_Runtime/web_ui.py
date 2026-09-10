@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import secrets
 import threading
+import time
 from urllib.parse import urlsplit
 
 import yaml
@@ -12,6 +13,8 @@ from job_runner import create_job, launch_worker, atomic_json
 from providers import ENDPOINTS, model_overrides, list_models, api_key_for, openrouter_key_status, test_openrouter_key
 import credentials
 from book_chat import read_messages, progress_messages, reply_to_book
+from job_lock import job_lock
+from book_library import editor_data, edit_book, continue_book, snapshot, update_model
 
 
 def read_json(path, default=None):
@@ -127,14 +130,18 @@ class Handler(BaseHTTPRequestHandler):
                     'provider': 'ollama', 'base_url': ENDPOINTS['ollama'], 'model': '',
                     'max_calls_per_job': 200, 'max_output_tokens': 8192, 'timeout_seconds': 900,
                 }))
-            elif path == '/api/jobs':
+            elif path in ('/api/jobs', '/api/trash'):
                 jobs = []
                 for state_file in (self.server.root / 'jobs').glob('*/job.json'):
                     try:
-                        jobs.append(self.job_info(state_file.parent))
+                        info = self.job_info(state_file.parent)
+                        if bool(info.get('deleted_at')) == (path == '/api/trash'):
+                            jobs.append(info)
                     except (ValueError, OSError, yaml.YAMLError):
                         continue
                 self.respond(sorted(jobs, key=lambda job: job['created_at'], reverse=True))
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/editor', path):
+                self.respond(editor_data(self.job_path(match[1])))
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})(/manuscript)?', path):
                 job = self.job_path(match[1])
                 if match[2]:
@@ -167,7 +174,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         try:
             size = int(self.headers.get('Content-Length', '0'))
-            if not 0 < size <= 65536:
+            if not 0 < size <= 2097152:
                 raise ValueError('Request is empty or too large.')
             data = json.loads(self.rfile.read(size))
             if not isinstance(data, dict):
@@ -211,11 +218,41 @@ class Handler(BaseHTTPRequestHandler):
                 job = create_job(self.server.root, concept, chapters, config)
                 self.server.launcher(self.server.root, job)
                 self.respond({'id': job.name}, 201)
-            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/resume', path):
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/(resume|edit|continue|delete|restore)', path):
                 job = self.job_path(match[1])
-                if read_json(job / 'job.json')['status'] == 'completed':
-                    raise ValueError('This book is already completed.')
-                self.server.launcher(self.server.root, job)
+                action = match[2]
+                with self.server.settings_lock:
+                    lock = self.server.chat_locks.setdefault(job.name, threading.Lock())
+                if not lock.acquire(blocking=False):
+                    raise ValueError('Wait for Athena’s current reply before changing this book.')
+                try:
+                    with job_lock(job):
+                        state = read_json(job / 'job.json')
+                        if state.get('deleted_at') and action != 'restore':
+                            raise ValueError('Restore this deleted book before changing it.')
+                        if action in ('delete', 'restore'):
+                            if action == 'delete':
+                                state['deleted_at'] = time.time()
+                            else:
+                                state.pop('deleted_at', None)
+                            atomic_json(job / 'job.json', state)
+                        elif action == 'edit':
+                            edit_book(job, data)
+                        else:
+                            if action == 'resume' and state['status'] == 'completed':
+                                raise ValueError('This book is completed. Add a continuation instead.')
+                            if data.get('use_current_settings'):
+                                settings = validate_settings(read_json(self.server.root / 'config/ui_settings.json', {}))
+                                config = settings_config(settings)
+                                api_key_for(config['connection']['provider'], self.server.root)
+                                snapshot(job)
+                                update_model(job, config)
+                            if action == 'continue':
+                                continue_book(job, data.get('instructions'), data.get('chapters'))
+                    if action in ('resume', 'continue'):
+                        self.server.launcher(self.server.root, job)
+                finally:
+                    lock.release()
                 self.respond({'id': job.name})
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/messages', path):
                 job = self.job_path(match[1])
@@ -227,6 +264,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not lock.acquire(blocking=False):
                     raise ValueError('Athena is still replying to your previous message.')
                 try:
+                    if read_json(job / 'job.json').get('deleted_at'):
+                        raise ValueError('Restore this book before sending a message.')
                     self.respond({'conversation': reply_to_book(job, message)})
                 finally:
                     lock.release()
