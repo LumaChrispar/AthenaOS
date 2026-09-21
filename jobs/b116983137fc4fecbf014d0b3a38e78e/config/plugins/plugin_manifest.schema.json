@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Plugin Manifest Schema",
+  "description": "Defines the structure of an Athena OS Genre or Capability Plugin.",
+  "type": "object",
+  "properties": {
+    "plugin_id": {
+      "type": "string",
+      "description": "Unique identifier (e.g., PLG-CYBERPUNK)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human readable name (e.g., Cyberpunk Extension)"
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "services_provided": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of Service IDs (SRV-xxx) this plugin injects into the Service Registry"
+    },
+    "domains_injected": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of Knowledge Domains (e.g., DOM-Cyberware) this plugin adds"
+    },
+    "qa_rules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Specific QA checklist items that override or add to standard QA"
+    }
+  },
+  "required": ["plugin_id", "name", "version", "services_provided"]
+}

@@ -1,0 +1,145 @@
+{
+  "character_profiles": [
+    {
+      "character_id": "UUID-KAELEN-SOLDIER",
+      "name": "Kaelen Varrus",
+      "aliases": [
+        "The Aspirant",
+        "General Kaelen"
+      ],
+      "status": "deceased",
+      "arc_progress": 10,
+      "appearance": {
+        "body_language": "Confident: Upright, deliberate movements; takes up space with rigid posture. Anxious: Fidgets with his hands or collar; shrinks slightly into himself. Eye contact: Initially direct and earnest; becomes increasingly paranoid, darting glances that settle on nothing.",
+        "walking_style": "Purposeful and measured when motivated by duty; becomes swaggering and overly confident when power is gained. Leads with a rigid chest.",
+        "default_expression": "A mask of controlled competence—a slight, practiced smile that doesn't reach his eyes.",
+        "physical_habits_and_tells": "When lying or stressed: Taps the thumb against forefinger rhythmically (the 'calculating tap'). When listening intently: Tilts head slightly and narrows one eye. These tells must be used sparingly, only when he is attempting to mask his true emotional state.",
+        "relationship_to_body": "Views his body as a tool of utility and status. It is meant to execute orders and project authority. He has little regard for its internal needs."
+      },
+      "psychology": {
+        "core_wound": "The experience of being competent but overlooked or undervalued by established authority figures in childhood, leading him to believe his worth must be externally validated.",
+        "core_belief": "\"My true value is not determined by my effort, but by the magnitude of power I can wield. Greatness must be bestowed upon me.\"",
+        "core_desire": "To achieve recognized glory and ultimate authority (to be seen as 'The Chosen One').",
+        "core_need": "To find self-acceptance and intrinsic worth that is independent of external validation or status.",
+        "fear": "Being ordinary, irrelevant, or dismissed. His deepest fear is a life where his efforts mean nothing.",
+        "secret_desire": "To be accepted unconditionally by someone who sees him as inherently valuable, flaws included.",
+        "hidden_shame": "That he is fundamentally selfish and that his ambition requires the sacrifice of others' well-being.",
+        "greatest_strength": "Exceptional strategic mind; relentless drive; charisma under pressure.",
+        "fatal_flaw": "Ambition (which manifests as arrogance, moral compromise, and an inability to trust genuine goodness).",
+        "moral_code": "He will never willingly kill an innocent person. (The line he *actually* crosses is sacrificing the reputation or well-being of innocents for strategic gain.)",
+        "defense_mechanisms": [
+          "Intellectualization: Analyzing emotional situations as if they were military tactics.",
+          "Performance of Strength: Overcompensating for internal fear by adopting an authoritative, decisive demeanor."
+        ],
+        "behavioral_portrait": {
+          "when_happy": "He distrusts happiness; he interprets it as a temporary lull before the next challenge. He hoards good feelings, believing they are leverage.",
+          "when_afraid": "He performs calm and authority (The General). Fear manifests as rapid decision-making that overreaches—a rash command or an aggressive interrogation.",
+          "when_angry": "Anger is a tool he deploys. He uses it to dominate, not just vent. It takes the threat to his status or perceived destiny to make him lose control.",
+          "when_betrayed": "He initially rationalizes the betrayal as a calculated political move by the other party, rather than an emotional wound. He carries the resentment like a tactical weakness.",
+          "when_falling_in_love": "He tests the person constantly. He views affection as another resource to be analyzed for utility and loyalty. He will sabotage it if he feels they cannot elevate him.",
+          "when_facing_death": "He fights until the last moment, believing that a final, glorious act can secure his legacy. His greatest regret will be the times he chose power over people."
+        }
+      },
+      "history": "Kaelen grew up in a military family where competence was mandatory but emotional expression was discouraged. He excelled academically and militarily, but always felt like an understudy—the capable second choice. This created a deep-seated wound of inadequacy that he masked with relentless drive.",
+      "abilities": [
+        "Tactical Command",
+        "Charisma (when linked to authority)",
+        "Strategic Foresight"
+      ]
+    },
+    {
+      "character_id": "UUID-SINISTER-SISTERS",
+      "name": "The Sisters of Wyrmwood Moor",
+      "aliases": [
+        "The Witches",
+        "The Arbiters"
+      ],
+      "status": "inactive",
+      "arc_progress": 100,
+      "appearance": {
+        "body_language": "Fluid and unpredictable. They do not 'carry' themselves; they simply *are*. Their movements are hypnotic—a slow, deliberate sway that seems to defy physics.",
+        "walking_style": "They appear to glide or drift rather than walk, suggesting their presence is more environmental than physical.",
+        "default_expression": "An unsettling blend of profound pity and absolute indifference. They never seem surprised by anything.",
+        "physical_habits_and_tells": "A shared habit: When they speak of a human's potential, they always trace an invisible pattern in the air with their fingers—a symbol of inevitable decay or growth.",
+        "relationship_to_body": "They are not bound by physical reality; their bodies seem like temporary vessels for concepts (Fate, Ambition)."
+      },
+      "psychology": {
+        "core_wound": "None. They represent the primal force of nature and fate itself—the ultimate indifference to human suffering or aspiration.",
+        "core_belief": "\"All things return to entropy. Human belief in free will is a charming, yet ultimately futile, delusion.\"",
+        "core_desire": "To observe humanity's inevitable cycle of rise, corruption, and fall without intervention.",
+        "core_need": "Nothing; they are self-sufficient forces.",
+        "fear": "The disruption of pattern or the emergence of genuine, unscripted novelty (which would mean their purpose is obsolete).",
+        "secret_desire": "To see a character achieve true moral redemption—a feat that contradicts their nature and represents an anomaly.",
+        "hidden_shame": "They possess limited patience for self-deception; they are bored by predictable evil.",
+        "greatest_strength": "Unwavering knowledge of potential futures (the full spectrum of choices).",
+        "fatal_flaw": "Their very ambiguity. Their lack of clear moral boundaries makes them terrifyingly powerful and unpredictable.",
+        "moral_code": "They have no code, only principles: Observation must continue; the cycle must turn.",
+        "defense_mechanisms": [
+          "Ambiguity: Speaking in riddles and potential rather than statements of fact.",
+          "Projection: Making humans believe that their fate is a choice when it is merely an inevitability."
+        ],
+        "behavioral_portrait": {
+          "when_happy": "They do not experience happiness; they register the moment as 'optimal data acquisition.'",
+          "when_afraid": "They are never afraid. If forced to react, their response is a sudden, chilling silence that absorbs all ambient sound.",
+          "when_angry": "Anger is impossible for them. They can only express profound disappointment, which feels far worse than rage.",
+          "when_betrayed": "Betrayal is merely another variable in the equation; they treat it with clinical detachment.",
+          "when_falling_in_love": "They view it as a chemical reaction—a predictable biological impulse. They are incapable of reciprocating or understanding true affection.",
+          "when_grieving": "They do not grieve, but rather observe the *pattern* of grief in humans with detached academic interest."
+        }
+      },
+      "history": "The Sisters have inhabited this moor since time immemorial. They are ancient entities tied to the land's cyclical energy and serve as a reflection of humanity's raw potential.",
+      "abilities": [
+        "Prophetic Ambiguity",
+        "Emotional Manipulation (via suggestion)",
+        "Temporal Observation"
+      ]
+    },
+    {
+      "character_id": "UUID-MARCUS-FOIL",
+      "name": "Marcus Thorne",
+      "aliases": [
+        "The Steadfast",
+        "Captain Thorne"
+      ],
+      "status": "active",
+      "arc_progress": 80,
+      "appearance": {
+        "body_language": "Calm and grounded. He occupies space with quiet confidence, not aggressive assertion. Anxious: Becomes overly focused on mundane tasks (cleaning his weapon, adjusting uniform) to avoid emotional confrontation. Eye contact: Steady, empathetic, and unwavering—he forces the other person to meet his gaze.",
+        "walking_style": "Steady, economical, and reliable. He walks with the weight of experience, always seeming to know where he is going.",
+        "default_expression": "A tired but compassionate seriousness. His face suggests a history of hard-won wisdom.",
+        "physical_habits_and_tells": "When deeply considering something: He touches his thumb and forefinger together lightly, as if checking the fit of a mechanism. When speaking truth to power: He pauses, often looking away briefly before delivering the line, giving it weight.",
+        "relationship_to_body": "He treats his body with respect; he understands its limits and capabilities. It is a vehicle for duty and connection."
+      },
+      "psychology": {
+        "core_wound": "Witnessing the catastrophic failure of honorable men due to fear, political maneuvering, or unchecked greed in their youth.",
+        "core_belief": "\"True strength lies not in what you can achieve, but in what you are willing to sacrifice for your principles. Duty is the highest calling.\"",
+        "core_desire": "To see justice prevail and maintain moral order within the military/political structure.",
+        "core_need": "To forgive himself (and others) for the compromises he has already made, accepting that perfect morality is impossible.",
+        "fear": "The loss of humanity in men; watching good people succumb to corruption or despair. He fears the void left by unchecked ambition.",
+        "secret_desire": "To be able to save one person—a specific individual—from their own destructive path, regardless of the cost to himself.",
+        "hidden_shame": "That his adherence to moral law sometimes makes him too slow or naive for the brutal reality of power politics.",
+        "greatest_strength": "Unshakeable integrity; profound loyalty; ability to see the inherent goodness in others.",
+        "fatal_flaw": "Idealism (which can manifest as stubbornness, inability to adapt to gray areas, and a tendency toward self-sacrifice to the point of exhaustion).",
+        "moral_code": "He will never knowingly allow an innocent person to suffer unjustly due to his inaction or silence.",
+        "defense_mechanisms": [
+          "Ethical Exhaustion: Overcommitting himself to others' moral struggles until he is physically and emotionally drained.",
+          "Rationalization: Framing necessary compromises as 'temporary tactical necessities' rather than moral failures."
+        ],
+        "behavioral_portrait": {
+          "when_happy": "He allows it, but it is usually quiet—a moment of shared genuine laughter or relief. He shares it openly with those he trusts.",
+          "when_afraid": "He does not panic; he grounds himself by focusing on a physical task (checking gear, organizing supplies). His fear manifests as deep concern for others.",
+          "when_angry": "His anger is quiet and devastating—it is disappointment. It takes him to see an ally actively betraying their core values to make him lose control.",
+          "when_betrayed": "He confronts the betrayal openly, demanding accountability, but he also carries a deep ache of sorrow rather than rage. He struggles with whether to forgive or to exile the person emotionally.",
+          "when_falling_in_love": "He leans in carefully, treating it like a fragile piece of evidence that must be examined for authenticity. He is cautious and highly protective.",
+          "when_grieving": "He allows himself structured grief—ritualized mourning with those who shared the loss. He does not shut down; he processes through memory and duty."
+        }
+      },
+      "history": "Marcus was a decorated officer whose early career was marked by unquestionable honor. However, he survived a traumatic event (the failure of command during a critical battle) that taught him that good intentions are insufficient against the weight of real power.",
+      "abilities": [
+        "Moral Compass",
+        "Leadership through Example",
+        "Exceptional Observational Skills"
+      ]
+    }
+  ]
+}

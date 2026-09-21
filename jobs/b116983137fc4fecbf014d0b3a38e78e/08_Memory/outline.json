@@ -1,0 +1,125 @@
+{
+  "title": "The Witches of Wyrmwood Moor",
+  "beat_sheets": [
+    {
+      "act": 1,
+      "name": "The Call to Glory (Exposition & Inciting Incident)",
+      "beats": [
+        {
+          "beat_id": 1,
+          "goal": "Establish the protagonist's moral baseline and current status.",
+          "conflict": "External threat of war/duty vs. internal desire for recognition.",
+          "outcome": "The soldier (Protagonist) is shown as capable, honorable, but deeply yearning for a destiny beyond mere service."
+        },
+        {
+          "beat_id": 2,
+          "goal": "Introduce the supernatural element and the central mystery.",
+          "conflict": "Protagonist encounters the witches in an isolated, unsettling location (Wyrmwood Moor).",
+          "outcome": "The witches appear, not with clear predictions, but with ambiguous riddles and visions of potential power."
+        },
+        {
+          "beat_id": 3,
+          "goal": "Accept the initial temptation; commit to the path.",
+          "conflict": "Protagonist struggles between his ingrained sense of duty (moral law) and the intoxicating promise of ultimate authority (ambition).",
+          "outcome": "He leaves the moor with a seed of doubt planted—a belief that fate, not effort, dictates greatness."
+        }
+      ]
+    },
+    {
+      "act": 2,
+      "name": "The Ascent of Ambition (Rising Action & Complication)",
+      "beats": [
+        {
+          "beat_id": 4,
+          "goal": "Gain initial, tangible success using the ambiguous guidance.",
+          "conflict": "Protagonist uses his newfound confidence and perceived 'luck' to achieve military victory or political favor.",
+          "outcome": "He gains status and admiration, but the cost is a subtle moral compromise (e.g., sacrificing an ally or ignoring a warning)."
+        },
+        {
+          "beat_id": 5,
+          "goal": "The first major internal conflict: paranoia sets in.",
+          "conflict": "Protagonist begins to suspect that his success was not due to skill, but due to the witches' influence. He starts viewing others as threats or pawns.",
+          "outcome": "He isolates himself from trusted companions, believing only he understands the 'true path' to power."
+        },
+        {
+          "beat_id": 6,
+          "goal": "The false peak: a moment of perceived victory and safety.",
+          "conflict": "Protagonist achieves a high position (e.g., general, advisor) but realizes the power is brittle and dependent on others' goodwill.",
+          "outcome": "He feels momentarily secure, leading to a dangerous overconfidence that blinds him to the deeper threat."
+        },
+        {
+          "beat_id": 7,
+          "goal": "The Midpoint Reversal: The cost of power is revealed.",
+          "conflict": "A seemingly harmless action or revelation forces him to confront the true nature of his ambition—it requires blood. He realizes the witches' gifts are merely tools for destruction.",
+          "outcome": "He commits a significant act of betrayal against an innocent party, solidifying his descent and making retreat impossible."
+        }
+      ]
+    },
+    {
+      "act": 3,
+      "name": "The Web Tightens (Falling Action & Crisis)",
+      "beats": [
+        {
+          "beat_id": 8,
+          "goal": "Escalate the stakes; the opposition becomes personal.",
+          "conflict": "His former allies or moral compass challenge his actions. The external threat now mirrors his internal corruption.",
+          "outcome": "He must actively suppress or eliminate a source of moral resistance, confirming his villainy to himself and the reader."
+        },
+        {
+          "beat_id": 9,
+          "goal": "The confrontation with consequence; the prophecy turns against him.",
+          "conflict": "A direct encounter (or vision) where the witches' words are reinterpreted by fate as a warning of his own demise. The ambiguity becomes terrifying clarity.",
+          "outcome": "He understands that the prophecies were not promises, but descriptions of inevitable decay."
+        },
+        {
+          "beat_id": 10,
+          "goal": "The Dark Night of the Soul: Total despair and reckoning.",
+          "conflict": "Protagonist is stripped of all power, status, and belief. He faces the full weight of his moral failures in solitude.",
+          "outcome": "He experiences profound regret, realizing that the life he sacrificed for glory was hollow."
+        },
+        {
+          "beat_id": 11,
+          "goal": "The Break into Three: A desperate, final attempt to regain control.",
+          "conflict": "Driven by panic and desperation, he makes a rash, irreversible decision—a gamble that requires the ultimate sacrifice of his remaining humanity.",
+          "outcome": "He commits fully to the destructive path, believing this single act will restore his perceived glory."
+        }
+      ]
+    },
+    {
+      "act": 4,
+      "name": "The Harvest (Climax & Catastrophe)",
+      "beats": [
+        {
+          "beat_id": 12,
+          "goal": "Maximum conflict: The final confrontation.",
+          "conflict": "Protagonist faces the true source of his downfall—it may be a person, an army, or simply the inescapable truth. He must choose between survival and moral integrity.",
+          "outcome": "He executes the fatal choice (the climax), believing he has won, but in reality, he has sealed his fate."
+        },
+        {
+          "beat_id": 13,
+          "goal": "The immediate fallout: The consequences of the climax are revealed.",
+          "conflict": "His actions immediately backfire. The power he sought is withdrawn or turns upon him.",
+          "outcome": "He realizes that his victory was merely a transfer of ruin from himself to others."
+        }
+      ]
+    },
+    {
+      "act": 5,
+      "name": "The Aftermath (Resolution & Denouement)",
+      "beats": [
+        {
+          "beat_id": 14,
+          "goal": "Show the world after the protagonist's fall.",
+          "conflict": "Survivors deal with the chaos and moral vacuum left by his ambition. The true cost of power is measured.",
+          "outcome": "The political/social order struggles to rebuild, recognizing that the threat was internal—the corrupting nature of desire."
+        },
+        {
+          "beat_id": 15,
+          "goal": "Final thematic statement and character resolution.",
+          "conflict": "A final encounter with the witches or a surviving moral guide. The truth about fate vs. free will is stated.",
+          "outcome": "The protagonist meets his end (or exile), not by an external force, but by the weight of his own choices. The central theme—that ambition alone is ruinous—is cemented."
+        }
+      ]
+    }
+  ]
+}

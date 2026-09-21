@@ -1,0 +1,100 @@
+{
+  "story_bible": {
+    "title": "The Witches of Wyrmwood Moor",
+    "setting_summary": "A continent dominated by established, hierarchical kingdoms engaged in perpetual border conflicts. The setting is defined by a tension between rigid military order and the wild, unpredictable magic found on the periphery.",
+    "locations": [
+      {
+        "name": "The Ironmarch (Protagonist's Home)",
+        "description": "A heavily fortified region along major trade routes, characterized by disciplined architecture, large garrisons, and robust agricultural output. It is the center of military power and state law.",
+        "function": "Source of structured conflict; represents established order and duty."
+      },
+      {
+        "name": "Wyrmwood Moor",
+        "description": "A vast, poorly drained bog bordering the Ironmarch. The terrain is treacherous, characterized by deep peat, stunted, gnarled trees (wyrms), and perpetual mist. It is viewed by locals as cursed or blessed.",
+        "function": "Source of mystery; represents liminal space, forbidden knowledge, and the blurring of moral lines."
+      },
+      {
+        "name": "The Citadel of Saint Veridian",
+        "description": "The seat of both religious and secular authority. Built of white stone, it is a symbol of the state's attempt to impose divine order on man's chaos.",
+        "function": "Source of moral law; institutional power structure."
+      }
+    ],
+    "rules": [
+      {
+        "domain": "Government and Power",
+        "rule_name": "Feudal Military Hierarchy",
+        "description": "Power is vested in the nobility, who derive authority from land tenure and military service. The army structure (Captain -> General -> Lord) dictates social status.",
+        "causal_consequences": [
+          "The common soldier's life is defined by adherence to strict codes of conduct and loyalty.",
+          "Corruption often manifests as the illegal sale of strategic information or goods, bypassing official channels.",
+          "Any challenge to a General’s authority risks immediate martial law enforcement."
+        ]
+      },
+      {
+        "domain": "Economy and Resources",
+        "rule_name": "Iron Dependency",
+        "description": "High-quality iron ore is the most valuable commodity, controlling everything from agricultural tools (plowshares) to weapons. Its scarcity dictates political alliances.",
+        "causal_consequences": [
+          "Regions without iron must specialize in non-metallic trade goods (e.g., specialized foodstuffs, rare lumber).",
+          "Blacksmiths and armories are highly politically protected guilds, often reporting directly to the highest military council.",
+          "The cost of war is exponentially tied to the length of the supply chain required for ammunition and repairs."
+        ]
+      },
+      {
+        "domain": "Society and Culture",
+        "rule_name": "The Doctrine of Service (Duty)",
+        "description": "In the Ironmarch, one's identity is fundamentally tied to their service—whether military, civic, or religious. Personal ambition that bypasses recognized channels is viewed as a moral failing.",
+        "causal_consequences": [
+          "Social mobility is possible but requires exceptional public displays of merit and sacrifice (e.g., battle commendations).",
+          "Moral compromise is often rationalized by the necessity of the 'greater good' or the state's survival.",
+          "The concept of personal, unchecked desire is treated as a psychological weakness, not an inherent right."
+        ]
+      },
+      {
+        "domain": "Religion and Belief",
+        "rule_name": "State-Sanctioned Theology (Order)",
+        "description": "The official church preaches that all natural events—including war and prosperity—are the will of a benevolent, distant deity. Free Will is emphasized only within the bounds of Divine Order.",
+        "causal_consequences": [
+          "Any unexplained phenomena or localized power (like those near Wyrmwood Moor) are immediately classified as 'Blasphemy' or 'Demonic Influence.'",
+          "The Church holds immense temporal power, often acting as a parallel judiciary system to the military courts.",
+          "Knowledge of true fate vs. free will is considered heresy and punishable by exile or execution."
+        ]
+      },
+      {
+        "domain": "Magic (The Wyrmwood Magic)",
+        "rule_name": "Ambiguous Power (Fate/Cost)",
+        "description": "Magic drawn from the Moor is not predictable force, but a chaotic negotiation with fate. It requires a sacrifice—not necessarily blood, but a piece of the user's moral core, memory, or connection to reality.",
+        "causal_consequences": [
+          "The use of magic causes physical and psychological decay in the caster (e.g., loss of empathy, inability to distinguish truth from illusion).",
+          "Magic is highly localized; it cannot be taught systematically but must be experienced through extreme emotional or moral crises.",
+          "Those who wield this power are inherently unstable and often viewed with terror by both common folk and state authorities."
+        ]
+      },
+      {
+        "domain": "Language and Communication",
+        "rule_name": "The Lingua Franca of the Generals",
+        "description": "A standardized, formal military dialect is used for all official communication across borders. Slang, regional dialects, or 'unstructured' language are associated with instability and low status.",
+        "causal_consequences": [
+          "Intimate emotional truths are often communicated through coded language or metaphor to avoid legal scrutiny.",
+          "The ability to speak the formal dialect is a prerequisite for advancement in the military/bureaucracy.",
+          "Rumors and subversive ideas spread most effectively through oral storytelling traditions, bypassing official channels."
+        ]
+      },
+      {
+        "domain": "Material Culture",
+        "rule_name": "The Aesthetics of Status",
+        "description": "Clothing and accoutrements are highly regulated by rank. Uniforms signal immediate allegiance; deviations (especially those incorporating non-military/non-noble materials) signal radicalism or wealth.",
+        "causal_consequences": [
+          "A simple change in a uniform's trim or color can denote a vast shift in political allegiance during times of war.",
+          "The possession of foreign, exotic goods (especially from non-Ironmarch cultures) is a clear indicator of immense personal wealth and often suspicion.",
+          "During periods of famine or conflict, status symbols are the first things to be stripped away by necessity."
+        ]
+      }
+    ],
+    "consistency_log": {
+      "Wyrmwood Moor's influence on Protagonist (Beat 2 & 3)": "The initial encounter with ambiguous power forces a moral compromise. This compromises his adherence to the 'Doctrine of Service,' setting him on a path where he values personal destiny over institutional duty.",
+      "Military Success and Corruption (Beat 4 & 7)": "His success validates the *idea* of ambition, but the necessity of betrayal confirms that the power is not granted by merit or divine right, but by ruthlessness. This directly contradicts the 'Doctrine of Service.'",
+      "The Climax's Fallout (Act 4 & 5)": "The realization that his ultimate sacrifice/victory backfires proves that the magic and ambition are inherently destructive forces—the system cannot sustain this level of moral rot, leading to a societal reckoning defined by loss."
+    }
+  }
+}

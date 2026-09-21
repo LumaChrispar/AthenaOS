@@ -1,0 +1,89 @@
+{
+  "story_bible": {
+    "locations": [
+      {
+        "name": "The Kingdom of Aldoria",
+        "description": "A sprawling, semi-feudal kingdom characterized by deeply entrenched noble houses and a centralized military authority. Its wealth is derived primarily from river trade (the Silverstream) and controlled mining operations.",
+        "significance": "Represents the established order, rigid law, and material power structure that the protagonist seeks to penetrate or overthrow."
+      },
+      {
+        "name": "Wyrmwood Moor",
+        "description": "A vast, ancient peat bog located on the forgotten borderlands of Aldoria. The ground is unstable, perpetually damp, and shrouded in unnatural mists. It is considered a place where the Veil between worlds is thin.",
+        "significance": "The primary source of supernatural power and mystery. Its inherent instability (geography/magic) makes it dangerous for both life and magic users. It forces isolation."
+      },
+      {
+        "name": "Ironhold Citadel",
+        "description": "A major military fortress city built near the confluence of three rivers, controlling key trade choke points and the primary source of refined steel in Aldoria.",
+        "significance": "The center of martial power and economic control. Access to Ironhold dictates political influence."
+      },
+      {
+        "name": "The Hearth Guilds",
+        "description": "Semi-autonomous, powerful guilds (e.g., Blacksmiths' Guild, Merchants' Guild) that manage specific industries and maintain their own internal laws. They often hold more practical power than the appointed nobility.",
+        "significance": "Represents non-state economic authority. A character cannot achieve true power without either co-opting or bypassing these guilds."
+      }
+    ],
+    "rules": {
+      "world_title": "The Witches of Wyrmwood Moor",
+      "core_conflict": "The tension between structured, material ambition (military glory/feudal power) and unpredictable, corrupting supernatural destiny (the magic of the moor).",
+      "domains": {
+        "physical_world": {
+          "geography": "Aldoria is defined by major rivers (Silverstream) that dictate trade routes. The borderlands are dominated by Wyrmwood Moor, which acts as a magical sink and geographical barrier.",
+          "climate": "The region experiences harsh seasonal shifts; winters are wet and prolonged, making movement difficult outside of established roads. The moor's climate is perpetually damp, contributing to the pervasive sense of decay and mystery."
+        },
+        "economy_and_resources": {
+          "currency": "The primary currency is the Aldorian Crown (AC), backed by gold reserves from controlled mines. However, high-value goods like refined steel, rare herbs from the moor, and salt are often traded through barter or localized credit systems.",
+          "trade": "Trade routes are heavily taxed and monitored by the Hearth Guilds. Goods flow primarily from the agricultural heartlands to Ironhold Citadel. Smuggling of magical components (e.g., Wyrmwood sap) is rampant and highly profitable, fueling black markets.",
+          "labor_and_production": "The economy relies on a mix of feudal tenant farming and specialized craft labor. Skilled artisans (blacksmiths, masons) are highly valued but often politically independent."
+        },
+        "government_and_power": {
+          "political_system": "A decentralized feudal monarchy where the King's authority is theoretical; true power resides with wealthy noble houses, powerful Guild Masters, and successful military generals (Patronage system).",
+          "law_and_justice": "Law is rigid regarding property and treason but extremely flexible in practice. Justice is determined by class and wealth; common criminals suffer public spectacle; nobles face private judgment.",
+          "military": "The army is professionalized, equipped with standardized steel armor and weapons (Ironhold standard). Advancement requires not just skill, but significant financial backing or noble sponsorship. The military structure itself is a source of constant political tension."
+        },
+        "society_and_culture": {
+          "social_class": "Four primary strata: 1) Nobility/High Military Command (Landowners, Generals); 2) Skilled Guild Masters/Bureaucrats (Merchants, Engineers); 3) Peasantry/Laborers (Farmers, Miners); 4) The Marginalized (Witch-touched, moor wanderers). Mobility is possible but requires extreme wealth or military success.",
+          "gender": "Roles are highly stratified. Women of the nobility wield significant influence through marriage and patronage; common women are primarily confined to domestic labor or trade support roles. Violation of gender norms is treated as a social scandal, often leading to economic ruin."
+        },
+        "religion_and_belief": {
+          "theology": "The dominant state religion, the Cult of the Sunstone, emphasizes order, hierarchy, and measurable effort (meritocracy). The moor's magic is viewed by most as 'Wild Chaos,' a force to be contained or ignored.",
+          "witchcraft_view": "Witchcraft is not understood as science, but as an ancient, dangerous pact. It is associated with paganism, isolation, and the volatile nature of the wilderness. Possession of magical knowledge is feared more than outright practiced."
+        },
+        "language_and_communication": {
+          "lingua_franca": "High Aldorian (the language of courts and military command). Regional dialects persist in borderlands like Wyrmwood Moor, often incorporating archaic or specialized vocabulary.",
+          "literacy": "Low among the peasantry; high among the nobility and Guild administrators. Written law is kept strictly within Citadel archives."
+        },
+        "daily_life_and_material_culture": {
+          "food": "Staples are grains (rye, barley). Wealthy meals involve imported spices and game. The poor subsist on root vegetables and preserved goods; the necessity of carrying rations is a constant reality for travelers.",
+          "clothing": "Clothing serves as immediate status signaling: the quality of dye, the cut of the fabric, and the presence of specific metal clasps denote rank or guild membership. Moor-dwellers wear rough, undyed hides.",
+          "medicine_and_health": "Medicine is largely herbalist and ritualistic. Leading causes of death are infectious disease and battlefield trauma. The understanding of mental illness is minimal; extreme behavior is often attributed to 'bad humors' or spiritual influence."
+        },
+        "magic_system": {
+          "name": "The Echo Magic",
+          "rules": [
+            "Source: Magic draws power from the ambient, unstable energy of Wyrmwood Moor. It is not learned in books, but through ritual and exposure.",
+            "Cost: The use of magic requires a physical or moral toll (e.g., draining life force, sacrificing memories, incurring profound emotional debt). This cost manifests as corruption or decay.",
+            "Limitation: Magic cannot create what does not exist materially; it can only amplify existing potential—a skill, an emotion, a flaw."
+          ],
+          "consequence": "The more powerful the magic used, the faster the user's internal moral compass degrades. The gifts are fundamentally corrosive to the self."
+        }
+      },
+      "causality_log": [
+        {
+          "element": "Military Authority (Ironhold)",
+          "cause": "Control of steel and trade routes.",
+          "consequences": ["Nobles must rely on military success for wealth.", "The common soldier's life is precarious, fueling ambition.", "The state cannot fully control the borderlands."]
+        },
+        {
+          "element": "Wyrmwood Moor (Magic)",
+          "cause": "Ancient, unstable magical energy source.",
+          "consequences": ["Local populations are isolated and superstitious.", "Magic users gain power but face moral decay/corruption.", "The state views the area as a resource to be exploited or quarantined."]
+        },
+        {
+          "element": "Feudal System",
+          "cause": "Decentralized political power structure.",
+          "consequences": ["Protagonists must navigate multiple, competing patrons.", 'Moral compromise is often necessary for social mobility.', "The failure of a single noble house can trigger localized conflict."]
+        }
+      ]
+    }
+  }
+}

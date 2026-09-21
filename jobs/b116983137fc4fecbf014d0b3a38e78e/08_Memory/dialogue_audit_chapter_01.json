@@ -1,0 +1,37 @@
+{
+  "flagged_lines": [
+    {
+      "line_source": "Kaelen's initial challenge",
+      "dialogue_excerpt": "\"With all due respect, Major,\" Kaelen began, his voice carrying the dry weight of fact rather than confrontation, “the current assessment places too much faith on the summer flow rate for the Wyrm’s Coil crossing.”",
+      "analysis": "The dialogue is highly informational and effective in moving the plot forward (establishing competence). However, it is 'on the nose'—Kaelen states a technical flaw directly. This makes his character sound like an academic correction rather than a strategist grappling with profound existential dissatisfaction. The subtext of his deep yearning for significance could be better served by implying deeper flaws in the *assumptions* rather than just correcting the data points.",
+      "flag_type": "On the Nose / Missing Subtext Opportunity"
+    },
+    {
+      "line_source": "Major Elms's dismissal",
+      "dialogue_excerpt": "\"The ford is reliable enough,\" Elms dismissed, waving away a hand that barely stirred the air above the parchment.",
+      "analysis": "This line effectively establishes Major Elms’s arrogance and dismissive authority. It serves its purpose well (creating conflict). No significant changes are needed, as it perfectly encapsulates his character's overconfidence.",
+      "flag_type": "None / Effective Character Voice"
+    },
+    {
+      "line_source": "Internal realization/Monologue",
+      "dialogue_excerpt": "The fundamental flaw wasn't the ford; it was the assumption of permanence itself... The world, he realized with a cold certainty, operated not as a blueprint, but as an ongoing failure to maintain integrity.",
+      "analysis": "This is powerful narrative exposition. If this thought were ever translated into dialogue (e.g., speaking to Marcus or internally reflecting in a way that affects his tone), it needs to be delivered through *implication* and *metaphor*, not statement. This level of philosophical realization should sound too vast for the cramped boardroom, making Kaelen's eventual silence more impactful.",
+      "flag_type": "Narrative Exposition / Requires Dialogue Translation"
+    }
+  ],
+  "rewrite_proposals": [
+    {
+      "target_line": "Kaelen’s initial challenge",
+      "original_intent": "To point out the technical weakness of the Wyrm's Coil crossing.",
+      "rewritten_dialogue": "\"Major,\" Kaelen began, his tone deceptively mild, suggesting a deep weariness rather than academic correction. \"I find myself questioning whether we have modeled for variability in this region at all. The Wyrm's Coil... it feels less like a fixed point on the map, and more like an assumption that hasn't faced enough seasonal rain.\"",
+      "subtextual_effect": "Shifting the focus from 'The flow rate is wrong' (technical) to 'We haven't modeled for variability at all' (systemic failure). This makes him sound less like a competent soldier and more like an architect pointing out fundamental structural flaws, aligning with his secret desire for intellectual recognition over mere military rank."
+    },
+    {
+      "target_line": "Kaelen’s post-dismissal reaction",
+      "original_intent": "To demonstrate profound thought without arguing the point.",
+      "rewritten_action_description": "Instead of merely shifting his weight, Kaelen allows a prolonged silence to stretch until it is physically uncomfortable. Then, he does not address Elms directly. He instead looks past the map, toward the structural support pole, and murmurs only for himself, but loud enough for the nearest officer to catch: 'The poles always give way where they are least expected.' This subtle redirection of focus—from man-made plans to natural decay—shows his true intellectual battlefield.",
+      "subtextual_effect": "This action translates his internal philosophical realization ('the assumption of permanence itself') into a physical, almost poetic gesture. It is a non-verbal declaration that he sees beyond the immediate tactical problem."
+    }
+  ],
+  "differentiation_score": 0.91
+}

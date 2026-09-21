@@ -27,7 +27,7 @@ def validate_settings(data):
     for key, default, minimum, maximum in (
         ('max_calls_per_job', 200, 1, 10000),
         ('max_output_tokens', 8192, 256, 131072),
-        ('timeout_seconds', 900, 30, 3600),
+        ('timeout_seconds', 900, 30, 10600),
     ):
         value = data.get(key, default)
         if type(value) is not int or not minimum <= value <= maximum:
