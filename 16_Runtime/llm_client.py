@@ -122,10 +122,7 @@ class AthenaLLMClient:
             content = response.choices[0].message.content
             if not content or not content.strip():
                 raise ValueError('Model returned empty content.')
-            content = content.strip()
-            if content.startswith('```') and content.endswith('```'):
-                content = content.split('\n', 1)[1].rsplit('```', 1)[0].strip()
-            return content
+            return content.strip()
         except Exception as e:
             if isinstance(e, APIConnectionError):
                 cause = type(e.__cause__).__name__ if e.__cause__ else 'unknown transport error'
