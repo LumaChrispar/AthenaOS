@@ -84,7 +84,23 @@ try {
     assert.equal(await evaluate('document.getElementById("detail-view").hidden'), false);
     assert.equal(await evaluate('document.getElementById("book-concept").textContent'), jobs[0].concept);
     assert.ok(await evaluate('document.getElementById("activity-messages").children.length > 0'));
-    assert.equal(await evaluate('document.querySelector(".technical-log").open'), false);
+    // Book view tabs: exactly one panel shows, and clicking switches between them.
+    await evaluate('document.getElementById("tab-writing").click()');
+    assert.equal(await evaluate('document.getElementById("writing-panel").hidden'), false);
+    assert.equal(await evaluate('document.getElementById("pipeline-panel").hidden'), true);
+    await evaluate('document.getElementById("tab-pipeline").click()');
+    assert.equal(await evaluate('document.getElementById("pipeline-panel").hidden'), false);
+    assert.equal(await evaluate('document.getElementById("writing-panel").hidden'), true);
+    for (let i = 0; i < 50; i++) { if (await evaluate('document.getElementById("pipeline-view").children.length > 0')) break; await sleep(100); }
+    assert.ok(await evaluate('document.getElementById("pipeline-view").children.length > 0'), 'Pipeline tab renders the inspector');
+    assert.ok(await evaluate('document.querySelectorAll("#pipeline-view .stage").length > 0'), 'Inspector lists pipeline stages');
+    const pipeline = await send('Page.captureScreenshot', {format: 'png', captureBeyondViewport: true});
+    await writeFile('artifacts/athena-pipeline-tab.png', Buffer.from(pipeline.data, 'base64'));
+    await evaluate('document.getElementById("tab-log").click()');
+    assert.equal(await evaluate('document.getElementById("log-panel").hidden'), false);
+    assert.ok(await evaluate('document.getElementById("log").children.length > 0'), 'Log tab renders worker lines');
+    await evaluate('document.getElementById("tab-writing").click()');
+    assert.equal(await evaluate('document.getElementById("writing-panel").hidden'), false);
     await evaluate('document.getElementById("chat-input").value="A draft question, not sent."; showSettings();');
     await evaluate(`selectBook(${JSON.stringify(jobs[0].id)})`);
     assert.equal(await evaluate('document.getElementById("chat-input").value'), 'A draft question, not sent.');

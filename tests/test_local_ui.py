@@ -157,6 +157,63 @@ class LocalUiTests(unittest.TestCase):
             self.assertIn('attachment', response.headers['Content-Disposition'])
             self.assertIn(b'untrusted prose', response.read())
 
+    def test_inspect_reports_stages_outline_and_request_budget(self):
+        job = create_job(self.root, 'A lighthouse that remembers')
+        memory = job / '08_Memory'
+        (memory / 'outline.json').write_text(json.dumps({
+            'title': 'The Keeper',
+            'beat_sheets': [{'act': 1, 'name': 'Arrival', 'beats': [
+                {'beat_id': 1, 'goal': 'Meet the keeper', 'conflict': 'A storm', 'outcome': 'He stays'},
+                {'beat_id': 2, 'goal': 'Read the first letter', 'conflict': 'Doubt', 'outcome': 'He believes'}]}]},
+            encoding='utf-8')
+        (memory / 'pipeline_state.json').write_text(
+            json.dumps({'total_chapters': 2, 'last_completed_chapter': 0}), encoding='utf-8')
+        state = json.loads((job / 'job.json').read_text())
+        state.update(completed_steps=['intake', 'architecture'], active_step='chapter_1', status='running')
+        atomic_json(job / 'job.json', state)
+
+        with self.request(f'/api/jobs/{job.name}/inspect') as response:
+            detail = json.load(response)
+        status = {stage['step']: stage['status'] for stage in detail['stages']}
+        self.assertEqual(status['intake'], 'done')
+        self.assertEqual(status['characters'], 'pending')
+        self.assertEqual(status['chapter_1'], 'active')
+        self.assertEqual(status['canon_1'], 'pending')
+        self.assertNotIn('chapter_3', status)
+        self.assertEqual(detail['total_chapters'], 2)
+        self.assertEqual(detail['outline']['title'], 'The Keeper')
+        beats = detail['outline']['acts'][0]['beats']
+        self.assertEqual([beat['goal'] for beat in beats], ['Meet the keeper', 'Read the first letter'])
+        self.assertEqual([beat['status'] for beat in beats], ['active', 'pending'])
+        # The draft request is measured from the files this job actually has.
+        self.assertIn('Outline', {row['label'] for row in detail['context']['rows']})
+        self.assertIn('SRV-005 system prompt', {row['label'] for row in detail['context']['rows']})
+        self.assertEqual(detail['context']['context_needed'],
+                         detail['context']['prompt_tokens'] + detail['context']['output_tokens'])
+        self.assertEqual(detail['budget']['calls'], 0)
+
+    def test_artifact_endpoint_reads_one_file_and_refuses_traversal(self):
+        from pipeline_inspect import artifact_text
+        job = create_job(self.root, 'A book with artifacts')
+        (job / '08_Memory/voice_sample.md').write_text('a voice sample', encoding='utf-8')
+        (job / '08_Memory/chapters').mkdir()
+        (job / '08_Memory/chapters/chapter_01_summary.json').write_text('{"chapter": 1}', encoding='utf-8')
+        with self.request(f'/api/jobs/{job.name}/artifact/voice_sample.md') as response:
+            self.assertIn('text/plain', response.headers['Content-Type'])
+            self.assertEqual(response.read().decode(), 'a voice sample')
+        # Summaries live one level down; the UI URL-encodes them.
+        with self.request(f'/api/jobs/{job.name}/artifact/chapters%2Fchapter_01_summary.json') as response:
+            self.assertEqual(response.read().decode(), '{"chapter": 1}')
+        for name in ('..', '../job.json', 'a/b', '.hidden', '', 'chapters/../job.json'):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                artifact_text(job, name)
+        for name in ('%2e%2e%2fjob.json', 'missing.json'):
+            with self.subTest(name=name):
+                with self.assertRaises(HTTPError) as caught:
+                    self.request(f'/api/jobs/{job.name}/artifact/{name}')
+                self.assertEqual(caught.exception.code, 400)
+                caught.exception.close()
+
     def test_browser_requests_require_session_token(self):
         with self.assertRaises(HTTPError) as caught:
             self.request('/api/jobs', {'concept': 'Cross site'}, authenticated=False)

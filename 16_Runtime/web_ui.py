@@ -6,7 +6,7 @@ import re
 import secrets
 import threading
 import time
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 import yaml
 from job_runner import create_job, launch_worker, atomic_json
@@ -15,6 +15,7 @@ import credentials
 from book_chat import read_messages, progress_messages, reply_to_book
 from job_lock import job_lock
 from book_library import editor_data, edit_book, continue_book, snapshot, update_model
+from pipeline_inspect import inspect_job, artifact_text
 
 
 def read_json(path, default=None):
@@ -142,6 +143,12 @@ class Handler(BaseHTTPRequestHandler):
                 self.respond(sorted(jobs, key=lambda job: job['created_at'], reverse=True))
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/editor', path):
                 self.respond(editor_data(self.job_path(match[1])))
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/inspect', path):
+                self.respond(inspect_job(self.job_path(match[1])))
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/artifact/([^/]+)', path):
+                # One URL-encoded segment; artifact_text re-validates after decoding.
+                self.respond(artifact_text(self.job_path(match[1]), unquote(match[2])).encode('utf-8'),
+                             content_type='text/plain; charset=utf-8')
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})(/manuscript)?', path):
                 job = self.job_path(match[1])
                 if match[2]:

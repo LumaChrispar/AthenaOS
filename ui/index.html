@@ -64,19 +64,34 @@
   <section id="detail-view" hidden>
     <div class="conversation-heading"><div><h1 id="book-title">Your book</h1><span id="book-model" class="muted"></span></div><span id="status" class="badge"></span></div>
     <div id="metrics" class="metrics"></div>
-    <div id="thread-scroll" class="thread-scroll">
-      <div class="thread">
-        <article class="message user-message"><div class="message-label">You</div><div id="book-concept" class="message-body"></div></article>
-        <div class="activity-heading"><span class="avatar">A</span><div><strong>Athena</strong><span>Writing activity · live updates</span></div></div>
-        <div id="activity-messages" aria-label="Writing activity" aria-live="polite" aria-relevant="additions text"></div>
-        <div class="actions"><button id="resume" class="secondary">Resume writing ↗</button><button id="resume-current" class="secondary">Resume with current settings</button><a id="download" class="button" hidden>Download manuscript ↓</a><button id="read" class="secondary" hidden>Read manuscript</button><button id="edit-book" class="secondary">Edit book</button><button id="continue-book" class="secondary" hidden>Continue story</button><button id="delete-book" class="secondary">Delete book</button></div>
-        <article id="reader" hidden><pre id="manuscript"></pre></article>
-        <details class="technical-log"><summary>Technical details</summary><p id="active-step"></p><p id="progress-text" class="hint"></p><pre id="log">Waiting for activity…</pre><p id="job-id" class="hint"></p></details>
-        <div id="chat-messages" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
-        <div id="chat-pending" class="reply-pending" hidden><span class="avatar">A</span><span>Athena is thinking<span class="thinking-dots">…</span></span></div>
-      </div>
+    <div class="tabs" role="tablist" aria-label="Book views">
+      <button type="button" id="tab-writing" class="tab active" role="tab" aria-selected="true" aria-controls="writing-panel">Writing</button>
+      <button type="button" id="tab-pipeline" class="tab" role="tab" aria-selected="false" aria-controls="pipeline-panel">Pipeline</button>
+      <button type="button" id="tab-log" class="tab" role="tab" aria-selected="false" aria-controls="log-panel">Log</button>
     </div>
-    <div class="reply-area"><form id="chat-form" class="composer"><label for="chat-input" class="visually-hidden">Message Athena about this book</label><textarea id="chat-input" maxlength="8000" rows="2" required placeholder="Ask Athena about your story or its progress…"></textarea><div class="composer-toolbar"><span class="hint">A conversation about your book</span><button id="send-chat" type="submit" class="send-button" aria-label="Send message">↑</button></div></form><p class="composer-note">Replies use your book’s model. Chat can discuss ideas and suggest text; it doesn’t edit the manuscript.</p></div>
+    <div id="writing-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-writing">
+      <div id="thread-scroll" class="thread-scroll">
+        <div class="thread">
+          <article class="message user-message"><div class="message-label">You</div><div id="book-concept" class="message-body"></div></article>
+          <div class="activity-heading"><span class="avatar">A</span><div><strong>Athena</strong><span>Writing activity · live updates</span></div></div>
+          <div id="activity-messages" aria-label="Writing activity" aria-live="polite" aria-relevant="additions text"></div>
+          <div class="actions"><button id="resume" class="secondary">Resume writing ↗</button><button id="resume-current" class="secondary">Resume with current settings</button><a id="download" class="button" hidden>Download manuscript ↓</a><button id="read" class="secondary" hidden>Read manuscript</button><button id="edit-book" class="secondary">Edit book</button><button id="continue-book" class="secondary" hidden>Continue story</button><button id="delete-book" class="secondary">Delete book</button></div>
+          <article id="reader" hidden><pre id="manuscript"></pre></article>
+          <div id="chat-messages" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
+          <div id="chat-pending" class="reply-pending" hidden><span class="avatar">A</span><span>Athena is thinking<span class="thinking-dots">…</span></span></div>
+        </div>
+      </div>
+      <div class="reply-area"><form id="chat-form" class="composer"><label for="chat-input" class="visually-hidden">Message Athena about this book</label><textarea id="chat-input" maxlength="8000" rows="2" required placeholder="Ask Athena about your story or its progress…"></textarea><div class="composer-toolbar"><span class="hint">A conversation about your book</span><button id="send-chat" type="submit" class="send-button" aria-label="Send message">↑</button></div></form><p class="composer-note">Replies use your book’s model. Chat can discuss ideas and suggest text; it doesn’t edit the manuscript.</p></div>
+    </div>
+    <div id="pipeline-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-pipeline" hidden>
+      <div class="pipeline-head"><p id="active-step"></p><p id="progress-text" class="hint"></p></div>
+      <div id="pipeline-view" class="pipeline"></div>
+      <pre id="artifact-viewer" hidden></pre>
+    </div>
+    <div id="log-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-log" hidden>
+      <p id="job-id" class="hint"></p>
+      <pre id="log">Waiting for activity…</pre>
+    </div>
   </section>
   <footer>Made for stories that deserve to be told.</footer>
 </main>

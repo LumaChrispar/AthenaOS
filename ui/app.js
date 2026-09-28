@@ -4,6 +4,23 @@ let savedSettings = null;
 let activitySignature = '', conversationSignature = '';
 const pendingReplies = new Set(), chatDrafts = new Map();
 let keyStatus = {configured: false, saved: false};
+const TABS = ['writing', 'pipeline', 'log'];
+let activeTab = 'writing', inspectSignature = '', logSignature = '', failureShown = false, inspecting = null;
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined && text !== null) node.textContent = text;
+  return node;
+}
+function showTab(name) {
+  activeTab = TABS.includes(name) ? name : 'writing';
+  for (const tab of TABS) {
+    $(`tab-${tab}`).classList.toggle('active', tab === activeTab);
+    $(`tab-${tab}`).setAttribute('aria-selected', String(tab === activeTab));
+    $(`${tab}-panel`).hidden = tab !== activeTab;
+  }
+  if (activeTab === 'pipeline' && selected) loadInspector(selected);
+}
 function renderKeyStatus(status) {
   keyStatus = status;
   $('key-status').textContent = status.saved ? 'A key is saved securely. Leave the field blank to keep it, or paste a replacement.' : status.configured ? `Using a key from ${status.source}. You can save a replacement here.` : status.storage_error || 'No API key configured yet.';
@@ -47,7 +64,10 @@ async function selectBook(id, navigate = true) {
   if (selected) chatDrafts.set(selected, $('chat-input').value);
   selected = id; showView('detail', `/books/${id}`, navigate); $('reader').hidden = true;
   activitySignature = conversationSignature = '';
+  inspectSignature = logSignature = ''; failureShown = false;
   $('activity-messages').replaceChildren(); $('chat-messages').replaceChildren();
+  $('pipeline-view').replaceChildren(); $('log').textContent = 'Waiting for activity…';
+  activeTab = 'writing'; showTab('writing');
   $('chat-input').value = chatDrafts.get(id) || '';
   $('book-title').textContent = 'Loading your book…'; notice(''); await refresh();
 }
@@ -92,8 +112,191 @@ function renderDetail(job) {
   $('edit-book').disabled = $('delete-book').disabled = job.status === 'running';
   $('download').hidden = $('read').hidden = !job.download_ready;
   $('download').href = `/api/jobs/${job.id}/manuscript`;
-  $('log').textContent = job.log || 'Waiting for activity…'; $('job-id').textContent = `Book ID: ${job.id}`;
+  $('job-id').textContent = `Book ID: ${job.id}`;
+  renderLog(job);
+  // Switch a failed run to the Pipeline tab once, so the reason is on screen
+  // without a click — then leave the tab alone and let the reader drive it.
+  if (job.status === 'failed' && job.error && !failureShown) { failureShown = true; showTab('pipeline'); }
+  if (activeTab === 'pipeline') loadInspector(job.id);
   renderMessages(job);
+}
+const LOG_ERROR = /Error|Warning|ESCALATION|\[RETRY|Job stopped|model-call limit/i;
+const LOG_EVENT = /^(---\s|\[SRV-|Saved |Event emitted|Phase |Chapter |Intake |Voice |Rolling |Copy edit|ESCALATION|PIPELINE)/;
+function renderLog(job) {
+  const text = job.log || 'Waiting for activity…';
+  if (text === logSignature) return;
+  logSignature = text;
+  const box = $('log');
+  box.replaceChildren();
+  for (const line of text.split('\n')) {
+    const kind = LOG_ERROR.test(line) ? 'log-error' : LOG_EVENT.test(line) ? 'log-event' : '';
+    box.append(el('span', kind ? `log-line ${kind}` : 'log-line', line));
+  }
+  box.scrollTop = box.scrollHeight;
+}
+
+const formatNumber = value => (value || 0).toLocaleString();
+const kib = bytes => bytes >= 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${bytes} B`;
+function section(title, note) {
+  const wrap = el('section', 'pipe-section');
+  const head = el('h3', 'pipe-heading', title);
+  if (note) head.append(el('span', 'pipe-note', note));
+  wrap.append(head);
+  return wrap;
+}
+function definition(list, label, value) {
+  list.append(el('dt', null, label), el('dd', null, value));
+}
+async function loadInspector(id) {
+  if (inspecting === id) return;
+  inspecting = id;
+  try {
+    const detail = await api(`/api/jobs/${id}/inspect`);
+    if (selected !== id) return;
+    const signature = JSON.stringify([detail.stages, detail.outline, detail.artifacts, detail.context, detail.budget, detail.chapter, detail.events.length]);
+    if (signature !== inspectSignature) { inspectSignature = signature; renderInspector(detail); }
+  } catch (error) {
+    if (selected === id) { inspectSignature = ''; $('pipeline-view').replaceChildren(el('p', 'hint', error.message)); }
+  } finally { inspecting = null; }
+}
+function renderInspector(detail) {
+  const root = $('pipeline-view');
+  root.replaceChildren();
+  if (detail.error) {
+    const banner = el('div', 'pipe-error');
+    banner.append(el('strong', null, 'Stopped'), el('span', null, detail.error));
+    root.append(banner);
+  }
+
+  // Stages
+  const stages = section('Pipeline', `${detail.completed_steps.length} steps saved`);
+  const rail = el('ol', 'stage-rail');
+  for (const stage of detail.stages) {
+    const row = el('li', `stage ${stage.status}`);
+    row.append(el('span', 'stage-dot'));
+    const body = el('div', 'stage-body');
+    const title = el('div', 'stage-title');
+    title.append(el('span', 'stage-label', stage.label), el('code', 'stage-service', stage.service));
+    body.append(title, el('p', 'stage-note', stage.note), el('p', 'stage-artifact', stage.artifact));
+    row.append(body);
+    rail.append(row);
+  }
+  stages.append(rail);
+  root.append(stages);
+
+  // Context budget — the request that most often fails on a small local model.
+  const context = detail.context;
+  const ctx = section('Context budget', context.chapter ? `chapter ${context.chapter} draft request` : 'not yet measurable');
+  const table = el('table', 'pipe-table');
+  for (const row of context.rows) {
+    const tr = el('tr');
+    tr.append(el('td', null, row.label), el('td', 'num', formatNumber(row.tokens)), el('td', 'num muted', kib(row.bytes)));
+    table.append(tr);
+  }
+  const promptTotal = el('tr', 'total');
+  promptTotal.append(el('td', null, 'Prompt total'), el('td', 'num', formatNumber(context.prompt_tokens)), el('td', 'num muted', ''));
+  const outputRow = el('tr', 'total');
+  outputRow.append(el('td', null, 'Max output tokens'), el('td', 'num', formatNumber(context.output_tokens)), el('td', 'num muted', 'setting'));
+  const neededRow = el('tr', 'grand');
+  neededRow.append(el('td', null, 'Context needed'), el('td', 'num', formatNumber(context.context_needed)), el('td', 'num muted', 'tokens'));
+  table.append(promptTotal, outputRow, neededRow);
+  ctx.append(el('p', 'pipe-caption', 'What one prose request sends and expects back. Measured from the files on disk.'), table, el('p', 'pipe-advice', context.advice));
+  root.append(ctx);
+
+  // Beat sheet
+  if (detail.outline) {
+    const beats = section('Beat sheet', `${detail.outline.acts.length} acts · ${detail.outline.chapters} chapters`);
+    if (detail.outline.title) beats.append(el('p', 'pipe-title', detail.outline.title));
+    for (const act of detail.outline.acts) {
+      const block = el('div', 'act');
+      block.append(el('h4', null, `Act ${act.act}${act.name ? ' · ' + act.name : ''}`));
+      for (const beat of act.beats) {
+        const row = el('div', `beat ${beat.status}`);
+        row.append(el('span', 'beat-number', String(beat.chapter)));
+        const text = el('div', 'beat-body');
+        text.append(el('p', 'beat-goal', beat.goal));
+        if (beat.conflict) text.append(el('p', 'beat-detail', `Conflict: ${beat.conflict}`));
+        if (beat.outcome) text.append(el('p', 'beat-detail', `Outcome: ${beat.outcome}`));
+        row.append(text);
+        block.append(row);
+      }
+      beats.append(block);
+    }
+    root.append(beats);
+  }
+
+  // Chapter passes
+  const chapter = detail.chapter;
+  if (chapter && chapter.passed.length) {
+    const passes = section(`Chapter ${context.chapter} passes`,
+      chapter.attempt ? `attempt ${chapter.attempt.current} of ${chapter.attempt.of}` : 'from the worker log');
+    const list = el('ul', 'pass-list');
+    for (const pass of chapter.passed) {
+      const item = el('li');
+      item.append(el('span', 'pass-label', pass.label), el('code', 'stage-service', pass.service));
+      if (pass.runs > 1) item.append(el('span', 'pass-runs', `×${pass.runs}`));
+      list.append(item);
+    }
+    passes.append(list);
+    if (chapter.retried) passes.append(el('p', 'pipe-advice', 'A pass ran more than once: the worker retried this chapter without advancing its revision attempt.'));
+    root.append(passes);
+  }
+
+  // Call budget
+  const budget = detail.budget;
+  const calls = section('Model calls', `${formatNumber(budget.calls)} of ${formatNumber(budget.cap)} used`);
+  const meter = el('progress', budget.warn ? 'meter warn' : 'meter');
+  meter.max = budget.cap; meter.value = budget.calls;
+  meter.setAttribute('aria-label', `${formatNumber(budget.calls)} of ${formatNumber(budget.cap)} model calls used`);
+  calls.append(meter);
+  const totals = el('dl', 'pipe-defs');
+  definition(totals, 'Prompt tokens', formatNumber(budget.prompt_tokens));
+  definition(totals, 'Completion tokens', formatNumber(budget.completion_tokens));
+  definition(totals, 'Total tokens', formatNumber(budget.prompt_tokens + budget.completion_tokens));
+  calls.append(totals);
+  if (budget.warn) calls.append(el('p', 'pipe-advice', 'This book is close to its per-book call limit. Raise it in Settings before resuming, or the worker will stop.'));
+  root.append(calls);
+
+  // Artifacts
+  const files = detail.artifacts;
+  const arts = section('Artifacts', `${files.length} saved`);
+  const list = el('ul', 'artifact-list');
+  for (const file of files) {
+    const item = el('li', `artifact ${file.group}`);
+    item.append(el('span', 'artifact-name', file.name), el('span', 'artifact-size', kib(file.bytes)));
+    if (file.group !== 'raw') {
+      const view = el('button', 'link-button', 'view');
+      view.onclick = () => showArtifact(detail.id, file.name, view);
+      item.append(view);
+    }
+    list.append(item);
+  }
+  arts.append(list);
+  if (files.some(file => file.group === 'raw')) arts.append(el('p', 'pipe-advice', 'Files marked raw are the exact model output that failed to parse. They are kept for debugging.'));
+  root.append(arts);
+
+  // Events
+  if (detail.events.length) {
+    const log = section('Events', `${detail.events.length} in the recent log`);
+    const lines = el('ul', 'event-list');
+    for (const event of detail.events) lines.append(el('li', 'event-line', event.text));
+    log.append(lines);
+    if (detail.log_truncated) log.append(el('p', 'pipe-caption', 'Only the most recent part of the log is shown.'));
+    root.append(log);
+  }
+}
+let viewing = null;
+async function showArtifact(id, name, button) {
+  const viewer = $('artifact-viewer');
+  if (viewing === name) { viewer.hidden = true; viewing = null; button.textContent = 'view'; return; }
+  button.disabled = true; button.textContent = 'loading…';
+  try {
+    const response = await fetch(`/api/jobs/${id}/artifact/${encodeURIComponent(name)}`);
+    if (!response.ok) throw new Error((await response.json()).error || 'That artifact could not be read.');
+    viewer.textContent = await response.text();
+    viewer.hidden = false; viewing = name; button.textContent = 'hide';
+  } catch (error) { notice(error.message, true); button.textContent = 'view'; }
+  finally { button.disabled = false; }
 }
 async function refresh() {
   if (polling) return;
@@ -110,6 +313,7 @@ async function refresh() {
   } catch (error) { notice(error.message, true); } finally { polling = false; }
 }
 $('new-book').onclick = () => showCreate();
+for (const tab of TABS) $(`tab-${tab}`).onclick = () => showTab(tab);
 for (const id of ['settings-link', 'configure-model']) $(id).onclick = event => { event.preventDefault(); showSettings(); };
 function route() {
   const book = location.pathname.match(/^\/books\/([0-9a-f]{32})$/);
