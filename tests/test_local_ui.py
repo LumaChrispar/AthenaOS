@@ -164,7 +164,7 @@ class LocalUiTests(unittest.TestCase):
             'title': 'The Keeper',
             'beat_sheets': [{'act': 1, 'name': 'Arrival', 'beats': [
                 {'beat_id': 1, 'goal': 'Meet the keeper', 'conflict': 'A storm', 'outcome': 'He stays'},
-                {'beat_id': 2, 'goal': 'Read the first letter', 'conflict': 'Doubt', 'outcome': 'He believes'}]}]},
+                {'beat_id': 2, 'goal': 'Read the first letter', 'conflict': 'Doubt', 'outcome': 'He believes'}]}]}),
             encoding='utf-8')
         (memory / 'pipeline_state.json').write_text(
             json.dumps({'total_chapters': 2, 'last_completed_chapter': 0}), encoding='utf-8')
