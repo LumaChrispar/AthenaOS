@@ -70,8 +70,12 @@ class JobRunner:
         if name in self.state['completed_steps']:
             return
         self.state['active_step'] = name
+        self.state['active_started_at'] = time.time()
+        self.state['active_attempt'] = 0
         self.save()
         for attempt in range(3):
+            self.state['active_attempt'] = attempt + 1
+            self.save()
             try:
                 result = function(*args)
                 if inspect.isawaitable(result):
@@ -87,6 +91,10 @@ class JobRunner:
         if isinstance(result, dict) and 'decision' in result and result['decision'] != 'APPROVED':
             raise RuntimeError(f'{name}: {result.get("rationale", result["decision"])}')
         self.state['completed_steps'].append(name)
+        self.state.setdefault('step_durations_seconds', {})[name] = round(
+            time.time() - self.state['active_started_at'], 2)
+        self.state['active_started_at'] = None
+        self.state['active_attempt'] = None
         self.state['error'] = None
         self.save()
 
@@ -134,6 +142,11 @@ class JobRunner:
             self.state.update(status='completed', active_step=None, error=None)
             self.save()
         except BaseException as error:
+            started = self.state.get('active_started_at')
+            if started:
+                self.state.setdefault('step_durations_seconds', {})[self.state.get('active_step', 'startup')] = round(
+                    time.time() - started, 2)
+            self.state['active_started_at'] = None
             self.state.update(status='interrupted' if isinstance(error, (KeyboardInterrupt, asyncio.CancelledError)) else 'failed',
                               error=str(error) or type(error).__name__)
             self.save()

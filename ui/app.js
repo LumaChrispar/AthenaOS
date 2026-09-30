@@ -60,6 +60,10 @@ function applySettings(settings) {
 }
 function title(job) { return job.metadata?.title || job.concept.slice(0, 65); }
 function label(step) { return (step || 'Preparing your book').replaceAll('_', ' ').replace(/^\w/, c => c.toUpperCase()); }
+function elapsed(seconds) {
+  const value = Math.max(0, Math.floor(seconds || 0));
+  return value < 60 ? `${value}s` : `${Math.floor(value / 60)}m ${value % 60}s`;
+}
 async function selectBook(id, navigate = true) {
   if (selected) chatDrafts.set(selected, $('chat-input').value);
   selected = id; showView('detail', `/books/${id}`, navigate); $('reader').hidden = true;
@@ -102,7 +106,11 @@ function renderDetail(job) {
   $('book-title').textContent = title(job); $('book-concept').textContent = job.concept;
   $('status').textContent = job.status; $('book-model').textContent = `${job.provider} / ${job.model}`;
   $('active-step').textContent = job.status === 'completed' ? 'Your manuscript is ready.' : label(job.active_step);
-  $('progress-text').textContent = `${job.completed_steps.length} steps saved · Last update ${new Date((job.updated_at || job.created_at) * 1000).toLocaleString()}`;
+  const runningFor = job.status === 'running' && job.active_started_at ? (Date.now() / 1000 - job.active_started_at) : null;
+  const stepTime = runningFor === null ? job.step_durations_seconds?.[job.active_step] : runningFor;
+  const timing = stepTime === undefined || stepTime === null ? '' : ` · ${job.status === 'running' ? 'Running' : 'Last step'} ${elapsed(stepTime)}`;
+  const attempt = job.status === 'running' && job.active_attempt > 1 ? ` · attempt ${job.active_attempt}/3` : '';
+  $('progress-text').textContent = `${job.completed_steps.length} steps saved${timing}${attempt} · Last update ${new Date((job.updated_at || job.created_at) * 1000).toLocaleString()}`;
   $('metrics').replaceChildren();
   for (const [value, name] of [[`${job.pipeline.last_completed_chapter || 0} / ${job.pipeline.total_chapters || job.chapters || '?'}`, 'Chapters completed'], [job.usage.calls || 0, 'Writing requests'], [job.chat_usage?.calls || 0, 'Chat requests'], [(job.usage.prompt_tokens || 0) + (job.usage.completion_tokens || 0), 'Writing tokens']]) {
     const item = document.createElement('div'), number = document.createElement('strong'); number.textContent = value; item.append(number, document.createTextNode(name)); $('metrics').append(item);

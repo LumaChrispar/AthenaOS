@@ -36,8 +36,7 @@ def _model_limits(provider, base_url, api_key, model_name):
             maximum = (model.get('top_provider') or {}).get('max_completion_tokens')
         limits = (context if type(context) is int and context > 0 else None,
                   maximum if type(maximum) is int and maximum > 0 else None)
-        if any(limit is not None for limit in limits):
-            _MODEL_LIMIT_CACHE[cache_key] = limits
+        _MODEL_LIMIT_CACHE[cache_key] = limits
         return limits
     except (httpx.HTTPError, ValueError, TypeError, AttributeError):
         # Many local OpenAI-compatible servers omit model metadata. The runtime
@@ -149,6 +148,7 @@ class AthenaLLMClient:
         request_output_tokens = min(output_limit, max(256, available))
         
         print(f"[{service_id}] Sending task (model: {model_name}, temp: {temperature})...")
+        print(f"[{service_id}] Request budget: prompt≈{prompt_tokens} tokens; output≤{request_output_tokens}; context={context_limit}.")
         
         try:
             usage = {'calls': 0, 'prompt_tokens': 0, 'completion_tokens': 0}
@@ -160,6 +160,7 @@ class AthenaLLMClient:
             # Reserve before dispatch; failed and interrupted requests also count.
             usage['calls'] += 1
             atomic_json(self.usage_path, usage)
+            request_started = time.monotonic()
             response = self.client.chat.completions.create(
                 model=model_name,
                 messages=[
@@ -169,6 +170,7 @@ class AthenaLLMClient:
                 temperature=temperature,
                 max_tokens=request_output_tokens,
             )
+            print(f"[{service_id}] Model response received in {time.monotonic() - request_started:.1f}s.")
             if response.usage:
                 usage['prompt_tokens'] += response.usage.prompt_tokens or 0
                 usage['completion_tokens'] += response.usage.completion_tokens or 0
@@ -183,6 +185,8 @@ class AthenaLLMClient:
                 raise ValueError('Model returned empty content.')
             return content.strip()
         except Exception as e:
+            if 'request_started' in locals():
+                print(f"[{service_id}] Request ended after {time.monotonic() - request_started:.1f}s.")
             if isinstance(e, APIConnectionError):
                 cause = type(e.__cause__).__name__ if e.__cause__ else 'unknown transport error'
                 detail = ('Response timed out. Increase the response timeout or reduce the request size.'
