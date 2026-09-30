@@ -36,21 +36,21 @@
       <div class="connection-card">
         <div class="section-title"><span class="step-number">01</span><div><h2>Choose your writing model</h2><p>Find available models, then choose free-first recommendations for each writing role.</p></div></div>
         <div class="grid">
-          <div><label for="provider">Model provider</label><select id="provider"><option value="ollama">Ollama · local</option><option value="lmstudio">LM Studio · local</option><option value="openrouter">OpenRouter · cloud</option></select></div>
+          <div><label for="provider">Model provider</label><select id="provider"><option value="ollama">Ollama · local</option><option value="lmstudio">LM Studio · local</option><option value="openrouter">OpenRouter · cloud</option><option value="openai">OpenAI · cloud</option><option value="google">Google Gemini · cloud</option><option value="groq">Groq · cloud</option></select></div>
           <div><label for="base-url">Server address</label><input id="base-url" type="url" value="http://127.0.0.1:11434/v1" required></div>
         </div>
         <div id="openrouter-key-panel" class="key-panel" hidden>
-          <label for="openrouter-key">OpenRouter API key</label>
-          <p class="hint">Create a key in <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer">your OpenRouter account ↗</a>, then paste it here.</p>
+          <label id="cloud-key-label" for="openrouter-key">Provider API key</label>
+          <p class="hint">Create an API key in <a id="cloud-key-link" href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer">your provider account ↗</a>, then paste it here.</p>
           <div class="key-entry"><input id="openrouter-key" type="password" autocomplete="new-password" spellcheck="false" placeholder="Paste your API key" maxlength="2048" aria-describedby="key-status"><button type="button" id="toggle-key" class="secondary" aria-pressed="false">Show</button></div>
           <p id="key-status" class="hint" role="status" aria-live="polite">Checking saved key…</p>
           <div class="key-actions"><button type="button" id="save-key" class="secondary">Save key</button><button type="button" id="test-key" class="secondary">Test key</button><button type="button" id="remove-key" class="secondary" hidden>Remove saved key</button></div>
-          <p class="hint">Saved in your operating system’s credential vault. Testing checks the key without generating a book.</p>
+          <p class="hint">Saved in your operating system’s credential vault separately for each cloud provider. Testing checks the key without generating a book.</p>
         </div>
-        <div class="model-row"><div><label for="model">Main model</label><select id="model" required><option value="">Find available models first…</option></select></div><button type="button" id="connect" class="secondary">Find &amp; recommend models</button></div>
+        <div class="model-row"><div><label for="model">Main model ID</label><input id="model" list="main-model-options" required placeholder="Type an ID or find available models" autocomplete="off"><datalist id="main-model-options"></datalist></div><button type="button" id="connect" class="secondary">Find models</button></div>
         <p id="connection-help" class="hint">Start Ollama and download a model, then select Find models. Generation stays with the server you choose.</p>
         <p id="model-fit" class="model-fit hint" role="status" aria-live="polite">Choose a model to check its advertised limits.</p>
-        <details class="role-routing"><summary>Choose models by role</summary><p class="hint">Each role starts with a free recommendation when available. “Fastest observed” uses Athena’s measured speed on your workspace; capacity recommendations use the model’s advertised context and output limits.</p><div id="role-models" class="grid"></div></details>
+        <details id="role-routing" class="role-routing"><summary>Choose cloud models by role</summary><p class="hint">Cloud recommendations prioritize free options when available. “Fastest observed” uses Athena’s measured speed on your workspace; capacity recommendations use advertised context and output limits. You can type any model ID into a field.</p><div id="role-models" class="grid"></div></details>
       </div>
       <div class="connection-card">
         <div class="section-title"><span class="step-number">02</span><div><h2>Generation limits</h2><p>Control how much work Athena can do for each book.</p></div></div>

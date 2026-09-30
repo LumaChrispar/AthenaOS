@@ -306,6 +306,48 @@ class LocalUiTests(unittest.TestCase):
                 self.assertFalse(json.load(response)['configured'])
             self.assertFalse(vault)
 
+    def test_cloud_provider_key_endpoints_and_local_protection(self):
+        vault = {}
+        secret = 'dummy-key-for-provider-test-123'
+        def fake_read(root=None, provider='openrouter'):
+            return vault.get(provider)
+        def fake_save(key, root=None, provider='openrouter'):
+            vault[provider] = key
+        def fake_delete(root=None, provider='openrouter'):
+            vault.pop(provider, None)
+
+        with patch('credentials.read_key', side_effect=fake_read), \
+             patch('credentials.save_key', side_effect=fake_save), \
+             patch('credentials.delete_key', side_effect=fake_delete), \
+             patch('providers.legacy_provider_key', return_value=(None, None)):
+            for provider in ('openrouter', 'openai', 'google', 'groq'):
+                with self.subTest(provider=provider):
+                    # Save
+                    with self.request('/api/provider-key', {'provider': provider, 'action': 'save', 'key': secret}) as response:
+                        content = response.read().decode()
+                        self.assertNotIn(secret, content)
+                        self.assertTrue(json.loads(content)['saved'])
+                    self.assertEqual(vault.get(provider), secret)
+
+                    # Status
+                    with self.request('/api/provider-key', {'provider': provider, 'action': 'status'}) as response:
+                        content = response.read().decode()
+                        self.assertNotIn(secret, content)
+                        self.assertTrue(json.loads(content)['configured'])
+
+                    # Remove
+                    with self.request('/api/provider-key', {'provider': provider, 'action': 'remove'}) as response:
+                        self.assertFalse(json.load(response)['configured'])
+                    self.assertNotIn(provider, vault)
+
+            # Local providers must be rejected for cloud API key management
+            for local_provider in ('ollama', 'lmstudio'):
+                with self.subTest(local_provider=local_provider):
+                    with self.assertRaises(HTTPError) as caught:
+                        self.request('/api/provider-key', {'provider': local_provider, 'action': 'status'})
+                    self.assertEqual(caught.exception.code, 400)
+                    caught.exception.close()
+
 
 if __name__ == '__main__':
     unittest.main()

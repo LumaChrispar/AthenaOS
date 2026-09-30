@@ -6,10 +6,11 @@ import os
 from pathlib import Path
 
 
-def target_name(root=None):
+def target_name(root=None, provider='openrouter'):
     root = Path(root or Path(__file__).resolve().parents[1]).resolve()
     identity = hashlib.sha256(os.path.normcase(str(root)).encode()).hexdigest()[:24]
-    return 'AthenaOS/OpenRouter/' + identity
+    label = 'OpenRouter' if provider == 'openrouter' else str(provider).title()
+    return f'AthenaOS/{label}/{identity}'
 
 
 class Credential(ctypes.Structure):
@@ -45,11 +46,11 @@ def other_vault():
         raise RuntimeError('Install the requirements to enable secure key storage.') from None
 
 
-def read_key(root=None):
+def read_key(root=None, provider='openrouter'):
     if os.name != 'nt':
-        return other_vault().get_password(target_name(root), 'openrouter')
+        return other_vault().get_password(target_name(root, provider), provider)
     vault, pointer = windows_vault(), ctypes.POINTER(Credential)()
-    if not vault.CredReadW(target_name(root), 1, 0, ctypes.byref(pointer)):
+    if not vault.CredReadW(target_name(root, provider), 1, 0, ctypes.byref(pointer)):
         if ctypes.get_last_error() == 1168:  # ERROR_NOT_FOUND
             return None
         raise RuntimeError('Windows Credential Manager is unavailable in this login session.')
@@ -65,24 +66,24 @@ def validate_key(key):
     return key.strip()
 
 
-def save_key(key, root=None):
+def save_key(key, root=None, provider='openrouter'):
     key = validate_key(key)
     if os.name != 'nt':
-        other_vault().set_password(target_name(root), 'openrouter', key)
+        other_vault().set_password(target_name(root, provider), provider, key)
         return
     encoded = key.encode('utf-16-le')
     blob = (ctypes.c_ubyte * len(encoded)).from_buffer_copy(encoded)
-    credential = Credential(Type=1, TargetName=target_name(root), UserName='openrouter',
+    credential = Credential(Type=1, TargetName=target_name(root, provider), UserName=provider,
                             CredentialBlobSize=len(encoded), CredentialBlob=blob, Persist=2)
     if not windows_vault().CredWriteW(ctypes.byref(credential), 0):
         raise RuntimeError('Could not save the key in Windows Credential Manager. Try running Athena from your normal desktop session.')
 
 
-def delete_key(root=None):
+def delete_key(root=None, provider='openrouter'):
     if os.name != 'nt':
         vault = other_vault()
-        if vault.get_password(target_name(root), 'openrouter') is not None:
-            vault.delete_password(target_name(root), 'openrouter')
+        if vault.get_password(target_name(root, provider), provider) is not None:
+            vault.delete_password(target_name(root, provider), provider)
         return
-    if not windows_vault().CredDeleteW(target_name(root), 1, 0) and ctypes.get_last_error() != 1168:
+    if not windows_vault().CredDeleteW(target_name(root, provider), 1, 0) and ctypes.get_last_error() != 1168:
         raise RuntimeError('Could not remove the saved key from Windows Credential Manager.')

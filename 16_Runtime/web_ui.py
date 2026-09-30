@@ -10,7 +10,7 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 from job_runner import create_job, launch_worker, atomic_json
-from providers import ENDPOINTS, MODEL_GROUPS, model_overrides, list_models, list_model_catalog, model_info, api_key_for, openrouter_key_status, test_openrouter_key
+from providers import ENDPOINTS, CLOUD_PROVIDERS, MODEL_GROUPS, model_overrides, list_models, list_model_catalog, model_info, api_key_for, openrouter_key_status, provider_key_status, test_openrouter_key, test_provider_key
 import credentials
 from book_chat import read_messages, progress_messages, reply_to_book
 from job_lock import job_lock
@@ -50,9 +50,13 @@ def settings_config(settings):
     config = model_overrides(settings['provider'], settings['model'], settings['base_url'])
     config['connection']['timeout_seconds'] = settings['timeout_seconds']
     config.update({key: settings[key] for key in ('max_calls_per_job', 'max_output_tokens')})
-    configured_roles = settings.get('role_models') or {}
-    config['role_models'] = {group: configured_roles.get(group) or settings['model'] for group in MODEL_GROUPS}
-    config['use_default_model_for_all_services'] = False
+    if settings['provider'] in CLOUD_PROVIDERS:
+        configured_roles = settings.get('role_models') or {}
+        config['role_models'] = {group: configured_roles.get(group) or settings['model'] for group in MODEL_GROUPS}
+        config['use_default_model_for_all_services'] = False
+    else:
+        config['role_models'] = {}
+        config['use_default_model_for_all_services'] = True
     return config
 
 
@@ -207,6 +211,29 @@ class Handler(BaseHTTPRequestHandler):
                 self.respond({'models': list_model_catalog(data.get('provider'), data.get('base_url'), self.server.root)})
             elif path == '/api/model-info':
                 self.respond(model_info(data.get('provider'), data.get('model'), data.get('base_url'), self.server.root))
+            elif path == '/api/provider-key':
+                provider, action = data.get('provider'), data.get('action')
+                if provider not in CLOUD_PROVIDERS:
+                    raise ValueError('Choose a cloud provider for API key settings.')
+                if action == 'status':
+                    self.respond(provider_key_status(provider, self.server.root))
+                elif action == 'test':
+                    self.respond(test_provider_key(provider, data.get('key'), self.server.root))
+                elif action in ('save', 'remove'):
+                    with self.server.settings_lock:
+                        if action == 'save':
+                            try:
+                                credentials.save_key(data.get('key'), self.server.root, provider)
+                            except TypeError:
+                                credentials.save_key(data.get('key'), self.server.root)
+                        else:
+                            try:
+                                credentials.delete_key(self.server.root, provider)
+                            except TypeError:
+                                credentials.delete_key(self.server.root)
+                    self.respond(provider_key_status(provider, self.server.root))
+                else:
+                    raise ValueError('Choose status, test, save, or remove.')
             elif path == '/api/openrouter-key':
                 action = data.get('action')
                 if action == 'test':
@@ -303,7 +330,7 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as error:
             # Provider SDK exceptions are intentionally converted to actionable UI messages.
             message = str(error)
-            if urlsplit(self.path).path == '/api/openrouter-key' and not isinstance(error, (ValueError, RuntimeError)):
+            if urlsplit(self.path).path in ('/api/openrouter-key', '/api/provider-key') and not isinstance(error, (ValueError, RuntimeError)):
                 message = 'The key could not be processed. Try again from your normal desktop session.'
             if isinstance(locals().get('data'), dict) and isinstance(data.get('key'), str) and data['key']:
                 message = message.replace(data['key'], '[redacted]')

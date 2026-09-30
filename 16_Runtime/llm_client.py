@@ -6,7 +6,7 @@ from functools import wraps
 from openai import OpenAI, APIConnectionError, APITimeoutError
 import json
 from job_runner import atomic_json
-from providers import connection_settings, api_key_for
+from providers import connection_settings, api_key_for, CLOUD_PROVIDERS, PROVIDER_NAMES
 
 _MODEL_LIMIT_CACHE = {}
 
@@ -88,7 +88,7 @@ class AthenaLLMClient:
         self.client = OpenAI(
             base_url=settings['base_url'],
             api_key=api_key,
-            timeout=connection.get('timeout_seconds', 900 if self.provider != 'openrouter' else 300),
+            timeout=connection.get('timeout_seconds', 300 if self.provider in CLOUD_PROVIDERS else 900),
             max_retries=0,
         )
         self.usage_path = os.path.join(os.path.dirname(config_path), '..', '08_Memory', 'usage.json')
@@ -106,7 +106,7 @@ class AthenaLLMClient:
         
         self.default_temp = self.config.get("default_temperature", 0.5)
         self.default_model = self.config.get("default_model", "nvidia/nemotron-3-ultra-550b-a55b:free")
-        self.use_default_model = self.provider != 'openrouter' or self.config.get('use_default_model_for_all_services', False)
+        self.use_default_model = self.provider not in CLOUD_PROVIDERS or self.config.get('use_default_model_for_all_services', False)
 
     def get_model_for_service(self, service_id: str) -> dict:
         """Get the model configuration for a service ID."""
@@ -115,8 +115,9 @@ class AthenaLLMClient:
             "temperature": self.default_temp
         }))
         group_id = config.get('id')
-        if group_id in self.role_models and self.role_models[group_id]:
-            config['model'] = self.role_models[group_id]
+        role_models = getattr(self, 'role_models', {})
+        if group_id in role_models and role_models[group_id]:
+            config['model'] = role_models[group_id]
         if getattr(self, 'use_default_model', False):
             config['model'] = self.default_model
         return config
@@ -138,11 +139,13 @@ class AthenaLLMClient:
         model_name = model_config.get("model", self.default_model)
         temperature = model_config.get("temperature", self.default_temp)
 
+        if not hasattr(self, 'model_limits'):
+            self.model_limits = {}
         if model_name not in self.model_limits:
             self.model_limits[model_name] = _model_limits(
-                self.provider, self.base_url, self.api_key, model_name)
+                getattr(self, 'provider', None), getattr(self, 'base_url', None), getattr(self, 'api_key', None), model_name)
         context_limit, model_output_limit = self.model_limits[model_name]
-        context_limit = context_limit or self.fallback_context_tokens
+        context_limit = context_limit or getattr(self, 'fallback_context_tokens', 32768)
         output_limit = min(self.max_output_tokens,
                            model_output_limit or min(self.max_output_tokens, 8192))
         prompt_tokens = _estimate_tokens(system_prompt) + _estimate_tokens(user_prompt)
@@ -198,10 +201,19 @@ class AthenaLLMClient:
                 model_usage['completion_tokens'] += completion_count
             atomic_json(self.usage_path, usage)
             if response.choices[0].finish_reason == 'length':
-                raise RuntimeError('The model reached its response or context limit before finishing. '
-                                   'In Settings, check the output limit; for a local model, also check '
-                                   'its loaded context length in LM Studio or Ollama. Then use Resume '
-                                   'with current settings. Repeating this same request unchanged will not fix it.')
+                provider = getattr(self, 'provider', None)
+                if provider == 'ollama':
+                    provider_hint = 'for a local model, also check its loaded context length in Ollama.'
+                elif provider == 'lmstudio':
+                    provider_hint = 'for a local model, also check its loaded context length in LM Studio.'
+                elif provider in CLOUD_PROVIDERS:
+                    provider_name = PROVIDER_NAMES.get(provider, 'cloud models')
+                    provider_hint = f'for {provider_name}, also choose a model with a larger context limit or lower the output limit.'
+                else:
+                    provider_hint = 'for a local model, also check its loaded context length in LM Studio or Ollama.'
+                raise RuntimeError(f'The model reached its response or context limit before finishing. '
+                                   f'In Settings, check the output limit; {provider_hint} Then use Resume '
+                                   f'with current settings. Repeating this same request unchanged will not fix it.')
             content = response.choices[0].message.content
             if not content or not content.strip():
                 raise ValueError('Model returned empty content.')
@@ -221,10 +233,11 @@ class AthenaLLMClient:
                     atomic_json(self.usage_path, usage)
             if isinstance(e, APIConnectionError):
                 cause = type(e.__cause__).__name__ if e.__cause__ else 'unknown transport error'
+                provider = getattr(self, 'provider', '')
                 detail = ('Response timed out. Increase the response timeout or reduce the request size.'
                           if isinstance(e, APITimeoutError) else
-                          'Connection failed. Check your internet connection and OpenRouter availability.'
-                          if getattr(self, 'provider', '') == 'openrouter' else
+                          f'Connection failed. Check your internet connection and {PROVIDER_NAMES.get(provider, "cloud provider")} availability.'
+                          if provider in CLOUD_PROVIDERS else
                           'Connection failed. Check that your local model server is running and the model is loaded.')
                 message = f'{detail} Transport: {cause}. Saved steps are kept; resume when the connection is ready.'
                 print(message)
@@ -239,7 +252,8 @@ class AthenaLLMClient:
         model_name = model_config.get("model", self.default_model)
         temperature = model_config.get("temperature", self.default_temp)
         
-        print(f"[{service_id}] Streaming from OpenRouter (model: {model_name}, temp: {temperature})...")
+        provider_name = PROVIDER_NAMES.get(getattr(self, 'provider', ''), 'OpenRouter')
+        print(f"[{service_id}] Streaming from {provider_name} (model: {model_name}, temp: {temperature})...")
         
         try:
             stream = self.client.chat.completions.create(

@@ -258,6 +258,36 @@ class WorkflowTests(unittest.TestCase):
             client.execute_prompt('SRV-001', 'system', 'user')
         self.assertEqual(client.client.chat.completions.create.call_count, 1)
 
+    def test_provider_aware_context_limit_messages(self):
+        job = create_job(self.root, 'A story')
+        cases = [
+            ('ollama', 'also check its loaded context length in Ollama'),
+            ('lmstudio', 'also check its loaded context length in LM Studio'),
+            ('openrouter', 'for OpenRouter, also choose a model with a larger context limit or lower the output limit'),
+            ('openai', 'for OpenAI, also choose a model with a larger context limit or lower the output limit'),
+            ('google', 'for Google Gemini, also choose a model with a larger context limit or lower the output limit'),
+            ('groq', 'for Groq, also choose a model with a larger context limit or lower the output limit'),
+            (None, 'also check its loaded context length in LM Studio or Ollama'),
+        ]
+        for provider, expected_hint in cases:
+            with self.subTest(provider=provider):
+                client = AthenaLLMClient.__new__(AthenaLLMClient)
+                client.capability_model = {}
+                client.default_model, client.default_temp = 'fake', 0.5
+                client.usage_path = str(job / '08_Memory/usage.json')
+                client.max_calls, client.max_output_tokens = 10, 100
+                if provider:
+                    client.provider = provider
+                client.client = Mock()
+                client.client.chat.completions.create.return_value = SimpleNamespace(
+                    usage=None,
+                    choices=[SimpleNamespace(finish_reason='length', message=SimpleNamespace(content='{"partial":'))]
+                )
+                with self.assertRaises(RuntimeError) as caught:
+                    client.execute_prompt('SRV-001', 'system', 'user')
+                self.assertIn('context limit', str(caught.exception))
+                self.assertIn(expected_hint, str(caught.exception))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,6 +4,24 @@ let savedSettings = null;
 let activitySignature = '', conversationSignature = '';
 const pendingReplies = new Set(), chatDrafts = new Map();
 let keyStatus = {configured: false, saved: false};
+const CLOUD_PROVIDERS = ['openrouter', 'openai', 'google', 'groq'];
+const PROVIDER_NAMES = {
+  openrouter: 'OpenRouter',
+  openai: 'OpenAI',
+  google: 'Google Gemini',
+  groq: 'Groq',
+  lmstudio: 'LM Studio',
+  ollama: 'Ollama',
+};
+const CLOUD_KEY_LINKS = {
+  openrouter: 'https://openrouter.ai/settings/keys',
+  openai: 'https://platform.openai.com/api-keys',
+  google: 'https://aistudio.google.com/app/apikey',
+  groq: 'https://console.groq.com/keys',
+};
+function isCloud(provider = $('provider')?.value) {
+  return CLOUD_PROVIDERS.includes(provider);
+}
 const TABS = ['writing', 'pipeline', 'log'];
 let activeTab = 'writing', inspectSignature = '', logSignature = '', failureShown = false, inspecting = null;
 let modelCatalog = [];
@@ -37,10 +55,29 @@ function renderKeyStatus(status) {
 }
 function clearKeyInput() { $('openrouter-key').value = ''; $('openrouter-key').type = 'password'; $('toggle-key').textContent = 'Show'; $('toggle-key').setAttribute('aria-pressed', 'false'); }
 async function saveEnteredKey() {
+  const provider = $('provider').value;
+  if (!isCloud(provider)) return;
   const key = $('openrouter-key').value.trim();
   if (!key) return;
-  const status = await api('/api/openrouter-key', {action: 'save', key});
+  const status = await api('/api/provider-key', {provider, action: 'save', key});
   clearKeyInput(); renderKeyStatus(status);
+}
+async function updateKeyStatus(provider = $('provider').value) {
+  if (!isCloud(provider)) {
+    $('openrouter-key-panel').hidden = true;
+    return;
+  }
+  $('openrouter-key-panel').hidden = false;
+  const name = PROVIDER_NAMES[provider] || provider;
+  $('cloud-key-label').textContent = `${name} API key`;
+  $('cloud-key-link').href = CLOUD_KEY_LINKS[provider] || 'https://openrouter.ai/settings/keys';
+  $('cloud-key-link').textContent = `your ${name} account ↗`;
+  try {
+    const status = await api('/api/provider-key', {provider, action: 'status'});
+    renderKeyStatus(status);
+  } catch {
+    renderKeyStatus({configured: false, saved: false, storage_error: 'Could not check saved key.'});
+  }
 }
 function notice(message, error = false) { $('notice').textContent = message; $('notice').className = error ? 'error' : ''; $('notice').hidden = !message; }
 async function api(path, data) {
@@ -65,15 +102,19 @@ function applySettings(settings) {
   $('provider').value = settings.provider; $('base-url').value = settings.base_url; $('model').value = settings.model;
   $('max-calls').value = settings.max_calls_per_job; $('max-tokens').value = settings.max_output_tokens; $('timeout').value = settings.timeout_seconds;
   connectionHelp();
-  $('saved-model').textContent = settings.model ? `${settings.provider === 'lmstudio' ? 'LM Studio' : settings.provider === 'ollama' ? 'Ollama' : 'OpenRouter'} · ${settings.model}` : 'Choose your writing model in Settings to get started.';
+  $('role-routing').hidden = !isCloud(settings.provider);
+  const providerName = PROVIDER_NAMES[settings.provider] || settings.provider;
+  $('saved-model').textContent = settings.model ? `${providerName} · ${settings.model}` : 'Choose your writing model in Settings to get started.';
   for (const [group] of MODEL_GROUPS) $(`role-${group}`).value = settings.role_models?.[group] || '';
   checkModelFit();
 }
 function initializeRoleInputs() {
   const root = $('role-models');
   for (const [group, name] of MODEL_GROUPS) {
-    const wrap = el('div'), label = el('label', null, name), input = document.createElement('select'), note = el('small', 'hint');
-    input.id = `role-${group}`; input.dataset.group = group;
+    const wrap = el('div'), label = el('label', null, name), input = document.createElement('input'), note = el('small', 'hint');
+    input.id = `role-${group}`; input.dataset.group = group; input.setAttribute('list', `options-${group}`);
+    input.autocomplete = 'off'; input.placeholder = 'Type an ID or use the list'; input.maxLength = 200;
+    const list = document.createElement('datalist'); list.id = `options-${group}`; wrap.append(list);
     label.htmlFor = input.id; note.id = `fit-${group}`; note.textContent = 'Uses the main model';
     input.addEventListener('change', () => checkModelFit(input.value.trim(), note.id));
     wrap.append(label, input, note); root.append(wrap);
@@ -111,38 +152,38 @@ function recommendationReason(model, role, index) {
   if ((role === 'prose-generation' || role === 'voice-variation') && index === 0 && model.max_output_tokens) return 'largest advertised output';
   return model.free ? 'free alternative' : 'available alternative';
 }
-function fillModelSelect(select, role = 'main', preferred = '', preserveEmpty = false) {
-  select.replaceChildren();
-  select.append(new Option(role === 'main' ? 'Choose a main model…' : 'Use the main model', ''));
+function fillModelInput(input, role = 'main', preferred = '') {
+  const list = $(input.id === 'model' ? 'main-model-options' : `options-${role}`);
+  list.replaceChildren();
+  const cloud = isCloud($('provider').value);
   const recommendations = recommendationList(role);
-  if (recommendations.length) {
-    const group = document.createElement('optgroup'); group.label = modelCatalog.some(model => model.free)
-      ? 'Recommended · free prioritized' : 'Recommended available models';
+  if (cloud) {
     recommendations.slice(0, 3).forEach((model, index) => {
-      const kind = model.free ? 'free pick' : 'available pick';
-      const reason = recommendationReason(model, role, index);
-      const option = new Option(`${model.id} · ${reason} · ${kind}`, model.id);
-      group.append(option);
+      const option = document.createElement('option'); option.value = model.id;
+      option.label = `${model.free ? 'Recommended free' : 'Recommended'} · ${recommendationReason(model, role, index)}`;
+      list.append(option);
     });
-    select.append(group);
   }
-  const all = document.createElement('optgroup'); all.label = 'All available models · free first';
-  const ordered = [...modelCatalog].sort((a, b) => Number(b.free) - Number(a.free) || a.id.localeCompare(b.id));
-  for (const model of ordered) all.append(new Option(modelOptionLabel(model), model.id));
-  select.append(all);
-  const values = new Set(modelCatalog.map(model => model.id));
-  if (preferred && values.has(preferred)) select.value = preferred;
-  else if (preserveEmpty) select.value = '';
-  else select.value = recommendations[0]?.id || '';
+  const ordered = cloud
+    ? [...modelCatalog].sort((a, b) => Number(b.free) - Number(a.free) || a.id.localeCompare(b.id))
+    : modelCatalog;
+  for (const model of ordered) {
+    const option = document.createElement('option'); option.value = model.id; option.label = modelOptionLabel(model);
+    list.append(option);
+  }
+  input.value = preferred || (cloud ? recommendations[0]?.id || '' : modelCatalog[0]?.id || '');
 }
 function fillModelSelectors() {
   const sameProvider = savedSettings?.provider === $('provider').value;
-  const previousMain = sameProvider ? savedSettings?.model : $('model').value;
-  fillModelSelect($('model'), 'main', previousMain);
+  const previousMain = $('model').value || (sameProvider ? savedSettings?.model : '');
+  fillModelInput($('model'), 'main', previousMain);
+  const cloud = isCloud($('provider').value);
+  $('role-routing').hidden = !cloud;
+  if (!cloud) return;
   for (const [group] of MODEL_GROUPS) {
     const hasSavedChoice = sameProvider && Object.hasOwn(savedSettings?.role_models || {}, group);
-    const preferred = hasSavedChoice ? savedSettings.role_models[group] : '';
-    fillModelSelect($(`role-${group}`), group, preferred, hasSavedChoice && !preferred);
+    const preferred = $(`role-${group}`).value || (hasSavedChoice ? savedSettings.role_models[group] : '');
+    fillModelInput($(`role-${group}`), group, preferred);
   }
 }
 async function checkModelFit(model = $('model').value.trim(), target = 'model-fit') {
@@ -161,7 +202,12 @@ async function checkModelFit(model = $('model').value.trim(), target = 'model-fi
     const stats = catalogEntry?.observed || {};
     const speedLabel = stats.response_seconds > 0 && stats.completion_tokens > 0
       ? `${Math.round(stats.completion_tokens / stats.response_seconds)} tokens/s observed here` : '';
-    if (!details) { node.textContent = 'Model found; its context and output limits are not advertised.'; return; }
+    if (!details) {
+      node.textContent = isCloud($('provider').value)
+        ? 'Model found; its context and output limits are not advertised.'
+        : 'Local model selected. No provider token fees; context limits depend on your local server settings.';
+      return;
+    }
     const cap = target === 'model-fit' ? Number($('max-tokens').value) : 0;
     const suffix = [priceLabel, speedLabel].filter(Boolean).join(' · ');
     node.textContent = `${details}${suffix ? ` · ${suffix}` : ''}${target === 'model-fit' && info.max_output_tokens && cap > info.max_output_tokens ? '. Athena will cap responses to this model’s limit.' : ''}`;
@@ -489,28 +535,65 @@ $('chat-form').onsubmit = async event => {
   }
 };
 function connectionHelp() {
-  $('base-url').readOnly = $('provider').value === 'openrouter';
-  $('openrouter-key-panel').hidden = $('provider').value !== 'openrouter';
-  $('connection-help').textContent = $('provider').value === 'openrouter' ? 'Save your API key above, then find and choose a model. Cloud generation may incur charges.' : $('provider').value === 'lmstudio' ? 'Load a model and start the server in LM Studio’s Developer tab. If authentication is enabled, set LM_STUDIO_API_KEY before launching Athena.' : 'Start Ollama and download a model, then select Find models. Choose an installed local model for on-device generation.';
+  const provider = $('provider').value;
+  const cloud = isCloud(provider);
+  $('base-url').readOnly = cloud;
+  $('openrouter-key-panel').hidden = !cloud;
+  if (cloud) {
+    const name = PROVIDER_NAMES[provider] || provider;
+    $('cloud-key-label').textContent = `${name} API key`;
+    $('cloud-key-link').href = CLOUD_KEY_LINKS[provider] || 'https://openrouter.ai/settings/keys';
+    $('cloud-key-link').textContent = `your ${name} account ↗`;
+    $('connection-help').textContent = 'Save your API key above, then find and choose a model. Cloud generation may incur charges.';
+  } else if (provider === 'lmstudio') {
+    $('connection-help').textContent = 'Load a model and start the server in LM Studio’s Developer tab. If authentication is enabled, set LM_STUDIO_API_KEY before launching Athena.';
+  } else {
+    $('connection-help').textContent = 'Start Ollama and download a model, then select Find models. Choose an installed local model for on-device generation.';
+  }
 }
-$('provider').onchange = () => {
+$('provider').onchange = async () => {
   clearKeyInput();
-  $('base-url').value = endpoints[$('provider').value]; modelCatalog = [];
-  $('model').replaceChildren(new Option('Find available models first…', ''));
+  const provider = $('provider').value;
+  $('base-url').value = endpoints[provider] || '';
+  modelCatalog = [];
+  $('model').value = '';
+  $('main-model-options').replaceChildren();
   for (const [group] of MODEL_GROUPS) $(`role-${group}`).value = '';
+  $('role-routing').hidden = !isCloud(provider);
   connectionHelp();
+  if (isCloud(provider)) {
+    await updateKeyStatus(provider);
+  }
   checkModelFit();
 };
 $('model').addEventListener('change', () => checkModelFit());
 $('max-tokens').addEventListener('input', () => checkModelFit());
 $('connect').onclick = async () => {
   $('connect').disabled = true; notice('Connecting to your model server…');
+  const provider = $('provider').value;
+  const providerName = PROVIDER_NAMES[provider] || provider;
   try {
-    const {models} = await api('/api/model-catalog', connection()); modelCatalog = models;
+    let models;
+    if (isCloud(provider)) {
+      ({models} = await api('/api/model-catalog', connection()));
+      modelCatalog = models;
+    } else {
+      ({models} = await api('/api/models', connection()));
+      modelCatalog = models.map(id => ({id, name: id, context_length: null, max_output_tokens: null,
+        pricing: {}, free: true, observed: {}}));
+    }
     fillModelSelectors(); checkModelFit();
     const freeCount = models.filter(model => model.free).length;
-    notice(models.length ? `Found ${models.length} models. ${freeCount} free ${freeCount === 1 ? 'option' : 'options'} prioritized in the recommendations.` : 'Connected, but no models were listed. Download or load a model in your server first.');
-  } catch (error) { notice(`Could not connect. Check that your model server is running. ${error.message}`, true); } finally { $('connect').disabled = false; }
+    notice(models.length ? (isCloud(provider)
+      ? `Found ${models.length} cloud models. ${freeCount} free ${freeCount === 1 ? 'option' : 'options'} prioritized in recommendations.`
+      : `Connected to ${providerName}. Found ${models.length} local models; enter or choose one above.`)
+      : 'Connected, but no models were listed. Download or load a model in your server first.');
+  } catch (error) {
+    const detail = error.message;
+    notice(isCloud(provider)
+      ? `Could not load ${providerName} models. ${detail}`
+      : `Could not connect to ${providerName}. Check that its server is running and the model is loaded. ${detail}`, true);
+  } finally { $('connect').disabled = false; }
 };
 $('book-form').onsubmit = async event => {
   event.preventDefault(); $('start').disabled = true;
@@ -523,8 +606,11 @@ $('book-form').onsubmit = async event => {
 $('settings-form').onsubmit = async event => {
   event.preventDefault(); $('save-settings').disabled = true;
   try {
-    if ($('provider').value === 'openrouter') await saveEnteredKey();
-    const role_models = Object.fromEntries(MODEL_GROUPS.map(([group]) => [group, $(`role-${group}`).value.trim()]));
+    const provider = $('provider').value;
+    const cloud = isCloud(provider);
+    if (cloud) await saveEnteredKey();
+    const role_models = cloud
+      ? Object.fromEntries(MODEL_GROUPS.map(([group]) => [group, $(`role-${group}`).value.trim()])) : {};
     const settings = await api('/api/settings', {...connection(), role_models, max_calls_per_job: Number($('max-calls').value), max_output_tokens: Number($('max-tokens').value), timeout_seconds: Number($('timeout').value)});
     applySettings(settings); notice('Settings saved. New books will use this configuration.');
   } catch (error) { notice(error.message, true); } finally { $('save-settings').disabled = false; }
@@ -535,17 +621,20 @@ $('toggle-key').onclick = () => {
 };
 for (const [id, action] of [['save-key', 'save'], ['test-key', 'test'], ['remove-key', 'remove']]) {
   $(id).onclick = async () => {
+    const provider = $('provider').value;
+    if (!isCloud(provider)) return;
     for (const button of ['save-key', 'test-key', 'remove-key']) $(button).disabled = true;
     try {
       if (action === 'save') {
         if (!$('openrouter-key').value.trim()) throw new Error('Paste your API key first.');
         await saveEnteredKey(); notice('API key saved securely. You can now find models.');
       } else if (action === 'test') {
-        const result = await api('/api/openrouter-key', {action, key: $('openrouter-key').value.trim() || undefined});
+        const result = await api('/api/provider-key', {provider, action, key: $('openrouter-key').value.trim() || undefined});
         notice(result.message + ($('openrouter-key').value.trim() ? ' Select Save key to keep it.' : ''));
       } else {
-        renderKeyStatus(await api('/api/openrouter-key', {action})); clearKeyInput();
-        notice(keyStatus.configured ? `Saved key removed. Athena is using the key from ${keyStatus.source}.` : 'Saved API key removed from this computer.');
+        const status = await api('/api/provider-key', {provider, action});
+        renderKeyStatus(status); clearKeyInput();
+        notice(status.configured ? `Saved key removed. Athena is using the key from ${status.source}.` : 'Saved API key removed from this computer.');
       }
     } catch (error) { notice(error.message, true); }
     finally { for (const button of ['save-key', 'test-key', 'remove-key']) $(button).disabled = false; }
@@ -629,4 +718,16 @@ $('read').onclick = async () => {
   try { const response = await fetch(`/api/jobs/${id}/manuscript`); if (!response.ok) throw new Error('Manuscript is not available yet.'); const text = await response.text(); if (id === selected) { $('manuscript').textContent = text; $('reader').hidden = false; } }
   catch (error) { notice(error.message, true); } finally { $('read').disabled = false; }
 };
-(async () => { try { initializeRoleInputs(); const settings = await api('/api/bootstrap'); token = settings.token; endpoints = settings.endpoints; applySettings(await api('/api/settings')); renderKeyStatus(await api('/api/openrouter-key')); await route(); await refresh(); setInterval(refresh, 3000); } catch (error) { notice(error.message, true); } })();
+(async () => {
+  try {
+    initializeRoleInputs();
+    const settings = await api('/api/bootstrap');
+    token = settings.token; endpoints = settings.endpoints;
+    const currentSettings = await api('/api/settings');
+    applySettings(currentSettings);
+    if (isCloud(currentSettings.provider)) {
+      await updateKeyStatus(currentSettings.provider);
+    }
+    await route(); await refresh(); setInterval(refresh, 3000);
+  } catch (error) { notice(error.message, true); }
+})();
