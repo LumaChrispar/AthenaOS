@@ -10,7 +10,7 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 from job_runner import create_job, launch_worker, atomic_json
-from providers import ENDPOINTS, MODEL_GROUPS, model_overrides, list_models, model_info, api_key_for, openrouter_key_status, test_openrouter_key
+from providers import ENDPOINTS, MODEL_GROUPS, model_overrides, list_models, list_model_catalog, model_info, api_key_for, openrouter_key_status, test_openrouter_key
 import credentials
 from book_chat import read_messages, progress_messages, reply_to_book
 from job_lock import job_lock
@@ -203,6 +203,8 @@ class Handler(BaseHTTPRequestHandler):
             path = urlsplit(self.path).path
             if path == '/api/models':
                 self.respond({'models': list_models(data.get('provider'), data.get('base_url'), self.server.root)})
+            elif path == '/api/model-catalog':
+                self.respond({'models': list_model_catalog(data.get('provider'), data.get('base_url'), self.server.root)})
             elif path == '/api/model-info':
                 self.respond(model_info(data.get('provider'), data.get('model'), data.get('base_url'), self.server.root))
             elif path == '/api/openrouter-key':

@@ -6,6 +6,7 @@ const pendingReplies = new Set(), chatDrafts = new Map();
 let keyStatus = {configured: false, saved: false};
 const TABS = ['writing', 'pipeline', 'log'];
 let activeTab = 'writing', inspectSignature = '', logSignature = '', failureShown = false, inspecting = null;
+let modelCatalog = [];
 const MODEL_GROUPS = [
   ['architecture-reasoning', 'Planning and continuity'],
   ['character-world-building', 'Characters and world'],
@@ -71,12 +72,77 @@ function applySettings(settings) {
 function initializeRoleInputs() {
   const root = $('role-models');
   for (const [group, name] of MODEL_GROUPS) {
-    const wrap = el('div'), label = el('label', null, name), input = document.createElement('input'), note = el('small', 'hint');
-    input.id = `role-${group}`; input.dataset.group = group; input.setAttribute('list', 'model-options');
-    input.autocomplete = 'off'; input.placeholder = 'Use main model'; input.maxLength = 200;
+    const wrap = el('div'), label = el('label', null, name), input = document.createElement('select'), note = el('small', 'hint');
+    input.id = `role-${group}`; input.dataset.group = group;
     label.htmlFor = input.id; note.id = `fit-${group}`; note.textContent = 'Uses the main model';
     input.addEventListener('change', () => checkModelFit(input.value.trim(), note.id));
     wrap.append(label, input, note); root.append(wrap);
+  }
+}
+function candidateScore(model, role) {
+  const context = model.context_length || 0, output = model.max_output_tokens || 0;
+  const observed = model.observed || {};
+  const speed = observed.response_seconds > 0 ? observed.completion_tokens / observed.response_seconds : 0;
+  if (role === 'prose-generation' || role === 'voice-variation') return speed ? speed * 10000 + output : output;
+  if (role === 'architecture-reasoning' || role === 'character-world-building' || role === 'analysis-critique') return context * 2 + output;
+  return context + output + speed * 1000;
+}
+function recommendationList(role = 'main') {
+  const free = modelCatalog.filter(model => model.free);
+  const candidates = free.length ? free : modelCatalog;
+  const sorted = [...candidates].sort((a, b) => candidateScore(b, role) - candidateScore(a, role));
+  return sorted;
+}
+function modelOptionLabel(model) {
+  const parts = [model.free ? 'free' : 'paid'];
+  if (model.context_length) parts.push(`${formatNumber(model.context_length)} ctx`);
+  const stats = model.observed || {};
+  if (stats.response_seconds > 0 && stats.completion_tokens > 0) {
+    parts.push(`${Math.round(stats.completion_tokens / stats.response_seconds)} tok/s observed`);
+  }
+  return `${model.id} · ${parts.join(' · ')}`;
+}
+function recommendationReason(model, role, index) {
+  const stats = model.observed || {};
+  const speed = stats.response_seconds > 0 && stats.completion_tokens > 0;
+  if (role === 'main') return index === 0 ? 'balanced free recommendation' : 'free alternative';
+  if ((role === 'prose-generation' || role === 'voice-variation') && speed && index === 0) return 'fastest observed here';
+  if (['architecture-reasoning', 'character-world-building', 'analysis-critique'].includes(role) && index === 0 && model.context_length) return 'highest advertised capacity';
+  if ((role === 'prose-generation' || role === 'voice-variation') && index === 0 && model.max_output_tokens) return 'largest advertised output';
+  return model.free ? 'free alternative' : 'available alternative';
+}
+function fillModelSelect(select, role = 'main', preferred = '', preserveEmpty = false) {
+  select.replaceChildren();
+  select.append(new Option(role === 'main' ? 'Choose a main model…' : 'Use the main model', ''));
+  const recommendations = recommendationList(role);
+  if (recommendations.length) {
+    const group = document.createElement('optgroup'); group.label = modelCatalog.some(model => model.free)
+      ? 'Recommended · free prioritized' : 'Recommended available models';
+    recommendations.slice(0, 3).forEach((model, index) => {
+      const kind = model.free ? 'free pick' : 'available pick';
+      const reason = recommendationReason(model, role, index);
+      const option = new Option(`${model.id} · ${reason} · ${kind}`, model.id);
+      group.append(option);
+    });
+    select.append(group);
+  }
+  const all = document.createElement('optgroup'); all.label = 'All available models · free first';
+  const ordered = [...modelCatalog].sort((a, b) => Number(b.free) - Number(a.free) || a.id.localeCompare(b.id));
+  for (const model of ordered) all.append(new Option(modelOptionLabel(model), model.id));
+  select.append(all);
+  const values = new Set(modelCatalog.map(model => model.id));
+  if (preferred && values.has(preferred)) select.value = preferred;
+  else if (preserveEmpty) select.value = '';
+  else select.value = recommendations[0]?.id || '';
+}
+function fillModelSelectors() {
+  const sameProvider = savedSettings?.provider === $('provider').value;
+  const previousMain = sameProvider ? savedSettings?.model : $('model').value;
+  fillModelSelect($('model'), 'main', previousMain);
+  for (const [group] of MODEL_GROUPS) {
+    const hasSavedChoice = sameProvider && Object.hasOwn(savedSettings?.role_models || {}, group);
+    const preferred = hasSavedChoice ? savedSettings.role_models[group] : '';
+    fillModelSelect($(`role-${group}`), group, preferred, hasSavedChoice && !preferred);
   }
 }
 async function checkModelFit(model = $('model').value.trim(), target = 'model-fit') {
@@ -84,14 +150,21 @@ async function checkModelFit(model = $('model').value.trim(), target = 'model-fi
   if (!model) { node.textContent = target === 'model-fit' ? 'Choose a model to check its advertised limits.' : 'Uses the main model'; return; }
   node.textContent = 'Checking model limits…';
   try {
-    const info = await api('/api/model-info', {...connection(), model});
+    const cached = modelCatalog.find(entry => entry.id === model);
+    const info = cached ? {available: true, context_length: cached.context_length, max_output_tokens: cached.max_output_tokens}
+      : await api('/api/model-info', {...connection(), model});
     if (request !== fitRequest && target === 'model-fit') return;
     if (!info.available) { node.textContent = 'This server does not advertise model limits; Athena will use conservative defaults.'; return; }
     const details = [info.context_length ? `${formatNumber(info.context_length)} context` : '', info.max_output_tokens ? `${formatNumber(info.max_output_tokens)} max output` : ''].filter(Boolean).join(' · ');
+    const catalogEntry = modelCatalog.find(entry => entry.id === model);
+    const priceLabel = catalogEntry ? (catalogEntry.free ? 'free' : 'paid') : '';
+    const stats = catalogEntry?.observed || {};
+    const speedLabel = stats.response_seconds > 0 && stats.completion_tokens > 0
+      ? `${Math.round(stats.completion_tokens / stats.response_seconds)} tokens/s observed here` : '';
     if (!details) { node.textContent = 'Model found; its context and output limits are not advertised.'; return; }
     const cap = target === 'model-fit' ? Number($('max-tokens').value) : 0;
-    node.textContent = target === 'model-fit' && info.max_output_tokens && cap > info.max_output_tokens
-      ? `${details}. Athena will cap responses to this model’s limit.` : details;
+    const suffix = [priceLabel, speedLabel].filter(Boolean).join(' · ');
+    node.textContent = `${details}${suffix ? ` · ${suffix}` : ''}${target === 'model-fit' && info.max_output_tokens && cap > info.max_output_tokens ? '. Athena will cap responses to this model’s limit.' : ''}`;
   } catch (error) { node.textContent = `Could not check model limits: ${error.message}`; }
 }
 function title(job) { return job.metadata?.title || job.concept.slice(0, 65); }
@@ -422,7 +495,8 @@ function connectionHelp() {
 }
 $('provider').onchange = () => {
   clearKeyInput();
-  $('base-url').value = endpoints[$('provider').value]; $('model').value = ''; $('model-options').replaceChildren();
+  $('base-url').value = endpoints[$('provider').value]; modelCatalog = [];
+  $('model').replaceChildren(new Option('Find available models first…', ''));
   for (const [group] of MODEL_GROUPS) $(`role-${group}`).value = '';
   connectionHelp();
   checkModelFit();
@@ -432,10 +506,10 @@ $('max-tokens').addEventListener('input', () => checkModelFit());
 $('connect').onclick = async () => {
   $('connect').disabled = true; notice('Connecting to your model server…');
   try {
-    const {models} = await api('/api/models', connection()); $('model-options').replaceChildren();
-    for (const model of models) { const option = document.createElement('option'); option.value = model; $('model-options').append(option); }
-    if (models.length && !$('model').value) $('model').value = models[0];
-    notice(models.length ? `Connected. ${models.length} model${models.length === 1 ? '' : 's'} available. Choose one in the Model field.` : 'Connected, but no models were listed. Download or load a model in your server first.');
+    const {models} = await api('/api/model-catalog', connection()); modelCatalog = models;
+    fillModelSelectors(); checkModelFit();
+    const freeCount = models.filter(model => model.free).length;
+    notice(models.length ? `Found ${models.length} models. ${freeCount} free ${freeCount === 1 ? 'option' : 'options'} prioritized in the recommendations.` : 'Connected, but no models were listed. Download or load a model in your server first.');
   } catch (error) { notice(`Could not connect. Check that your model server is running. ${error.message}`, true); } finally { $('connect').disabled = false; }
 };
 $('book-form').onsubmit = async event => {

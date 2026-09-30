@@ -169,6 +169,12 @@ class AthenaLLMClient:
                 'response_seconds': 0.0, 'failures': 0,
             })
             service_usage['calls'] += 1
+            by_model = usage.setdefault('by_model', {})
+            model_usage = by_model.setdefault(model_name, {
+                'calls': 0, 'prompt_tokens': 0, 'completion_tokens': 0,
+                'response_seconds': 0.0, 'failures': 0,
+            })
+            model_usage['calls'] += 1
             atomic_json(self.usage_path, usage)
             request_started = time.monotonic()
             response = self.client.chat.completions.create(
@@ -188,6 +194,8 @@ class AthenaLLMClient:
                 usage['completion_tokens'] += completion_count
                 service_usage['prompt_tokens'] += prompt_count
                 service_usage['completion_tokens'] += completion_count
+                model_usage['prompt_tokens'] += prompt_count
+                model_usage['completion_tokens'] += completion_count
             atomic_json(self.usage_path, usage)
             if response.choices[0].finish_reason == 'length':
                 raise RuntimeError('The model reached its response or context limit before finishing. '
@@ -198,6 +206,7 @@ class AthenaLLMClient:
             if not content or not content.strip():
                 raise ValueError('Model returned empty content.')
             service_usage['response_seconds'] += round(time.monotonic() - request_started, 2)
+            model_usage['response_seconds'] += round(time.monotonic() - request_started, 2)
             atomic_json(self.usage_path, usage)
             return content.strip()
         except Exception as e:
@@ -207,6 +216,8 @@ class AthenaLLMClient:
                 if 'service_usage' in locals():
                     service_usage['response_seconds'] += duration
                     service_usage['failures'] += 1
+                    model_usage['response_seconds'] += duration
+                    model_usage['failures'] += 1
                     atomic_json(self.usage_path, usage)
             if isinstance(e, APIConnectionError):
                 cause = type(e.__cause__).__name__ if e.__cause__ else 'unknown transport error'

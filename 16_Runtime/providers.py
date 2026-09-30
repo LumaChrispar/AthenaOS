@@ -1,5 +1,6 @@
 """Connection settings shared by the worker, CLI, and local UI."""
 import os
+import json
 from pathlib import Path
 from urllib.parse import urlsplit
 import credentials
@@ -114,6 +115,61 @@ def model_info(provider, model, base_url=None, root=None):
     return {'model': model.strip(), 'available': True,
             'context_length': context if type(context) is int and context > 0 else None,
             'max_output_tokens': output if type(output) is int and output > 0 else None}
+
+
+def list_model_catalog(provider, base_url=None, root=None):
+    """List selectable models and their advertised capability metadata."""
+    import httpx
+    settings = connection_settings(provider, base_url)
+    try:
+        response = httpx.get(settings['base_url'] + '/models',
+                             headers={'Authorization': 'Bearer ' + api_key_for(provider, root)},
+                             timeout=10, follow_redirects=False)
+        response.raise_for_status()
+        records = response.json().get('data', [])
+    except (httpx.HTTPError, ValueError, TypeError, AttributeError):
+        raise ValueError('Could not read the model list. Check the provider connection and try again.') from None
+    observed = {}
+    jobs = Path(root or Path(__file__).resolve().parents[1]) / 'jobs'
+    if jobs.is_dir():
+        for config_path in jobs.glob('*/config/models.yaml'):
+            try:
+                import yaml
+                config = yaml.safe_load(config_path.read_text(encoding='utf-8')) or {}
+                connection = config.get('connection', {})
+                if connection.get('provider') != settings['provider'] or (base_url and connection.get('base_url', '').rstrip('/') != settings['base_url']):
+                    continue
+                usage_path = config_path.parent.parent / '08_Memory' / 'usage.json'
+                usage = json.loads(usage_path.read_text(encoding='utf-8')) if usage_path.exists() else {}
+                for model_id, stats in (usage.get('by_model') or {}).items():
+                    current = observed.setdefault(model_id, {'calls': 0, 'completion_tokens': 0, 'response_seconds': 0.0})
+                    for key in current:
+                        current[key] += stats.get(key, 0)
+            except (OSError, ValueError, TypeError):
+                continue
+    catalog = []
+    for row in records:
+        if not isinstance(row, dict) or not isinstance(row.get('id'), str):
+            continue
+        top = row.get('top_provider') or {}
+        context = row.get('context_length') or row.get('context_window')
+        output = row.get('max_completion_tokens') or top.get('max_completion_tokens')
+        pricing = row.get('pricing') if isinstance(row.get('pricing'), dict) else {}
+        free = settings['provider'] != 'openrouter' or row['id'].endswith(':free')
+        if settings['provider'] == 'openrouter' and pricing:
+            try:
+                free = float(pricing.get('prompt', 1)) == 0 and float(pricing.get('completion', 1)) == 0
+            except (TypeError, ValueError):
+                pass
+        catalog.append({
+            'id': row['id'], 'name': row.get('name') or row['id'],
+            'description': row.get('description') or '',
+            'context_length': context if type(context) is int and context > 0 else None,
+            'max_output_tokens': output if type(output) is int and output > 0 else None,
+            'pricing': pricing, 'free': free,
+            'observed': observed.get(row['id'], {}),
+        })
+    return sorted(catalog, key=lambda item: item['id'].casefold())
 
 
 def test_openrouter_key(key=None, root=None):
