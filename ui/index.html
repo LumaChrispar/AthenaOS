@@ -54,7 +54,7 @@
         <div class="section-title"><span class="step-number">02</span><div><h2>Generation limits</h2><p>Control how much work Athena can do for each book.</p></div></div>
         <div class="grid">
           <div><label for="max-calls">Maximum model requests per book</label><input id="max-calls" type="number" min="1" max="10000" required value="200"><p class="hint">Includes retries. Athena pauses when this limit is reached.</p></div>
-          <div><label for="max-tokens">Maximum output tokens per response</label><input id="max-tokens" type="number" min="256" max="131072" required value="8192"><p class="hint">Must fit your model’s output and context limits.</p></div>
+          <div><label for="max-tokens">Maximum output tokens per response</label><input id="max-tokens" type="number" min="256" max="131072" required value="8192"><p class="hint">Upper bound. Athena automatically lowers it to fit the selected model’s advertised output and context limits.</p></div>
           <div><label for="timeout">Response timeout (seconds)</label><input id="timeout" type="number" min="30" max="3600" required value="900"><p class="hint">Give slower local models more time to finish a response.</p></div>
         </div>
       </div>

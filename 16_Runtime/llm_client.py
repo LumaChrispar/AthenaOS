@@ -8,6 +8,47 @@ import json
 from job_runner import atomic_json
 from providers import connection_settings, api_key_for
 
+_MODEL_LIMIT_CACHE = {}
+
+
+def _model_limits(provider, base_url, api_key, model_name):
+    """Read advertised context/output limits when the server exposes them."""
+    import httpx
+
+    cache_key = (provider, base_url, model_name)
+    if cache_key in _MODEL_LIMIT_CACHE:
+        return _MODEL_LIMIT_CACHE[cache_key]
+    try:
+        response = httpx.get(
+            base_url.rstrip('/') + '/models',
+            headers={'Authorization': 'Bearer ' + api_key},
+            timeout=10,
+            follow_redirects=False,
+        )
+        response.raise_for_status()
+        rows = response.json().get('data', [])
+        model = next((row for row in rows if row.get('id') == model_name), None)
+        if not model:
+            return None, None
+        context = model.get('context_length') or model.get('context_window')
+        maximum = model.get('max_completion_tokens')
+        if maximum is None:
+            maximum = (model.get('top_provider') or {}).get('max_completion_tokens')
+        limits = (context if type(context) is int and context > 0 else None,
+                  maximum if type(maximum) is int and maximum > 0 else None)
+        if any(limit is not None for limit in limits):
+            _MODEL_LIMIT_CACHE[cache_key] = limits
+        return limits
+    except (httpx.HTTPError, ValueError, TypeError, AttributeError):
+        # Many local OpenAI-compatible servers omit model metadata. The runtime
+        # then uses a conservative fallback instead of preventing a job from starting.
+        return None, None
+
+
+def _estimate_tokens(text):
+    # Conservative rough estimate for mixed prose/JSON without a model tokenizer.
+    return max(1, (len(text) + 2) // 3)
+
 def with_retry(max_attempts=3, base_delay=2.0):
     """Exponential backoff retry decorator for LLM calls."""
     RETRYABLE_ERRORS = ['timeout', 'rate_limit', 'connection', '429', '503', '502', '504']
@@ -41,16 +82,21 @@ class AthenaLLMClient:
         connection = self.config.get('connection', {})
         settings = connection_settings(connection.get('provider', 'openrouter'), connection.get('base_url'))
         self.provider = settings['provider']
+        self.base_url = settings['base_url']
+        api_key = api_key_for(self.provider)
+        self.api_key = api_key
         
         self.client = OpenAI(
             base_url=settings['base_url'],
-            api_key=api_key_for(self.provider),
+            api_key=api_key,
             timeout=connection.get('timeout_seconds', 900 if self.provider != 'openrouter' else 300),
             max_retries=0,
         )
         self.usage_path = os.path.join(os.path.dirname(config_path), '..', '08_Memory', 'usage.json')
         self.max_calls = self.config.get('max_calls_per_job', 200)
         self.max_output_tokens = self.config.get('max_output_tokens', 8192)
+        self.fallback_context_tokens = self.config.get('fallback_context_tokens', 32768)
+        self.model_limits = {}
         
         # Build capability -> model mapping from models.yaml
         self.capability_model = {}
@@ -88,6 +134,19 @@ class AthenaLLMClient:
         model_config = self.get_model_for_service(service_id)
         model_name = model_config.get("model", self.default_model)
         temperature = model_config.get("temperature", self.default_temp)
+
+        if model_name not in self.model_limits:
+            self.model_limits[model_name] = _model_limits(
+                self.provider, self.base_url, self.api_key, model_name)
+        context_limit, model_output_limit = self.model_limits[model_name]
+        context_limit = context_limit or self.fallback_context_tokens
+        output_limit = min(self.max_output_tokens,
+                           model_output_limit or min(self.max_output_tokens, 8192))
+        prompt_tokens = _estimate_tokens(system_prompt) + _estimate_tokens(user_prompt)
+        # Keep a 10% context reserve (at least 512 tokens) for tokenizer variance
+        # and provider-side message framing.
+        available = context_limit - prompt_tokens - max(512, context_limit // 10)
+        request_output_tokens = min(output_limit, max(256, available))
         
         print(f"[{service_id}] Sending task (model: {model_name}, temp: {temperature})...")
         
@@ -108,7 +167,7 @@ class AthenaLLMClient:
                     {"role": "user", "content": user_prompt}
                 ],
                 temperature=temperature,
-                max_tokens=self.max_output_tokens,
+                max_tokens=request_output_tokens,
             )
             if response.usage:
                 usage['prompt_tokens'] += response.usage.prompt_tokens or 0
