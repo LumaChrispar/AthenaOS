@@ -1,0 +1,41 @@
+
+--- STAGE 1: CONCEPT & INTAKE (SRV-001) ---
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\a8551c09f38d4a9ba6b433fd47a89da6\08_Memory\intake_brief.json
+[SRV-001] Sending task (model: stealth/space-bunny-alpha, temp: 0.15)...
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\a8551c09f38d4a9ba6b433fd47a89da6\08_Memory\ceo_intake_decision.json
+Intake decision: APPROVED
+
+--- PHASE 1: STORY ARCHITECTURE (SRV-002) ---
+[SRV-002] Sending task (model: stealth/space-bunny-alpha, temp: 0.15)...
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\a8551c09f38d4a9ba6b433fd47a89da6\08_Memory\outline.json
+Phase 1 Complete. Triggered event: OutlineCompleted
+
+--- PHASE 2: CHARACTER PSYCHOLOGY (SRV-003) ---
+[SRV-003] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\a8551c09f38d4a9ba6b433fd47a89da6\08_Memory\psychology.json
+Phase 2 Complete. Triggered event: CharacterPsychologyComplete
+
+--- PHASE 3: WORLD BUILDING (SRV-004) ---
+[SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+Connection failed. Check your internet connection and OpenRouter availability. Transport: ReadError. Saved steps are kept; resume when the connection is ready.
+[RETRY 1/3] Connection failed. Check your internet connection and OpenRouter availability. Transport: ReadError. Saved steps are kept; resume when the connection is ready.. Waiting 2.0s...
+[SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+Connection failed. Check your internet connection and OpenRouter availability. Transport: ConnectError. Saved steps are kept; resume when the connection is ready.
+[RETRY 2/3] Connection failed. Check your internet connection and OpenRouter availability. Transport: ConnectError. Saved steps are kept; resume when the connection is ready.. Waiting 4.0s...
+[SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+Response timed out. Increase the response timeout or reduce the request size. Transport: ReadTimeout. Saved steps are kept; resume when the connection is ready.
+Job stopped: Response timed out. Increase the response timeout or reduce the request size. Transport: ReadTimeout. Saved steps are kept; resume when the connection is ready.
+
+--- PHASE 3: WORLD BUILDING (SRV-004) ---
+[SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+Error: Model did not output valid JSON for story_bible.json: Expecting value: line 1 column 1 (char 0)
+Saved raw output to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\a8551c09f38d4a9ba6b433fd47a89da6\08_Memory\story_bible.json.raw
+
+--- PHASE 3: WORLD BUILDING (SRV-004) ---
+[SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+Error calling model API: Model returned empty content.
+
+--- PHASE 3: WORLD BUILDING (SRV-004) ---
+[SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
+Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
