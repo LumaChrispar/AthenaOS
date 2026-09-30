@@ -6,6 +6,14 @@ const pendingReplies = new Set(), chatDrafts = new Map();
 let keyStatus = {configured: false, saved: false};
 const TABS = ['writing', 'pipeline', 'log'];
 let activeTab = 'writing', inspectSignature = '', logSignature = '', failureShown = false, inspecting = null;
+const MODEL_GROUPS = [
+  ['architecture-reasoning', 'Planning and continuity'],
+  ['character-world-building', 'Characters and world'],
+  ['prose-generation', 'Prose and editing'],
+  ['voice-variation', 'Voice calibration'],
+  ['analysis-critique', 'Analysis and critique'],
+];
+let fitRequest = 0;
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -57,6 +65,34 @@ function applySettings(settings) {
   $('max-calls').value = settings.max_calls_per_job; $('max-tokens').value = settings.max_output_tokens; $('timeout').value = settings.timeout_seconds;
   connectionHelp();
   $('saved-model').textContent = settings.model ? `${settings.provider === 'lmstudio' ? 'LM Studio' : settings.provider === 'ollama' ? 'Ollama' : 'OpenRouter'} · ${settings.model}` : 'Choose your writing model in Settings to get started.';
+  for (const [group] of MODEL_GROUPS) $(`role-${group}`).value = settings.role_models?.[group] || '';
+  checkModelFit();
+}
+function initializeRoleInputs() {
+  const root = $('role-models');
+  for (const [group, name] of MODEL_GROUPS) {
+    const wrap = el('div'), label = el('label', null, name), input = document.createElement('input'), note = el('small', 'hint');
+    input.id = `role-${group}`; input.dataset.group = group; input.setAttribute('list', 'model-options');
+    input.autocomplete = 'off'; input.placeholder = 'Use main model'; input.maxLength = 200;
+    label.htmlFor = input.id; note.id = `fit-${group}`; note.textContent = 'Uses the main model';
+    input.addEventListener('change', () => checkModelFit(input.value.trim(), note.id));
+    wrap.append(label, input, note); root.append(wrap);
+  }
+}
+async function checkModelFit(model = $('model').value.trim(), target = 'model-fit') {
+  const node = $(target), request = ++fitRequest;
+  if (!model) { node.textContent = target === 'model-fit' ? 'Choose a model to check its advertised limits.' : 'Uses the main model'; return; }
+  node.textContent = 'Checking model limits…';
+  try {
+    const info = await api('/api/model-info', {...connection(), model});
+    if (request !== fitRequest && target === 'model-fit') return;
+    if (!info.available) { node.textContent = 'This server does not advertise model limits; Athena will use conservative defaults.'; return; }
+    const details = [info.context_length ? `${formatNumber(info.context_length)} context` : '', info.max_output_tokens ? `${formatNumber(info.max_output_tokens)} max output` : ''].filter(Boolean).join(' · ');
+    if (!details) { node.textContent = 'Model found; its context and output limits are not advertised.'; return; }
+    const cap = target === 'model-fit' ? Number($('max-tokens').value) : 0;
+    node.textContent = target === 'model-fit' && info.max_output_tokens && cap > info.max_output_tokens
+      ? `${details}. Athena will cap responses to this model’s limit.` : details;
+  } catch (error) { node.textContent = `Could not check model limits: ${error.message}`; }
 }
 function title(job) { return job.metadata?.title || job.concept.slice(0, 65); }
 function label(step) { return (step || 'Preparing your book').replaceAll('_', ' ').replace(/^\w/, c => c.toUpperCase()); }
@@ -104,7 +140,10 @@ function renderMessages(job) {
 }
 function renderDetail(job) {
   $('book-title').textContent = title(job); $('book-concept').textContent = job.concept;
-  $('status').textContent = job.status; $('book-model').textContent = `${job.provider} / ${job.model}`;
+  $('status').textContent = job.status;
+  const roleOverrides = Object.entries(job.role_models || {}).filter(([, model]) => model && model !== job.model);
+  $('book-model').textContent = `${job.provider} / ${job.model}${roleOverrides.length ? ` · ${roleOverrides.length} role overrides` : ''}`;
+  $('book-model').title = roleOverrides.map(([group, model]) => `${group}: ${model}`).join('\n');
   $('active-step').textContent = job.status === 'completed' ? 'Your manuscript is ready.' : label(job.active_step);
   const runningFor = job.status === 'running' && job.active_started_at ? (Date.now() / 1000 - job.active_started_at) : null;
   const stepTime = runningFor === null ? job.step_durations_seconds?.[job.active_step] : runningFor;
@@ -116,6 +155,7 @@ function renderDetail(job) {
     const item = document.createElement('div'), number = document.createElement('strong'); number.textContent = value; item.append(number, document.createTextNode(name)); $('metrics').append(item);
   }
   $('resume').hidden = $('resume-current').hidden = job.status === 'completed' || job.status === 'running';
+  $('resume-safer').hidden = job.status !== 'failed';
   $('continue-book').hidden = job.status !== 'completed';
   $('edit-book').disabled = $('delete-book').disabled = job.status === 'running';
   $('download').hidden = $('read').hidden = !job.download_ready;
@@ -185,7 +225,8 @@ function renderInspector(detail) {
     const body = el('div', 'stage-body');
     const title = el('div', 'stage-title');
     title.append(el('span', 'stage-label', stage.label), el('code', 'stage-service', stage.service));
-    body.append(title, el('p', 'stage-note', stage.note), el('p', 'stage-artifact', stage.artifact));
+    const duration = stage.duration_seconds === null || stage.duration_seconds === undefined ? '' : ` · ${elapsed(stage.duration_seconds)}`;
+    body.append(title, el('p', 'stage-note', stage.note + duration), el('p', 'stage-artifact', stage.artifact));
     row.append(body);
     rail.append(row);
   }
@@ -209,6 +250,17 @@ function renderInspector(detail) {
   neededRow.append(el('td', null, 'Context needed'), el('td', 'num', formatNumber(context.context_needed)), el('td', 'num muted', 'tokens'));
   table.append(promptTotal, outputRow, neededRow);
   ctx.append(el('p', 'pipe-caption', 'What one prose request sends and expects back. Measured from the files on disk.'), table, el('p', 'pipe-advice', context.advice));
+  if (context.preview?.length) {
+    const preview = document.createElement('details'); preview.className = 'prompt-preview';
+    preview.append(el('summary', null, 'Preview prompt inputs'));
+    preview.append(el('p', 'pipe-caption', 'Read-only excerpts from the files used in the next chapter draft request. Long inputs are shortened here.'));
+    for (const part of context.preview) {
+      const item = document.createElement('details'); item.className = 'prompt-part';
+      item.append(el('summary', null, `${part.label} · ${kib(part.bytes)}`));
+      const pre = document.createElement('pre'); pre.textContent = part.text; item.append(pre); preview.append(item);
+    }
+    ctx.append(preview);
+  }
   root.append(ctx);
 
   // Beat sheet
@@ -262,6 +314,20 @@ function renderInspector(detail) {
   definition(totals, 'Completion tokens', formatNumber(budget.completion_tokens));
   definition(totals, 'Total tokens', formatNumber(budget.prompt_tokens + budget.completion_tokens));
   calls.append(totals);
+  if (Object.keys(budget.by_service || {}).length) {
+    const table = document.createElement('table'); table.className = 'pipe-table service-usage';
+    const head = document.createElement('tr');
+    for (const title of ['Service', 'Calls', 'Tokens', 'Response time']) head.append(el('th', null, title));
+    table.append(head);
+    for (const [service, row] of Object.entries(budget.by_service)) {
+      const tr = document.createElement('tr');
+      tr.append(el('td', null, service), el('td', 'num', formatNumber(row.calls)),
+        el('td', 'num', formatNumber(row.prompt_tokens + row.completion_tokens)),
+        el('td', 'num', elapsed(row.response_seconds)));
+      table.append(tr);
+    }
+    calls.append(table);
+  }
   if (budget.warn) calls.append(el('p', 'pipe-advice', 'This book is close to its per-book call limit. Raise it in Settings before resuming, or the worker will stop.'));
   root.append(calls);
 
@@ -357,8 +423,12 @@ function connectionHelp() {
 $('provider').onchange = () => {
   clearKeyInput();
   $('base-url').value = endpoints[$('provider').value]; $('model').value = ''; $('model-options').replaceChildren();
+  for (const [group] of MODEL_GROUPS) $(`role-${group}`).value = '';
   connectionHelp();
+  checkModelFit();
 };
+$('model').addEventListener('change', () => checkModelFit());
+$('max-tokens').addEventListener('input', () => checkModelFit());
 $('connect').onclick = async () => {
   $('connect').disabled = true; notice('Connecting to your model server…');
   try {
@@ -380,7 +450,8 @@ $('settings-form').onsubmit = async event => {
   event.preventDefault(); $('save-settings').disabled = true;
   try {
     if ($('provider').value === 'openrouter') await saveEnteredKey();
-    const settings = await api('/api/settings', {...connection(), max_calls_per_job: Number($('max-calls').value), max_output_tokens: Number($('max-tokens').value), timeout_seconds: Number($('timeout').value)});
+    const role_models = Object.fromEntries(MODEL_GROUPS.map(([group]) => [group, $(`role-${group}`).value.trim()]));
+    const settings = await api('/api/settings', {...connection(), role_models, max_calls_per_job: Number($('max-calls').value), max_output_tokens: Number($('max-tokens').value), timeout_seconds: Number($('timeout').value)});
     applySettings(settings); notice('Settings saved. New books will use this configuration.');
   } catch (error) { notice(error.message, true); } finally { $('save-settings').disabled = false; }
 };
@@ -417,6 +488,11 @@ $('resume-current').onclick = async () => {
   const id = selected; $('resume-current').disabled = true;
   try { await api(`/api/jobs/${id}/resume`, {use_current_settings: true}); notice('Resuming with your saved Settings. Completed work is kept.'); await refresh(); }
   catch (error) { notice(error.message, true); } finally { $('resume-current').disabled = false; }
+};
+$('resume-safer').onclick = async () => {
+  const id = selected; $('resume-safer').disabled = true;
+  try { await api(`/api/jobs/${id}/resume`, {use_current_settings: true, safer_limits: true}); notice('Resuming with current Settings and a 4,096-token response cap. Completed work is kept.'); await refresh(); }
+  catch (error) { notice(error.message, true); } finally { $('resume-safer').disabled = false; }
 };
 $('delete-book').onclick = async () => {
   const id = selected;
@@ -479,4 +555,4 @@ $('read').onclick = async () => {
   try { const response = await fetch(`/api/jobs/${id}/manuscript`); if (!response.ok) throw new Error('Manuscript is not available yet.'); const text = await response.text(); if (id === selected) { $('manuscript').textContent = text; $('reader').hidden = false; } }
   catch (error) { notice(error.message, true); } finally { $('read').disabled = false; }
 };
-(async () => { try { const settings = await api('/api/bootstrap'); token = settings.token; endpoints = settings.endpoints; applySettings(await api('/api/settings')); renderKeyStatus(await api('/api/openrouter-key')); await route(); await refresh(); setInterval(refresh, 3000); } catch (error) { notice(error.message, true); } })();
+(async () => { try { initializeRoleInputs(); const settings = await api('/api/bootstrap'); token = settings.token; endpoints = settings.endpoints; applySettings(await api('/api/settings')); renderKeyStatus(await api('/api/openrouter-key')); await route(); await refresh(); setInterval(refresh, 3000); } catch (error) { notice(error.message, true); } })();

@@ -49,6 +49,8 @@
         </div>
         <div class="model-row"><div><label for="model">Model</label><input id="model" list="model-options" required placeholder="Connect to find your installed models" autocomplete="off"><datalist id="model-options"></datalist></div><button type="button" id="connect" class="secondary">Find models</button></div>
         <p id="connection-help" class="hint">Start Ollama and download a model, then select Find models. Generation stays with the server you choose.</p>
+        <p id="model-fit" class="model-fit hint" role="status" aria-live="polite">Choose a model to check its advertised limits.</p>
+        <details class="role-routing"><summary>Choose models by role</summary><p class="hint">Leave a role blank to use the main model. All role models use the selected provider.</p><div id="role-models" class="grid"></div></details>
       </div>
       <div class="connection-card">
         <div class="section-title"><span class="step-number">02</span><div><h2>Generation limits</h2><p>Control how much work Athena can do for each book.</p></div></div>
@@ -75,7 +77,7 @@
           <article class="message user-message"><div class="message-label">You</div><div id="book-concept" class="message-body"></div></article>
           <div class="activity-heading"><span class="avatar">A</span><div><strong>Athena</strong><span>Writing activity · live updates</span></div></div>
           <div id="activity-messages" aria-label="Writing activity" aria-live="polite" aria-relevant="additions text"></div>
-          <div class="actions"><button id="resume" class="secondary">Resume writing ↗</button><button id="resume-current" class="secondary">Resume with current settings</button><a id="download" class="button" hidden>Download manuscript ↓</a><button id="read" class="secondary" hidden>Read manuscript</button><button id="edit-book" class="secondary">Edit book</button><button id="continue-book" class="secondary" hidden>Continue story</button><button id="delete-book" class="secondary">Delete book</button></div>
+          <div class="actions"><button id="resume" class="secondary">Resume writing ↗</button><button id="resume-current" class="secondary">Resume with current settings</button><button id="resume-safer" class="secondary" hidden>Resume with safer limits (4K output)</button><a id="download" class="button" hidden>Download manuscript ↓</a><button id="read" class="secondary" hidden>Read manuscript</button><button id="edit-book" class="secondary">Edit book</button><button id="continue-book" class="secondary" hidden>Continue story</button><button id="delete-book" class="secondary">Delete book</button></div>
           <article id="reader" hidden><pre id="manuscript"></pre></article>
           <div id="chat-messages" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
           <div id="chat-pending" class="reply-pending" hidden><span class="avatar">A</span><span>Athena is thinking<span class="thinking-dots">…</span></span></div>
@@ -83,7 +85,7 @@
       </div>
       <div class="reply-area"><form id="chat-form" class="composer"><label for="chat-input" class="visually-hidden">Message Athena about this book</label><textarea id="chat-input" maxlength="8000" rows="2" required placeholder="Ask Athena about your story or its progress…"></textarea><div class="composer-toolbar"><span class="hint">A conversation about your book</span><button id="send-chat" type="submit" class="send-button" aria-label="Send message">↑</button></div></form><p class="composer-note">Replies use your book’s model. Chat can discuss ideas and suggest text; it doesn’t edit the manuscript.</p></div>
     </div>
-    <div id="pipeline-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-pipeline" hidden>
+          <div id="pipeline-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-pipeline" hidden>
       <div class="pipeline-head"><p id="active-step"></p><p id="progress-text" class="hint"></p></div>
       <div id="pipeline-view" class="pipeline"></div>
       <pre id="artifact-viewer" hidden></pre>

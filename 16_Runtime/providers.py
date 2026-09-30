@@ -10,6 +10,14 @@ ENDPOINTS = {
     'ollama': 'http://127.0.0.1:11434/v1',
 }
 
+MODEL_GROUPS = {
+    'architecture-reasoning': ['SRV-001', 'SRV-002', 'SRV-007', 'SRV-010', 'SRV-016'],
+    'character-world-building': ['SRV-003', 'SRV-004', 'SRV-011', 'SRV-012', 'SRV-015'],
+    'prose-generation': ['SRV-005', 'SRV-006', 'SRV-008', 'SRV-013'],
+    'voice-variation': ['SRV-027', 'SRV-028'],
+    'analysis-critique': ['SRV-009', 'SRV-014', 'SRV-019', 'SRV-022', 'SRV-023', 'SRV-026'],
+}
+
 
 def connection_settings(provider='openrouter', base_url=None):
     if provider not in ENDPOINTS:
@@ -80,6 +88,32 @@ def list_models(provider, base_url=None, root=None):
     settings = connection_settings(provider, base_url)
     with OpenAI(base_url=settings['base_url'], api_key=api_key_for(provider, root), timeout=10, max_retries=0) as client:
         return sorted(model.id for model in client.models.list().data)
+
+
+def model_info(provider, model, base_url=None, root=None):
+    """Return public capability metadata for one model, when its server exposes it."""
+    import httpx
+    settings = connection_settings(provider, base_url)
+    if not isinstance(model, str) or not model.strip():
+        raise ValueError('Choose a model first.')
+    try:
+        response = httpx.get(settings['base_url'] + '/models',
+                             headers={'Authorization': 'Bearer ' + api_key_for(provider, root)},
+                             timeout=10, follow_redirects=False)
+        response.raise_for_status()
+        rows = response.json().get('data', [])
+        record = next((row for row in rows if row.get('id') == model.strip()), None)
+    except (httpx.HTTPError, ValueError, TypeError, AttributeError):
+        return {'model': model.strip(), 'available': False, 'context_length': None,
+                'max_output_tokens': None}
+    if not record:
+        return {'model': model.strip(), 'available': False, 'context_length': None,
+                'max_output_tokens': None}
+    context = record.get('context_length') or record.get('context_window')
+    output = record.get('max_completion_tokens') or (record.get('top_provider') or {}).get('max_completion_tokens')
+    return {'model': model.strip(), 'available': True,
+            'context_length': context if type(context) is int and context > 0 else None,
+            'max_output_tokens': output if type(output) is int and output > 0 else None}
 
 
 def test_openrouter_key(key=None, root=None):

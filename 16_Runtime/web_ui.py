@@ -10,7 +10,7 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 from job_runner import create_job, launch_worker, atomic_json
-from providers import ENDPOINTS, model_overrides, list_models, api_key_for, openrouter_key_status, test_openrouter_key
+from providers import ENDPOINTS, MODEL_GROUPS, model_overrides, list_models, model_info, api_key_for, openrouter_key_status, test_openrouter_key
 import credentials
 from book_chat import read_messages, progress_messages, reply_to_book
 from job_lock import job_lock
@@ -34,6 +34,15 @@ def validate_settings(data):
         if type(value) is not int or not minimum <= value <= maximum:
             raise ValueError(f'{key} must be a whole number between {minimum} and {maximum}.')
         settings[key] = value
+    role_models = data.get('role_models', {})
+    if not isinstance(role_models, dict) or set(role_models) - set(MODEL_GROUPS):
+        raise ValueError('Role model choices must use the available role groups.')
+    settings['role_models'] = {}
+    for group in MODEL_GROUPS:
+        value = role_models.get(group, '')
+        if not isinstance(value, str) or len(value) > 200:
+            raise ValueError(f'Model choice for {group} must be a model ID under 200 characters.')
+        settings['role_models'][group] = value.strip()
     return settings
 
 
@@ -41,6 +50,9 @@ def settings_config(settings):
     config = model_overrides(settings['provider'], settings['model'], settings['base_url'])
     config['connection']['timeout_seconds'] = settings['timeout_seconds']
     config.update({key: settings[key] for key in ('max_calls_per_job', 'max_output_tokens')})
+    configured_roles = settings.get('role_models') or {}
+    config['role_models'] = {group: configured_roles.get(group) or settings['model'] for group in MODEL_GROUPS}
+    config['use_default_model_for_all_services'] = False
     return config
 
 
@@ -96,6 +108,7 @@ class Handler(BaseHTTPRequestHandler):
         config = yaml.safe_load((path / 'config/models.yaml').read_text(encoding='utf-8'))
         state['provider'] = config.get('connection', {}).get('provider', 'openrouter')
         state['model'] = config.get('default_model', '')
+        state['role_models'] = config.get('role_models', {})
         if detail:
             state['log'] = ''
             if (path / 'worker.log').exists():
@@ -130,6 +143,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.respond(read_json(self.server.root / 'config/ui_settings.json', {
                     'provider': 'ollama', 'base_url': ENDPOINTS['ollama'], 'model': '',
                     'max_calls_per_job': 200, 'max_output_tokens': 8192, 'timeout_seconds': 900,
+                    'role_models': {},
                 }))
             elif path in ('/api/jobs', '/api/trash'):
                 jobs = []
@@ -189,6 +203,8 @@ class Handler(BaseHTTPRequestHandler):
             path = urlsplit(self.path).path
             if path == '/api/models':
                 self.respond({'models': list_models(data.get('provider'), data.get('base_url'), self.server.root)})
+            elif path == '/api/model-info':
+                self.respond(model_info(data.get('provider'), data.get('model'), data.get('base_url'), self.server.root))
             elif path == '/api/openrouter-key':
                 action = data.get('action')
                 if action == 'test':
@@ -251,6 +267,8 @@ class Handler(BaseHTTPRequestHandler):
                             if data.get('use_current_settings'):
                                 settings = validate_settings(read_json(self.server.root / 'config/ui_settings.json', {}))
                                 config = settings_config(settings)
+                                if data.get('safer_limits'):
+                                    config['max_output_tokens'] = min(config['max_output_tokens'], 4096)
                                 api_key_for(config['connection']['provider'], self.server.root)
                                 snapshot(job)
                                 update_model(job, config)

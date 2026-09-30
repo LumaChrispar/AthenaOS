@@ -96,6 +96,7 @@ class AthenaLLMClient:
         self.max_output_tokens = self.config.get('max_output_tokens', 8192)
         self.fallback_context_tokens = self.config.get('fallback_context_tokens', 32768)
         self.model_limits = {}
+        self.role_models = self.config.get('role_models', {})
         
         # Build capability -> model mapping from models.yaml
         self.capability_model = {}
@@ -113,6 +114,9 @@ class AthenaLLMClient:
             "model": self.default_model,
             "temperature": self.default_temp
         }))
+        group_id = config.get('id')
+        if group_id in self.role_models and self.role_models[group_id]:
+            config['model'] = self.role_models[group_id]
         if getattr(self, 'use_default_model', False):
             config['model'] = self.default_model
         return config
@@ -159,6 +163,12 @@ class AthenaLLMClient:
                 raise RuntimeError('Job model-call limit reached. Review usage.json and job config before resuming.')
             # Reserve before dispatch; failed and interrupted requests also count.
             usage['calls'] += 1
+            by_service = usage.setdefault('by_service', {})
+            service_usage = by_service.setdefault(service_id, {
+                'calls': 0, 'prompt_tokens': 0, 'completion_tokens': 0,
+                'response_seconds': 0.0, 'failures': 0,
+            })
+            service_usage['calls'] += 1
             atomic_json(self.usage_path, usage)
             request_started = time.monotonic()
             response = self.client.chat.completions.create(
@@ -172,9 +182,13 @@ class AthenaLLMClient:
             )
             print(f"[{service_id}] Model response received in {time.monotonic() - request_started:.1f}s.")
             if response.usage:
-                usage['prompt_tokens'] += response.usage.prompt_tokens or 0
-                usage['completion_tokens'] += response.usage.completion_tokens or 0
-                atomic_json(self.usage_path, usage)
+                prompt_count = response.usage.prompt_tokens or 0
+                completion_count = response.usage.completion_tokens or 0
+                usage['prompt_tokens'] += prompt_count
+                usage['completion_tokens'] += completion_count
+                service_usage['prompt_tokens'] += prompt_count
+                service_usage['completion_tokens'] += completion_count
+            atomic_json(self.usage_path, usage)
             if response.choices[0].finish_reason == 'length':
                 raise RuntimeError('The model reached its response or context limit before finishing. '
                                    'In Settings, check the output limit; for a local model, also check '
@@ -183,10 +197,17 @@ class AthenaLLMClient:
             content = response.choices[0].message.content
             if not content or not content.strip():
                 raise ValueError('Model returned empty content.')
+            service_usage['response_seconds'] += round(time.monotonic() - request_started, 2)
+            atomic_json(self.usage_path, usage)
             return content.strip()
         except Exception as e:
             if 'request_started' in locals():
-                print(f"[{service_id}] Request ended after {time.monotonic() - request_started:.1f}s.")
+                duration = round(time.monotonic() - request_started, 2)
+                print(f"[{service_id}] Request ended after {duration:.1f}s.")
+                if 'service_usage' in locals():
+                    service_usage['response_seconds'] += duration
+                    service_usage['failures'] += 1
+                    atomic_json(self.usage_path, usage)
             if isinstance(e, APIConnectionError):
                 cause = type(e.__cause__).__name__ if e.__cause__ else 'unknown transport error'
                 detail = ('Response timed out. Increase the response timeout or reduce the request size.'

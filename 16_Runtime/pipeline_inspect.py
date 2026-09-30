@@ -286,6 +286,9 @@ def context_budget(job, number):
     rows = [{'label': label, 'source': source, 'bytes': len(text),
              'tokens': estimate_tokens(text)}
             for label, source, text in components if text]
+    preview = [{'label': label, 'bytes': len(text.encode('utf-8')),
+                'text': text[:1400] + ('\n… preview shortened …' if len(text) > 1400 else '')}
+               for label, _source, text in components if text]
     prompt_tokens = sum(row['tokens'] for row in rows)
     try:
         config = yaml.safe_load(_read_text(Path(job) / 'config' / 'models.yaml')) or {}
@@ -302,7 +305,8 @@ def context_budget(job, number):
     else:
         advice = f'About {needed:,} tokens for one request. This fits a 16k context with room to spare.'
     return {'chapter': number, 'rows': rows, 'prompt_tokens': prompt_tokens,
-            'output_tokens': output_tokens, 'context_needed': needed, 'advice': advice}
+            'output_tokens': output_tokens, 'context_needed': needed, 'advice': advice,
+            'preview': preview}
 
 
 def call_budget(job):
@@ -317,6 +321,7 @@ def call_budget(job):
     return {'calls': calls, 'cap': cap, 'percent': round(100 * calls / cap) if cap else 0,
             'prompt_tokens': usage.get('prompt_tokens', 0),
             'completion_tokens': usage.get('completion_tokens', 0),
+            'by_service': usage.get('by_service', {}),
             'warn': bool(cap) and calls >= cap * 0.8}
 
 
@@ -340,6 +345,9 @@ def inspect_job(job):
     total = total if isinstance(total, int) and total > 0 else 0
 
     built = stages(job, state, pipeline, total)
+    durations = state.get('step_durations_seconds', {})
+    for stage in built:
+        stage['duration_seconds'] = durations.get(stage['step'])
     status = {stage['step']: stage['status'] for stage in built}
 
     active = state.get('active_step') or ''
