@@ -1,0 +1,297 @@
+```json
+{
+  "artifact": "story_bible.json",
+  "service_id": "SRV-004",
+  "capability": "World Architecture",
+  "title": "The Witches of Wyrmwood Moor",
+  "world_id": "aveland_wyrmwood",
+  "genre_plugin": {
+    "name": "low_fantasy_borderland",
+    "status": "loaded"
+  },
+  "locations": [
+    {
+      "id": "loc_avenhelm",
+      "name": "Avenhelm",
+      "type": "royal capital",
+      "region": "Avenheart basin",
+      "description": "Avenhelm is a walled capital built on a pale limestone shelf above the River Aven. Its white-roofed administrative quarter, river granaries, bell towers, and crowded suburbs are separated from the poorer eastern docks by broad streets and old flood walls.",
+      "institutions": [
+        "The Crown",
+        "Council of Nine Seats",
+        "Whitehall Archive",
+        "Royal Mint",
+        "Crown courts",
+        "Market courts",
+        "Royal granaries"
+      ],
+      "economic_role": "The capital collects silver taxes, controls the mint, receives grain by river and royal road, and supplies the Court, archives, armies, and poorhouses.",
+      "strategic_role": "Avenhelm holds the Crown's legal continuity, the master copies of Council orders, and the institutions capable of restoring or dissolving an emergency Protectorate.",
+      "access": "The Royal Road reaches Redbank and Greyhall in approximately seven days in fair weather and eleven or more during the autumn rains. River barges are cheaper but cannot reach the upper Moor reliably.",
+      "constraints": [
+        "The capital cannot verify conditions in Wyrmwood before messages and couriers arrive.",
+        "Urban food prices rise whenever March grain convoys are delayed.",
+        "The Whitehall Archive is vulnerable to fire, war, and deliberate record destruction, but its sealed master copies make complete erasure difficult."
+      ],
+      "causal_links": [
+        "Centralized grain control makes the March politically indispensable.",
+        "Delayed communication allows altered documents and rumors to outrun verification.",
+        "The capital's legal institutions make a public trial possible after the collapse of Rooke's emergency government."
+      ]
+    },
+    {
+      "id": "loc_wyrmwood_march",
+      "name": "Wyrmwood March",
+      "type": "border province",
+      "region": "western frontier",
+      "description": "Wyrmwood March is a wet border province of scattered high-ground farms, peat villages, toll stations, and old military roads. Its eastern side is firm enough for permanent settlement; its western side dissolves into Wyrmwood Moor.",
+      "institutions": [
+        "Border Charter",
+        "Greyhall moot",
+        "Marchwardens",
+        "Redbank Depot",
+        "Local moots",
+        "Chartered levy"
+      ],
+      "economic_role": "The March supplies wool, peat, honey, medicinal herbs, fish, and small amounts of bog ore, but depends on imported grain, salt, iron goods, and tools.",
+      "strategic_role": "It is the buffer between the royal heartland and the western wastes. Whoever controls Hallow Ford and Redbank controls the movement of armies, grain, and information between the Moor and Avenhelm.",
+      "constraints": [
+        "The March cannot support a large standing army without importing grain and fodder.",
+        "Border lords possess local legitimacy that the Council cannot dismiss without causing rebellion.",
+        "Flooded roads isolate villages and make military reinforcement slower than rumor."
+      ],
+      "causal_links": [
+        "The Border Charter permits emergency local command but does not permit permanent separation from the Crown.",
+        "Grain depots create both public relief and concentrated political power.",
+        "Local resentment of capital officials makes the March vulnerable to rival claims of protection."
+      ]
+    },
+    {
+      "id": "loc_wyrmwood_moor",
+      "name": "Wyrmwood Moor",
+      "type": "peat fen and border wilderness",
+      "region": "western Wyrmwood March",
+      "description": "Wyrmwood Moor is a raised peat fen threaded with black water channels, reed beds, blackthorn stands, drowned paths, and shallow hills called hummocks. Its name comes from the wyrm-shaped old watercourse and the blackthorn woods, not from surviving dragons.",
+      "landmarks": [
+        "Hallow Ford",
+        "Drowned Road",
+        "Shrine of the Last Witness",
+        "Drowned Stones",
+        "Thornwake villages"
+      ],
+      "ecology": "Dense peat, moss, alder, willow, birch, blackthorn, and heather support hardy cattle, sheep, moor ponies, eels, deer, boars, and fen birds. Standing water breeds marsh fever and mosquitoes.",
+      "settlement_and_economy": "Permanent settlement is limited to raised banks and hummocks. Families keep livestock, cut peat, gather honey and herbs, and maintain boats or sledges for seasonal movement.",
+      "strategic_role": "The Moor is difficult to occupy permanently but excellent for concealment, ambush, and controlled passage. Its threshold sites make it a cultural and magical center as well as a military one.",
+      "hazards": [
+        "Quicksand and hidden channels",
+        "Peat fires that burn underground for weeks",
+        "Cold rain and exposure",
+        "Loss of orientation in fog",
+        "Marsh fever and infected wounds"
+      ],
+      "causal_links": [
+        "The absence of stable roads makes food storage and rescue timing decisive.",
+        "Old boundary sites attract ritual traffic and become strategically important landmarks.",
+        "Remote communities have strong informal knowledge but limited access to official records."
+      ]
+    },
+    {
+      "id": "loc_merewater",
+      "name": "Merewater",
+      "type": "river and floodplain",
+      "region": "central Wyrmwood",
+      "description": "The Merewater is a braided river that spreads into shallow marshes and peat channels. It is navigable by flat-bottomed boats during dry months but becomes a series of unconnected pools during the autumn rains.",
+      "strategic_role": "The river links Hallow Ford, Redbank, and the lower fen, but it cannot carry a heavy grain convoy through the deepest channels once the banks are soft.",
+      "hazards": [
+        "Sudden bank collapse",
+        "Drifting fog",
+        "Flooded ferry crossings",
+        "Waterborne disease"
+      ],
+      "causal_links": [
+        "Water levels determine whether grain moves by boat, wagon, or human carrier.",
+        "Weather manipulation along the river can redirect a convoy without creating a dry route.",
+        "Flood isolation gives raiders and rebels opportunities that disappear when the water falls."
+      ]
+    },
+    {
+      "id": "loc_hallow_ford",
+      "name": "Hallow Ford",
+      "type": "fortified crossing",
+      "region": "eastern edge of Wyrmwood Moor",
+      "description": "Hallow Ford crosses a natural stone sill in the Merewater and is the only dependable wheeled crossing for miles. A low timber footbridge and a few emergency piles remain after floods, but the main road disappears beneath brown water during heavy rain.",
+      "infrastructure": [
+        "Stone causeway",
+        "Toll post",
+        "Signal fire",
+        "Temporary ferry"
+      ],
+      "strategic_role": "The ford controls movement between the March's high ground and the Moor. Rescuing stranded villagers, moving cattle, or bringing grain through it requires favorable water and weather.",
+      "constraints": [
+        "A loaded wagon cannot cross safely after the river rises.",
+        "A false impression that the ford is open can draw people into floodwater.",
+        "Once the ford is blocked, Hallow Ford becomes the decisive bottleneck for any army."
+      ],
+      "causal_links": [
+        "Bryn Fen's apparent redirection of storm and cattle toward one ford changes the tactical value of the crossing.",
+        "Mira Sedge's sign craft can disguise a route or make one route appear more credible.",
+        "The Council's evacuation order is interpreted differently depending on whether the ford remains open."
+      ]
+    },
+    {
+      "id": "loc_drowned_road",
+      "name": "Drowned Road",
+      "type": "ancient raised causeway",
+      "region": "Wyrmwood Moor",
+      "description": "The Drowned Road is a hand-built causeway of shale, timber, and packed clay that once linked the eastern settlements to the central stones. In dry weather its crown rises above the peat; in high water only its stone ribs and marker posts remain visible.",
+      "strategic_role": "The road is the most direct route to the Drowned Stones and the Shrine of the Last Witness. It can be defended, cut, burned, or sealed with a single obstruction.",
+      "constraints": [
+        "A narrow causeway prevents large formations from moving quickly.",
+        "Removing one section can isolate the western villages.",
+        "A road exposed by receding water may still be unsafe for heavy carts."
+      ],
+      "causal_links": [
+        "Its construction explains the concentration of boundary shrines and old marker stones.",
+        "Its vulnerability makes control of the road a military objective.",
+        "Its destruction increases the practical value of the Drowned Stones as a ritual and political site."
+      ]
+    },
+    {
+      "id": "loc_shrine_of_last_witness",
+      "name": "Shrine of the Last Witness",
+      "type": "ruined boundary shrine",
+      "region": "eastern central Moor",
+      "description": "The shrine is a roofless stone sanctuary beside a former peat road. Its walls contain carved water lines, handprints, and names worn almost smooth. The floor holds ash from old fires and lies above an old spring.",
+      "religious_role": "It is a principal site of the old Witness of the Ford tradition, which holds that boundaries remember the living and the dead and can offer or withhold legitimacy.",
+      "strategic_role": "A working shrine can gather villagers, pilgrims, and armed factions around the same symbols. It is also a place where signs can be staged with unusual plausibility because witnesses already expect omens there.",
+      "constraints": [
+        "The structure has no roof and little shelter.",
+        "Moving its stones is forbidden by old custom and prohibited by several local moots.",
+        "The site's power is strongest at night, during fog, or when peat fires burn."
+      ],
+      "causal_links": [
+        "The shrine gives the old faith a public place separate from the official church.",
+        "Its ambiguous imagery allows the same event to be read as mercy, betrayal, or divine selection.",
+        "The route to the shrine crosses the Drowned Road and is vulnerable to weather and military interdiction."
+      ]
+    },
+    {
+      "id": "loc_drowned_stones",
+      "name": "Drowned Stones",
+      "type": "ritual and battlefield site",
+      "region": "deep central Moor",
+      "description": "The Drowned Stones are a ring of dark basalt and ash markers rising from a deep peat basin. At low water, old causeway stones appear around them; at high water, only the upper faces remain visible.",
+      "religious_role": "The stones are traditionally understood as witnesses to the drowned, a boundary between the living world and whatever the old faith calls the Last Land.",
+      "strategic_role": "The site has one defensible approach through the Drowned Road. A force that reaches it can be isolated from the eastern March, while a force controlling the road can seal the site.",
+      "hazards": [
+        "Peat fires and smoke",
+        "Fog that distorts voices",
+        "Soft ground that exposes formations",
+        "No reliable supply beyond carried rations"
+      ],
+      "causal_links": [
+        "The concentration of old names and memories makes combined boundary-weaving possible.",
+        "The site's isolation permits a civilian uprising and a military confrontation without conventional siege works.",
+        "The moor toll and later unmarked grave give the site a continuing social presence after the political conflict."
+      ]
+    },
+    {
+      "id": "loc_redbank_depot",
+      "name": "Redbank Depot",
+      "type": "grain depot and toll station",
+      "region": "eastern Wyrmwood March",
+      "description": "Redbank sits on a low red clay bluff above the floodplain. Its raised warehouses, granaries, tally office, garrison hut, and toll bridge make it the primary transfer point between royal convoys and local villages.",
+      "economic_role": "Grain is weighed, sealed, recorded, and redistributed from Redbank. Wool, peat, salt, and trade goods pass through the same checkpoint.",
+      "strategic_role": "Whoever controls Redbank can delay, price, or redirect the March's food supply. The depot is therefore both a military objective and a symbol of competent government.",
+      "constraints": [
+        "Its records are valuable targets for alteration or destruction.",
+        "The garrison is small and cannot hold the depot against a determined mob or coordinated attack.",
+        "Floodwater can cut the road even when the depot itself remains dry."
+      ],
+      "causal_links": [
+        "The confiscated convoy changes civilian survival and the political value of Rooke's actions.",
+        "Nessa's tax and grain roll alterations can redirect blame toward specific villages.",
+        "The depot's ledgers connect local suffering to Council orders and later war crimes."
+      ]
+    },
+    {
+      "id": "loc_thornwake",
+      "name": "Thornwake",
+      "type": "cluster of reed villages",
+      "region": "central Wyrmwood Moor",
+      "description": "Thornwake is not a town but three low villages built on reed islands and raised paths. Each has a boat house, a peat store, a small shrine, and a shared grazing ground.",
+      "social_role": "Households are related by kinship across the channels and often share boats, fuel, and labor. The villages have no single ruler and no reliable official interpreter.",
+      "political_role": "Some residents shelter raiders or deserters because royal requisitions and the Bare March decree threaten their homes. Others remain loyal and distinguish raiders from neighbors by family knowledge.",
+      "constraints": [
+        "A village can be isolated by water or a burned path.",
+        "Officials cannot easily determine which residents are rebels.",
+        "Food relief must be carried in by boat or across the Drowned Road."
+      ],
+      "causal_links": [
+        "The mixture of genuine fear and genuine rebel support makes collective punishment politically explosive.",
+        "Civilian sheltering of raiders makes the distinction between intelligence and accusation unstable.",
+        "The villages' dependence on informal kin networks makes official tax rolls unreliable."
+      ]
+    },
+    {
+      "id": "loc_greyhall",
+      "name": "Greyhall",
+      "type": "border moot and fortified hall",
+      "region": "eastern high ground of the March",
+      "description": "Greyhall is an artificial stone-and-earth mound built by earlier border lords. Its meeting chamber, guard tower, signal brazier, and charter hall stand above the surrounding floodplain.",
+      "institutional_role": "The border lords meet at Greyhall to hear appeals, organize levies, and appoint a Protector during a declared defense emergency under the Border Charter.",
+      "strategic_role": "Its elevated position makes it defensible and visible from the Royal Road. Control of Greyhall allows a claimant to appear to speak for the March even without controlling every village.",
+      "constraints": [
+        "A moot can confer local authority but cannot legally alter the succession.",
+        "Border lords have competing interests and may withdraw support when grain or pay fails.",
+        "The hall's records are vulnerable to confiscation but are duplicated in household and temple copies."
+      ],
+      "causal_links": [
+        "Greyhall gives the Protectorate a legitimate-looking institutional origin.",
+        "The charter's emergency clause explains why Rooke can govern locally without becoming king in law.",
+        "A later restoration must either include the March in shared government or repeat the conditions that produced another Protector."
+      ]
+    },
+    {
+      "id": "loc_sendar_keep",
+      "name": "Sendar Keep",
+      "type": "southern royal stronghold",
+      "region": "southern Wold Hills",
+      "description": "Sendar Keep is a dry, stone-built stronghold above the southern grain roads. Its cisterns, chapel, garrison, and storehouses make it safer from Moor flooding but less responsive to the March.",
+      "strategic_role": "The Council uses Sendar as a temporary royal refuge when the capital and Royal Road are threatened. A king and escort can survive there, but the distance complicates communication and return.",
+      "constraints": [
+        "The keep can sustain a royal household but cannot replace the capital's archive or mint.",
+        "The southern road is vulnerable to banditry and wagon failure.",
+        "A king who remains absent from Avenhelm can be represented as either endangered or abandoned."
+      ],
+      "causal_links": [
+        "The Council's decision to send Lestan there is tactically defensible but politically dangerous.",
+        "Bryn Fen can delay the escort through weather and road conditions.",
+        "The missed return of the southern convoy gives border lords a reason to invoke the emergency Protector clause."
+      ]
+    },
+    {
+      "id": "loc_royal_road",
+      "name": "Royal Road",
+      "type": "interior road and courier route",
+      "region": "Avenheart basin to Wyrmwood March",
+      "description": "The Royal Road is a raised paved route with milestone houses, toll gates, beacon towers, and military waystations. It remains the fastest route between Avenhelm, Redbank, Greyhall, and the eastern March, but its final miles branch onto vulnerable flood roads.",
+      "communication_role": "Crown messengers, grain convoys, tax records, and military orders all use the road. Beacon fires can signal an attack but cannot transmit a detailed message.",
+      "constraints": [
+        "Rain, mud, wagon breakdown, and blocked bridges delay all traffic.",
+        "A fast courier can carry a rumor before a slower magistrate can verify it.",
+        "The road concentrates troops and makes them easier to intercept."
+      ],
+      "causal_links": [
+        "Road delay explains how false reports reach the capital before corrections.",
+        "Convoy control determines whether grain reaches the March or the capital.",
+        "Weather manipulation along exposed sections can disperse an army without magical teleportation."
+      ]
+    },
+    {
+      "id": "loc_whitehall_archive",
+      "name": "Whitehall Archive",
+      "type": "royal records institution",
+      "region": "Avenhelm",
+      "description": "Whitehall houses the Council chamber, the seal registry, master annexes, royal correspondence, and the Iron Chest containing older succession and succession-related records.",
+      "record_system": "Every major order is entered in a master register, copied to a departmental ledger, and represented by a narrow wax impression strip. The physical White Hart seal is kept in a traveling seal case when

@@ -57,12 +57,6 @@ models:
   note: Low temperature for analytical roles producing factual reports
 default_temperature: 0.5
 max_calls_per_job: 200
-max_output_tokens: 4096
+max_output_tokens: 50000
 default_model: stealth/space-bunny-alpha
-use_default_model_for_all_services: false
-role_models:
-  architecture-reasoning: stealth/space-bunny-alpha
-  character-world-building: stealth/space-bunny-alpha
-  prose-generation: stealth/space-bunny-alpha
-  voice-variation: stealth/space-bunny-alpha
-  analysis-critique: stealth/space-bunny-alpha
+use_default_model_for_all_services: true

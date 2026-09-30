@@ -1,5 +1,23 @@
 {
-  "calls": 9,
-  "prompt_tokens": 20967,
-  "completion_tokens": 207986
+  "calls": 10,
+  "prompt_tokens": 24445,
+  "completion_tokens": 212082,
+  "by_service": {
+    "SRV-004": {
+      "calls": 1,
+      "prompt_tokens": 3478,
+      "completion_tokens": 4096,
+      "response_seconds": 61.11,
+      "failures": 1
+    }
+  },
+  "by_model": {
+    "stealth/space-bunny-alpha": {
+      "calls": 1,
+      "prompt_tokens": 3478,
+      "completion_tokens": 4096,
+      "response_seconds": 61.11,
+      "failures": 1
+    }
+  }
 }

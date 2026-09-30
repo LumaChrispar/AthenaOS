@@ -39,3 +39,11 @@ Error calling model API: Model returned empty content.
 [SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
 Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
 Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
+
+--- PHASE 3: WORLD BUILDING (SRV-004) ---
+[SRV-004] Sending task (model: stealth/space-bunny-alpha, temp: 0.5)...
+[SRV-004] Request budget: prompt≈5262 tokens; output≤4096; context=1000000.
+[SRV-004] Model response received in 61.1s.
+[SRV-004] Request ended after 61.1s.
+Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
+Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for a local model, also check its loaded context length in LM Studio or Ollama. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
