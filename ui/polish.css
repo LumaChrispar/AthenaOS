@@ -335,3 +335,13 @@ aside { background: #35423b; box-shadow: 4px 0 16px rgb(24 34 29 / 3%); }
 @media (prefers-reduced-motion: reduce) {
   .pipe-chevron, .pipe-section[open] > :not(summary) { transition: none; animation: none; }
 }
+
+/* Unsaved model choices: new books run the last saved settings, so say so. */
+.composer-caption .warn {
+  color: #8d422a;
+  font-weight: 600;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}

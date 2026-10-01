@@ -6,22 +6,22 @@
   "completed_steps": [
     "intake",
     "architecture",
-    "characters",
     "world",
     "voice"
   ],
-  "active_step": "chapter_1",
-  "error": "Add your OpenRouter API key in Settings, or set OPENROUTER_API_KEY.",
+  "active_step": "characters",
+  "error": "Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}",
   "created_at": 1790737070.2743416,
-  "updated_at": 1790883021.1518166,
+  "updated_at": 1790885699.0542326,
   "active_started_at": null,
   "active_attempt": 1,
   "step_durations_seconds": {
     "intake": 26.69,
     "architecture": 142.54,
-    "characters": 302.47,
+    "characters": 4.26,
     "world": 535.94,
     "voice": 368.52,
     "chapter_1": 228.33
-  }
+  },
+  "deleted_at": 1790885748.1225176
 }

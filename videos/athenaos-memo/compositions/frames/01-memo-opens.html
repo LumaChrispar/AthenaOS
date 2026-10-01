@@ -1,5 +1,5 @@
 <template>
-  <div id="root" data-composition-id="01-memo-opens" data-width="1920" data-height="1080" data-duration="4.36">
+  <div id="root" data-composition-id="01-memo-opens" data-width="1920" data-height="1080" data-duration="4.1">
     <style>
       /* ---- fonts: the three frame.md families, staged under assets/fonts/ ---- */
       @font-face {
@@ -287,66 +287,66 @@
         tl.fromTo(
           kwSpike,
           { opacity: 0, filter: "blur(10px)", scale: 0.94 },
-          { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power4.out" },0.013);
+          { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power4.out" },0.012);
         tl.fromTo(
           kwMemo,
           { opacity: 0, filter: "blur(10px)", scale: 0.94 },
-          { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power4.out" },0.05);
+          { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power4.out" },0.047);
 
         /* the hairline rule draws on beneath the kicker */
         tl.fromTo(
           headerRule,
           { scaleX: 0 },
-          { scaleX: 1, duration: 0.7, ease: "power2.inOut" },0.188);
+          { scaleX: 1, duration: 0.7, ease: "power2.inOut" },0.175);
 
         /* the empty SUBJECT: / FROM: label pair */
         tl.fromTo(
           kwSubject,
           { opacity: 0, filter: "blur(8px)", y: 14 },
-          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.4, ease: "expo.out" },0.345);
+          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.4, ease: "expo.out" },0.321);
         tl.fromTo(
           subjectRule,
           { scaleX: 0 },
-          { scaleX: 1, duration: 0.55, ease: "power2.inOut" },0.389);
+          { scaleX: 1, duration: 0.55, ease: "power2.inOut" },0.362);
         tl.fromTo(
           kwFrom,
           { opacity: 0, filter: "blur(8px)", y: 14 },
-          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.4, ease: "expo.out" },0.539);
+          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.4, ease: "expo.out" },0.502);
         tl.fromTo(
           fromRule,
           { scaleX: 0 },
-          { scaleX: 1, duration: 0.55, ease: "power2.inOut" },0.595);
+          { scaleX: 1, duration: 0.55, ease: "power2.inOut" },0.554);
 
         /* ================= SCENE 2 — 1.4–2.8s : the stamp drops, the rule draws === */
         /* a hard settle with a small scale overshoot that damps immediately */
         tl.fromTo(
           stamp,
           { opacity: 0, scale: 1.22, y: -34 },
-          { opacity: 1, scale: 1, y: 0, duration: 0.26, ease: "power4.out" },0.909);
-        tl.to(stamp, { scale: 0.988, duration: 0.07, ease: "power2.out" },1.072);
-        tl.to(stamp, { scale: 1, duration: 0.16, ease: "power2.inOut" },1.115);
+          { opacity: 1, scale: 1, y: 0, duration: 0.26, ease: "power4.out" },0.846);
+        tl.to(stamp, { scale: 0.988, duration: 0.07, ease: "power2.out" },0.998);
+        tl.to(stamp, { scale: 1, duration: 0.16, ease: "power2.inOut" },1.038);
 
         /* the coral rule draws left-to-right beneath the header */
         tl.fromTo(
           coralRule,
           { scaleX: 0 },
-          { scaleX: 1, duration: 0.72, ease: "power2.inOut" },1.222);
+          { scaleX: 1, duration: 0.72, ease: "power2.inOut" },1.138);
 
         /* ================= SCENE 3 — 2.8–6.0s : the statement sets in ============ */
         /* state A — slam in at display scale, centered */
         tl.fromTo(
           lineA,
           { opacity: 0, filter: "blur(16px)", scale: 1.06 },
-          { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.52, ease: "power4.out" },1.767);
+          { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.52, ease: "power4.out" },1.645);
 
         /* state B is collapsed at build time so every seek is correct; it stays
            invisible until the hard cut — the blueprint's in-place token swap */
         gsap.set(lineB, { opacity: 0, scale: 1.055 });
 
         /* the in-place token swap — an instant hard cut, then one settling pop */
-        tl.set(lineA, { opacity: 0 },2.457);
-        tl.set(lineB, { opacity: 1 },2.457);
-        tl.fromTo(lineB, { scale: 1.055 }, { scale: 1, duration: 0.34, ease: "power3.out" },2.457);
+        tl.set(lineA, { opacity: 0 },2.287);
+        tl.set(lineB, { opacity: 1 },2.287);
+        tl.fromTo(lineB, { scale: 1.055 }, { scale: 1, duration: 0.34, ease: "power3.out" },2.287);
 
         /* the mono service rail types on beneath the statement.
            ONE full-duration clock drives both the typed text and the caret, so

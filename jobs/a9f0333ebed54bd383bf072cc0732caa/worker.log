@@ -154,3 +154,19 @@ Job stopped: The model reached its response or context limit before finishing. I
 Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
 Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
 Job stopped: Add your OpenRouter API key in Settings, or set OPENROUTER_API_KEY.
+
+--- PHASE 2: CHARACTER PSYCHOLOGY (SRV-003) ---
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\a9f0333ebed54bd383bf072cc0732caa\08_Memory\outline.json
+[SRV-003] Sending task (model: inclusionai/ling-3.0-flash:free, temp: 0.5)...
+[SRV-003] Request budget: prompt≈5455 tokens; output≤4096; context=32768.
+[SRV-003] Request ended after 1.4s.
+Error calling model API: Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}
+Job stopped: Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}
+
+--- PHASE 2: CHARACTER PSYCHOLOGY (SRV-003) ---
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\a9f0333ebed54bd383bf072cc0732caa\08_Memory\outline.json
+[SRV-003] Sending task (model: inclusionai/ling-3.0-flash:free, temp: 0.5)...
+[SRV-003] Request budget: prompt≈5455 tokens; output≤8192; context=32768.
+[SRV-003] Request ended after 2.2s.
+Error calling model API: Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}
+Job stopped: Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}

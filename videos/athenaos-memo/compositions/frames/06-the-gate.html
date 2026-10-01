@@ -261,7 +261,7 @@
     data-width="1920"
     data-height="1080"
     data-start="0"
-    data-duration="9"
+    data-duration="7.71"
   >
     <div
       id="f06-the-gate-ground"
@@ -347,54 +347,54 @@
       var tl = gsap.timeline({ paused: true });
 
       /* ---- Scene 1 (0.0–1.4s) — kicker + section rule establish the strip ---- */
-      tl.fromTo(SEL + "kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },0.053);
-      tl.fromTo(SEL + "kicker .spike", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" },0.21);
-      tl.fromTo(SEL + "count", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },0.263);
-      tl.fromTo(SEL + "rule", { scaleX: 0 }, { scaleX: 1, duration: 0.85, ease: "power2.inOut" },0.367);
+      tl.fromTo(SEL + "kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },0.045);
+      tl.fromTo(SEL + "kicker .spike", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" },0.178);
+      tl.fromTo(SEL + "count", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },0.223);
+      tl.fromTo(SEL + "rule", { scaleX: 0 }, { scaleX: 1, duration: 0.85, ease: "power2.inOut" },0.311);
       tl.fromTo(
         rows.map(function (r) { return r.row; }),
         { opacity: 0, x: 46 },
-        { opacity: 1, x: 0, duration: 0.6, stagger: 0.07, ease: "power2.out" },0.651);
+        { opacity: 1, x: 0, duration: 0.6, stagger: 0.07, ease: "power2.out" },0.551);
 
       /* ---- Scene 2 (1.4–4.2s) — first row sets on "sixteen", PASS stamps at its right edge ---- */
-      tl.fromTo(rows[0].hair, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.inOut" },1.628);
+      tl.fromTo(rows[0].hair, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.inOut" },1.378);
       tl.fromTo(
         [rows[0].row + " .label", rows[0].row + " .code"],
         { yPercent: 110 },
-        { yPercent: 0, duration: 0.55, stagger: 0.08, ease: "power3.out" },1.68);
-      tl.fromTo(rows[0].stamp, { opacity: 0, scale: 0.62 }, { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2.4)" },2.677);
-      tl.to(rows[0].tally, { color: "#cc785c", duration: 0.3, ease: "power1.out" },2.73);
+        { yPercent: 0, duration: 0.55, stagger: 0.08, ease: "power3.out" },1.422);
+      tl.fromTo(rows[0].stamp, { opacity: 0, scale: 0.62 }, { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2.4)" },2.266);
+      tl.to(rows[0].tally, { color: "#cc785c", duration: 0.3, ease: "power1.out" },2.311);
 
       /* ---- Scene 3 (4.2–5.8s) — three seam rows cascade in tight, each stamping in turn ---- */
       tl.fromTo(
         rows.slice(1).map(function (r) { return r.hair; }),
         { scaleX: 0 },
-        { scaleX: 1, duration: 0.45, stagger: 0.2, ease: "power2.inOut" },4.41);
+        { scaleX: 1, duration: 0.45, stagger: 0.2, ease: "power2.inOut" },3.733);
       tl.fromTo(
         rows.slice(1).map(function (r) { return r.label; }),
         { yPercent: 115 },
-        { yPercent: 0, duration: 0.48, stagger: 0.2, ease: "power3.out" },4.473);
+        { yPercent: 0, duration: 0.48, stagger: 0.2, ease: "power3.out" },3.786);
       tl.fromTo(
         rows.slice(1).map(function (r) { return r.stamp; }),
         { opacity: 0, scale: 0.6 },
-        { opacity: 1, scale: 1, duration: 0.34, stagger: 0.2, ease: "back.out(2.2)" },4.987);
+        { opacity: 1, scale: 1, duration: 0.34, stagger: 0.2, ease: "back.out(2.2)" },4.221);
       tl.to(
         rows.slice(1).map(function (r) { return r.tally; }),
-        { color: "#cc785c", duration: 0.28, stagger: 0.2, ease: "power1.out" },5.04);
+        { color: "#cc785c", duration: 0.28, stagger: 0.2, ease: "power1.out" },4.266);
 
       /* ---- Scene 4 (5.8–8.0s) — the wide reader-proxy row arrives, firmer stamp, held read ---- */
       tl.fromTo(
         [SEL + "wide .srv", SEL + "wide .name"],
         { yPercent: 115 },
-        { yPercent: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" },6.248);
-      tl.fromTo(SEL + "wide .hair", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.inOut" },6.195);
-      tl.fromTo(SEL + "wide .stamp", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.34, ease: "power4.out" },7.192);
-      tl.to(SEL + "tally-5", { color: "#cc785c", duration: 0.3, ease: "power1.out" },7.245);
+        { yPercent: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" },5.288);
+      tl.fromTo(SEL + "wide .hair", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.inOut" },5.244);
+      tl.fromTo(SEL + "wide .stamp", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.34, ease: "power4.out" },6.088);
+      tl.to(SEL + "tally-5", { color: "#cc785c", duration: 0.3, ease: "power1.out" },6.132);
       tl.fromTo(
         SEL + "thud",
         { opacity: 0, scale: 1 },
-        { opacity: 0.75, scale: 1.035, duration: 0.16, ease: "power2.out" },7.192);
-      tl.to(SEL + "thud", { opacity: 0, scale: 1.07, duration: 0.5, ease: "power2.out" },7.361);
+        { opacity: 0.75, scale: 1.035, duration: 0.16, ease: "power2.out" },6.088);
+      tl.to(SEL + "thud", { opacity: 0, scale: 1.07, duration: 0.5, ease: "power2.out" },6.231);
 
       /* ---- blueprint signature: gentle continuous push-in under the assemble-and-hold ---- */
       tl.fromTo(

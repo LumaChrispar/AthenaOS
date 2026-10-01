@@ -1,0 +1,122 @@
+[
+  {
+    "id": "w0",
+    "text": "Before",
+    "start": 0.299,
+    "end": 0.4267
+  },
+  {
+    "id": "w1",
+    "text": "a",
+    "start": 0.64,
+    "end": 0.6827
+  },
+  {
+    "id": "w2",
+    "text": "word",
+    "start": 0.725,
+    "end": 0.853
+  },
+  {
+    "id": "w3",
+    "text": "is",
+    "start": 0.939,
+    "end": 0.981
+  },
+  {
+    "id": "w4",
+    "text": "drafted,",
+    "start": 1.024,
+    "end": 1.557
+  },
+  {
+    "id": "w5",
+    "text": "a",
+    "start": 1.707,
+    "end": 1.877
+  },
+  {
+    "id": "w6",
+    "text": "five-hundred-word",
+    "start": 1.92,
+    "end": 2.688
+  },
+  {
+    "id": "w7",
+    "text": "voice",
+    "start": 2.816,
+    "end": 2.9867
+  },
+  {
+    "id": "w8",
+    "text": "fingerprint.",
+    "start": 3.157,
+    "end": 3.819
+  },
+  {
+    "id": "w9",
+    "text": "Then",
+    "start": 4.053,
+    "end": 4.224
+  },
+  {
+    "id": "w10",
+    "text": "a",
+    "start": 4.352,
+    "end": 4.48
+  },
+  {
+    "id": "w11",
+    "text": "service",
+    "start": 4.523,
+    "end": 4.736
+  },
+  {
+    "id": "w12",
+    "text": "whose",
+    "start": 4.949,
+    "end": 5.077
+  },
+  {
+    "id": "w13",
+    "text": "only",
+    "start": 5.163,
+    "end": 5.333
+  },
+  {
+    "id": "w14",
+    "text": "job",
+    "start": 5.504,
+    "end": 5.717
+  },
+  {
+    "id": "w15",
+    "text": "is",
+    "start": 5.888,
+    "end": 5.973
+  },
+  {
+    "id": "w16",
+    "text": "stripping",
+    "start": 6.101,
+    "end": 6.3147
+  },
+  {
+    "id": "w17",
+    "text": "the",
+    "start": 6.443,
+    "end": 6.528
+  },
+  {
+    "id": "w18",
+    "text": "AI",
+    "start": 6.571,
+    "end": 6.869
+  },
+  {
+    "id": "w19",
+    "text": "out.",
+    "start": 6.955,
+    "end": 7.215827664399093
+  }
+]

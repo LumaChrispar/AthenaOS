@@ -1,0 +1,7 @@
+{
+  "deliverable": "local manuscript draft",
+  "requested_chapters": 4,
+  "default_words_per_chapter": 3000,
+  "suggested_total_words": 12000,
+  "length_policy": "Use these defaults only where the user has not specified a length."
+}

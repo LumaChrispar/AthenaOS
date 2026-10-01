@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Schema",
+  "description": "Macro-management object for a complete novel.",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "title": { "type": "string" },
+    "genre": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "audience": { "type": "string" },
+    "target_word_count": { "type": "integer" },
+    "status": {
+      "type": "string",
+      "enum": ["planning", "drafting", "editing", "qa", "published"]
+    },
+    "assigned_departments": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "deadlines": {
+      "type": "object",
+      "properties": {
+        "outline": { "type": "string", "format": "date" },
+        "draft": { "type": "string", "format": "date" },
+        "final": { "type": "string", "format": "date" }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "token_limit": { "type": "integer" },
+        "tokens_consumed": { "type": "integer" }
+      }
+    },
+    "progress": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "quality_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": ["project_id", "title", "genre", "status"]
+}

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "w0",
+    "text": "One",
+    "start": 0.299,
+    "end": 0.512
+  },
+  {
+    "id": "w1",
+    "text": "prompt",
+    "start": 0.597,
+    "end": 0.9387
+  },
+  {
+    "id": "w2",
+    "text": "doesn't",
+    "start": 1.067,
+    "end": 1.365
+  },
+  {
+    "id": "w3",
+    "text": "hold",
+    "start": 1.408,
+    "end": 1.536
+  },
+  {
+    "id": "w4",
+    "text": "a",
+    "start": 1.621,
+    "end": 1.664
+  },
+  {
+    "id": "w5",
+    "text": "novel.",
+    "start": 1.707,
+    "end": 2.176
+  },
+  {
+    "id": "w6",
+    "text": "It",
+    "start": 2.432,
+    "end": 2.56
+  },
+  {
+    "id": "w7",
+    "text": "flatlines",
+    "start": 2.645,
+    "end": 3.2
+  },
+  {
+    "id": "w8",
+    "text": "in",
+    "start": 3.371,
+    "end": 3.413
+  },
+  {
+    "id": "w9",
+    "text": "chapter",
+    "start": 3.456,
+    "end": 3.7547
+  },
+  {
+    "id": "w10",
+    "text": "four.",
+    "start": 3.797,
+    "end": 4.150793650793651
+  }
+]

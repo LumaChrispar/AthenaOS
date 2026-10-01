@@ -110,6 +110,29 @@ function applySettings(settings) {
   $('saved-model').textContent = settings.model ? `${providerName} · ${settings.model}` : 'Choose your writing model in Settings to get started.';
   for (const [group] of MODEL_GROUPS) $(`role-${group}`).value = settings.role_models?.[group] || '';
   checkModelFit();
+  refreshSavedModelCaption();
+}
+// New books run on the last saved settings, never on whatever is typed in this form.
+function enteredModelSettings() {
+  const cloud = isCloud();
+  return {
+    provider: $('provider').value, base_url: $('base-url').value, model: $('model').value.trim(),
+    role_models: cloud ? Object.fromEntries(MODEL_GROUPS.map(([group]) => [group, $(`role-${group}`).value.trim()])) : {},
+  };
+}
+function unsavedModelChanges() {
+  if (!savedSettings) return false;
+  const entered = enteredModelSettings(), saved = savedSettings.role_models || {};
+  if (entered.provider !== savedSettings.provider || entered.base_url !== savedSettings.base_url
+      || entered.model !== (savedSettings.model || '')) return true;
+  return MODEL_GROUPS.some(([group]) => entered.role_models[group] !== (saved[group] || ''));
+}
+function refreshSavedModelCaption() {
+  const node = $('unsaved-settings');
+  if (!node) return;
+  const dirty = unsavedModelChanges();
+  node.hidden = !dirty;
+  node.textContent = dirty ? 'Unsaved model changes — save them in Settings to use them.' : '';
 }
 function initializeRoleInputs() {
   const root = $('role-models');
@@ -621,10 +644,12 @@ $('book-form').onsubmit = async event => {
   event.preventDefault(); $('start').disabled = true;
   try {
     if (!savedSettings?.model) { showSettings(); notice('Choose a writing model and save your settings first. Your story description is kept here.'); return; }
+    if (unsavedModelChanges()) { showSettings(); notice('Your model choice has unsaved changes. Save it, then start your book. Your story description is kept here.', true); return; }
     const job = await api('/api/jobs', {concept: $('concept').value, chapters: $('chapters').value ? Number($('chapters').value) : null});
     await selectBook(job.id); notice('Your book worker has started. Progress updates automatically.');
   } catch (error) { notice(error.message, true); } finally { $('start').disabled = false; }
 };
+for (const event of ['input', 'change']) $('settings-form').addEventListener(event, refreshSavedModelCaption);
 $('settings-form').onsubmit = async event => {
   event.preventDefault(); $('save-settings').disabled = true;
   try {
@@ -670,11 +695,13 @@ $('resume').onclick = async () => {
 let editorBook = null, editorContent = null, continuationBook = null;
 for (const button of document.querySelectorAll('[data-close]')) button.onclick = () => $(button.dataset.close).close();
 $('resume-current').onclick = async () => {
+  if (unsavedModelChanges()) { notice('Your model choice has unsaved changes. Save them in Settings before resuming with current settings.', true); return; }
   const id = selected; $('resume-current').disabled = true;
   try { await api(`/api/jobs/${id}/resume`, {use_current_settings: true}); notice('Resuming with your saved Settings. Completed work is kept.'); await refresh(); }
   catch (error) { notice(error.message, true); } finally { $('resume-current').disabled = false; }
 };
 $('resume-safer').onclick = async () => {
+  if (unsavedModelChanges()) { notice('Your model choice has unsaved changes. Save them in Settings before resuming with current settings.', true); return; }
   const id = selected; $('resume-safer').disabled = true;
   try { await api(`/api/jobs/${id}/resume`, {use_current_settings: true, safer_limits: true}); notice('Resuming with current Settings and a 4,096-token response cap. Completed work is kept.'); await refresh(); }
   catch (error) { notice(error.message, true); } finally { $('resume-safer').disabled = false; }

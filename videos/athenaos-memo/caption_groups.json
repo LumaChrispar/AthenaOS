@@ -1,0 +1,922 @@
+{
+  "total_duration_s": 39.6,
+  "width": 1920,
+  "height": 1080,
+  "groups": [
+    {
+      "id": "caption-group-0",
+      "frame": 1,
+      "start": 0.299,
+      "end": 0.597,
+      "text": "This is",
+      "words": [
+        {
+          "id": "caption-word-0-0",
+          "text": "This",
+          "start": 0.299,
+          "end": 0.427
+        },
+        {
+          "id": "caption-word-0-1",
+          "text": "is",
+          "start": 0.469,
+          "end": 0.555
+        }
+      ]
+    },
+    {
+      "id": "caption-group-1",
+      "frame": 1,
+      "start": 0.597,
+      "end": 1.549,
+      "text": "not a prompt.",
+      "words": [
+        {
+          "id": "caption-word-1-0",
+          "text": "not",
+          "start": 0.597,
+          "end": 0.768
+        },
+        {
+          "id": "caption-word-1-1",
+          "text": "a",
+          "start": 0.811,
+          "end": 0.853
+        },
+        {
+          "id": "caption-word-1-2",
+          "text": "prompt.",
+          "start": 0.896,
+          "end": 1.429
+        }
+      ]
+    },
+    {
+      "id": "caption-group-2",
+      "frame": 1,
+      "start": 1.664,
+      "end": 2.68,
+      "text": "It's a thirty-service",
+      "words": [
+        {
+          "id": "caption-word-2-0",
+          "text": "It's",
+          "start": 1.664,
+          "end": 1.877
+        },
+        {
+          "id": "caption-word-2-1",
+          "text": "a",
+          "start": 1.92,
+          "end": 1.963
+        },
+        {
+          "id": "caption-word-2-2",
+          "text": "thirty-service",
+          "start": 2.005,
+          "end": 2.56
+        }
+      ]
+    },
+    {
+      "id": "caption-group-3",
+      "frame": 1,
+      "start": 2.773,
+      "end": 3.377,
+      "text": "pipeline.",
+      "words": [
+        {
+          "id": "caption-word-3-0",
+          "text": "pipeline.",
+          "start": 2.773,
+          "end": 3.257
+        }
+      ]
+    },
+    {
+      "id": "caption-group-4",
+      "frame": 2,
+      "start": 3.799,
+      "end": 4.908,
+      "text": "One prompt doesn't",
+      "words": [
+        {
+          "id": "caption-word-4-0",
+          "text": "One",
+          "start": 3.799,
+          "end": 4.012
+        },
+        {
+          "id": "caption-word-4-1",
+          "text": "prompt",
+          "start": 4.097,
+          "end": 4.439
+        },
+        {
+          "id": "caption-word-4-2",
+          "text": "doesn't",
+          "start": 4.567,
+          "end": 4.865
+        }
+      ]
+    },
+    {
+      "id": "caption-group-5",
+      "frame": 2,
+      "start": 4.908,
+      "end": 5.796,
+      "text": "hold a novel.",
+      "words": [
+        {
+          "id": "caption-word-5-0",
+          "text": "hold",
+          "start": 4.908,
+          "end": 5.036
+        },
+        {
+          "id": "caption-word-5-1",
+          "text": "a",
+          "start": 5.121,
+          "end": 5.164
+        },
+        {
+          "id": "caption-word-5-2",
+          "text": "novel.",
+          "start": 5.207,
+          "end": 5.676
+        }
+      ]
+    },
+    {
+      "id": "caption-group-6",
+      "frame": 2,
+      "start": 5.932,
+      "end": 6.956,
+      "text": "It flatlines in",
+      "words": [
+        {
+          "id": "caption-word-6-0",
+          "text": "It",
+          "start": 5.932,
+          "end": 6.06
+        },
+        {
+          "id": "caption-word-6-1",
+          "text": "flatlines",
+          "start": 6.145,
+          "end": 6.7
+        },
+        {
+          "id": "caption-word-6-2",
+          "text": "in",
+          "start": 6.871,
+          "end": 6.913
+        }
+      ]
+    },
+    {
+      "id": "caption-group-7",
+      "frame": 2,
+      "start": 6.956,
+      "end": 7.771,
+      "text": "chapter four.",
+      "words": [
+        {
+          "id": "caption-word-7-0",
+          "text": "chapter",
+          "start": 6.956,
+          "end": 7.255
+        },
+        {
+          "id": "caption-word-7-1",
+          "text": "four.",
+          "start": 7.297,
+          "end": 7.651
+        }
+      ]
+    },
+    {
+      "id": "caption-group-8",
+      "frame": 3,
+      "start": 8.189,
+      "end": 9.717,
+      "text": "AthenaOS splits the work",
+      "words": [
+        {
+          "id": "caption-word-8-0",
+          "text": "AthenaOS",
+          "start": 8.189,
+          "end": 8.829
+        },
+        {
+          "id": "caption-word-8-1",
+          "text": "splits",
+          "start": 8.999,
+          "end": 9.213
+        },
+        {
+          "id": "caption-word-8-2",
+          "text": "the",
+          "start": 9.298,
+          "end": 9.383
+        },
+        {
+          "id": "caption-word-8-3",
+          "text": "work",
+          "start": 9.426,
+          "end": 9.597
+        }
+      ]
+    },
+    {
+      "id": "caption-group-9",
+      "frame": 3,
+      "start": 9.725,
+      "end": 10.791,
+      "text": "across thirty numbered",
+      "words": [
+        {
+          "id": "caption-word-9-0",
+          "text": "across",
+          "start": 9.725,
+          "end": 9.895
+        },
+        {
+          "id": "caption-word-9-1",
+          "text": "thirty",
+          "start": 10.066,
+          "end": 10.322
+        },
+        {
+          "id": "caption-word-9-2",
+          "text": "numbered",
+          "start": 10.45,
+          "end": 10.749
+        }
+      ]
+    },
+    {
+      "id": "caption-group-10",
+      "frame": 3,
+      "start": 10.791,
+      "end": 11.509,
+      "text": "services.",
+      "words": [
+        {
+          "id": "caption-word-10-0",
+          "text": "services.",
+          "start": 10.791,
+          "end": 11.389
+        }
+      ]
+    },
+    {
+      "id": "caption-group-11",
+      "frame": 3,
+      "start": 11.73,
+      "end": 12.277,
+      "text": "Each one",
+      "words": [
+        {
+          "id": "caption-word-11-0",
+          "text": "Each",
+          "start": 11.73,
+          "end": 11.901
+        },
+        {
+          "id": "caption-word-11-1",
+          "text": "one",
+          "start": 11.986,
+          "end": 12.157
+        }
+      ]
+    },
+    {
+      "id": "caption-group-12",
+      "frame": 3,
+      "start": 12.285,
+      "end": 12.498,
+      "text": "has a",
+      "words": [
+        {
+          "id": "caption-word-12-0",
+          "text": "has",
+          "start": 12.285,
+          "end": 12.37
+        },
+        {
+          "id": "caption-word-12-1",
+          "text": "a",
+          "start": 12.413,
+          "end": 12.455
+        }
+      ]
+    },
+    {
+      "id": "caption-group-13",
+      "frame": 3,
+      "start": 12.498,
+      "end": 13.403,
+      "text": "written protocol.",
+      "words": [
+        {
+          "id": "caption-word-13-0",
+          "text": "written",
+          "start": 12.498,
+          "end": 12.626
+        },
+        {
+          "id": "caption-word-13-1",
+          "text": "protocol.",
+          "start": 12.797,
+          "end": 13.283
+        }
+      ]
+    },
+    {
+      "id": "caption-group-14",
+      "frame": 4,
+      "start": 13.786,
+      "end": 14.802,
+      "text": "Architecture.",
+      "words": [
+        {
+          "id": "caption-word-14-0",
+          "text": "Architecture.",
+          "start": 13.786,
+          "end": 14.682
+        }
+      ]
+    },
+    {
+      "id": "caption-group-15",
+      "frame": 4,
+      "start": 14.938,
+      "end": 16.487,
+      "text": "Character and world.",
+      "words": [
+        {
+          "id": "caption-word-15-0",
+          "text": "Character",
+          "start": 14.938,
+          "end": 15.365
+        },
+        {
+          "id": "caption-word-15-1",
+          "text": "and",
+          "start": 15.493,
+          "end": 15.663
+        },
+        {
+          "id": "caption-word-15-2",
+          "text": "world.",
+          "start": 15.706,
+          "end": 16.367
+        }
+      ]
+    },
+    {
+      "id": "caption-group-16",
+      "frame": 4,
+      "start": 16.73,
+      "end": 17.874,
+      "text": "Voice calibration.",
+      "words": [
+        {
+          "id": "caption-word-16-0",
+          "text": "Voice",
+          "start": 16.73,
+          "end": 16.943
+        },
+        {
+          "id": "caption-word-16-1",
+          "text": "calibration.",
+          "start": 17.071,
+          "end": 17.754
+        }
+      ]
+    },
+    {
+      "id": "caption-group-17",
+      "frame": 4,
+      "start": 18.01,
+      "end": 18.77,
+      "text": "Drafting.",
+      "words": [
+        {
+          "id": "caption-word-17-0",
+          "text": "Drafting.",
+          "start": 18.01,
+          "end": 18.65
+        }
+      ]
+    },
+    {
+      "id": "caption-group-18",
+      "frame": 4,
+      "start": 18.863,
+      "end": 19.461,
+      "text": "Editing.",
+      "words": [
+        {
+          "id": "caption-word-18-0",
+          "text": "Editing.",
+          "start": 18.863,
+          "end": 19.341
+        }
+      ]
+    },
+    {
+      "id": "caption-group-19",
+      "frame": 5,
+      "start": 19.889,
+      "end": 20.137,
+      "text": "Before",
+      "words": [
+        {
+          "id": "caption-word-19-0",
+          "text": "Before",
+          "start": 19.889,
+          "end": 20.017
+        }
+      ]
+    },
+    {
+      "id": "caption-group-20",
+      "frame": 5,
+      "start": 20.23,
+      "end": 20.529,
+      "text": "a word",
+      "words": [
+        {
+          "id": "caption-word-20-0",
+          "text": "a",
+          "start": 20.23,
+          "end": 20.273
+        },
+        {
+          "id": "caption-word-20-1",
+          "text": "word",
+          "start": 20.315,
+          "end": 20.443
+        }
+      ]
+    },
+    {
+      "id": "caption-group-21",
+      "frame": 5,
+      "start": 20.529,
+      "end": 21.267,
+      "text": "is drafted,",
+      "words": [
+        {
+          "id": "caption-word-21-0",
+          "text": "is",
+          "start": 20.529,
+          "end": 20.571
+        },
+        {
+          "id": "caption-word-21-1",
+          "text": "drafted,",
+          "start": 20.614,
+          "end": 21.147
+        }
+      ]
+    },
+    {
+      "id": "caption-group-22",
+      "frame": 5,
+      "start": 21.297,
+      "end": 23.529,
+      "text": "a five-hundred-word voice fingerprint.",
+      "words": [
+        {
+          "id": "caption-word-22-0",
+          "text": "a",
+          "start": 21.297,
+          "end": 21.467
+        },
+        {
+          "id": "caption-word-22-1",
+          "text": "five-hundred-word",
+          "start": 21.51,
+          "end": 22.278
+        },
+        {
+          "id": "caption-word-22-2",
+          "text": "voice",
+          "start": 22.406,
+          "end": 22.577
+        },
+        {
+          "id": "caption-word-22-3",
+          "text": "fingerprint.",
+          "start": 22.747,
+          "end": 23.409
+        }
+      ]
+    },
+    {
+      "id": "caption-group-23",
+      "frame": 5,
+      "start": 23.643,
+      "end": 24.113,
+      "text": "Then a",
+      "words": [
+        {
+          "id": "caption-word-23-0",
+          "text": "Then",
+          "start": 23.643,
+          "end": 23.814
+        },
+        {
+          "id": "caption-word-23-1",
+          "text": "a",
+          "start": 23.942,
+          "end": 24.07
+        }
+      ]
+    },
+    {
+      "id": "caption-group-24",
+      "frame": 5,
+      "start": 24.113,
+      "end": 24.446,
+      "text": "service",
+      "words": [
+        {
+          "id": "caption-word-24-0",
+          "text": "service",
+          "start": 24.113,
+          "end": 24.326
+        }
+      ]
+    },
+    {
+      "id": "caption-group-25",
+      "frame": 5,
+      "start": 24.539,
+      "end": 25.043,
+      "text": "whose only",
+      "words": [
+        {
+          "id": "caption-word-25-0",
+          "text": "whose",
+          "start": 24.539,
+          "end": 24.667
+        },
+        {
+          "id": "caption-word-25-1",
+          "text": "only",
+          "start": 24.753,
+          "end": 24.923
+        }
+      ]
+    },
+    {
+      "id": "caption-group-26",
+      "frame": 5,
+      "start": 25.094,
+      "end": 25.683,
+      "text": "job is",
+      "words": [
+        {
+          "id": "caption-word-26-0",
+          "text": "job",
+          "start": 25.094,
+          "end": 25.307
+        },
+        {
+          "id": "caption-word-26-1",
+          "text": "is",
+          "start": 25.478,
+          "end": 25.563
+        }
+      ]
+    },
+    {
+      "id": "caption-group-27",
+      "frame": 5,
+      "start": 25.691,
+      "end": 26.161,
+      "text": "stripping the",
+      "words": [
+        {
+          "id": "caption-word-27-0",
+          "text": "stripping",
+          "start": 25.691,
+          "end": 25.905
+        },
+        {
+          "id": "caption-word-27-1",
+          "text": "the",
+          "start": 26.033,
+          "end": 26.118
+        }
+      ]
+    },
+    {
+      "id": "caption-group-28",
+      "frame": 5,
+      "start": 26.161,
+      "end": 26.926,
+      "text": "AI out.",
+      "words": [
+        {
+          "id": "caption-word-28-0",
+          "text": "AI",
+          "start": 26.161,
+          "end": 26.459
+        },
+        {
+          "id": "caption-word-28-1",
+          "text": "out.",
+          "start": 26.545,
+          "end": 26.806
+        }
+      ]
+    },
+    {
+      "id": "caption-group-29",
+      "frame": 6,
+      "start": 27.329,
+      "end": 29.049,
+      "text": "Sixteen editing services.",
+      "words": [
+        {
+          "id": "caption-word-29-0",
+          "text": "Sixteen",
+          "start": 27.329,
+          "end": 27.883
+        },
+        {
+          "id": "caption-word-29-1",
+          "text": "editing",
+          "start": 27.969,
+          "end": 28.182
+        },
+        {
+          "id": "caption-word-29-2",
+          "text": "services.",
+          "start": 28.31,
+          "end": 28.929
+        }
+      ]
+    },
+    {
+      "id": "caption-group-30",
+      "frame": 6,
+      "start": 29.334,
+      "end": 29.59,
+      "text": "And at",
+      "words": [
+        {
+          "id": "caption-word-30-0",
+          "text": "And",
+          "start": 29.334,
+          "end": 29.462
+        },
+        {
+          "id": "caption-word-30-1",
+          "text": "at",
+          "start": 29.505,
+          "end": 29.547
+        }
+      ]
+    },
+    {
+      "id": "caption-group-31",
+      "frame": 6,
+      "start": 29.59,
+      "end": 30.414,
+      "text": "every seam,",
+      "words": [
+        {
+          "id": "caption-word-31-0",
+          "text": "every",
+          "start": 29.59,
+          "end": 29.718
+        },
+        {
+          "id": "caption-word-31-1",
+          "text": "seam,",
+          "start": 29.846,
+          "end": 30.294
+        }
+      ]
+    },
+    {
+      "id": "caption-group-32",
+      "frame": 6,
+      "start": 30.529,
+      "end": 31.267,
+      "text": "a gate.",
+      "words": [
+        {
+          "id": "caption-word-32-0",
+          "text": "a",
+          "start": 30.529,
+          "end": 30.657
+        },
+        {
+          "id": "caption-word-32-1",
+          "text": "gate.",
+          "start": 30.699,
+          "end": 31.147
+        }
+      ]
+    },
+    {
+      "id": "caption-group-33",
+      "frame": 6,
+      "start": 31.467,
+      "end": 32.619,
+      "text": "Including a naive",
+      "words": [
+        {
+          "id": "caption-word-33-0",
+          "text": "Including",
+          "start": 31.467,
+          "end": 32.107
+        },
+        {
+          "id": "caption-word-33-1",
+          "text": "a",
+          "start": 32.15,
+          "end": 32.193
+        },
+        {
+          "id": "caption-word-33-2",
+          "text": "naive",
+          "start": 32.235,
+          "end": 32.534
+        }
+      ]
+    },
+    {
+      "id": "caption-group-34",
+      "frame": 6,
+      "start": 32.619,
+      "end": 33.174,
+      "text": "reader who's",
+      "words": [
+        {
+          "id": "caption-word-34-0",
+          "text": "reader",
+          "start": 32.619,
+          "end": 32.875
+        },
+        {
+          "id": "caption-word-34-1",
+          "text": "who's",
+          "start": 32.918,
+          "end": 33.131
+        }
+      ]
+    },
+    {
+      "id": "caption-group-35",
+      "frame": 6,
+      "start": 33.174,
+      "end": 34.029,
+      "text": "never been briefed.",
+      "words": [
+        {
+          "id": "caption-word-35-0",
+          "text": "never",
+          "start": 33.174,
+          "end": 33.302
+        },
+        {
+          "id": "caption-word-35-1",
+          "text": "been",
+          "start": 33.387,
+          "end": 33.515
+        },
+        {
+          "id": "caption-word-35-2",
+          "text": "briefed.",
+          "start": 33.558,
+          "end": 33.909
+        }
+      ]
+    },
+    {
+      "id": "caption-group-36",
+      "frame": 7,
+      "start": 34.439,
+      "end": 35.668,
+      "text": "A governed pipeline.",
+      "words": [
+        {
+          "id": "caption-word-36-0",
+          "text": "A",
+          "start": 34.439,
+          "end": 34.481
+        },
+        {
+          "id": "caption-word-36-1",
+          "text": "governed",
+          "start": 34.524,
+          "end": 34.823
+        },
+        {
+          "id": "caption-word-36-2",
+          "text": "pipeline.",
+          "start": 34.908,
+          "end": 35.548
+        }
+      ]
+    },
+    {
+      "id": "caption-group-37",
+      "frame": 7,
+      "start": 35.761,
+      "end": 36.777,
+      "text": "Thirty services.",
+      "words": [
+        {
+          "id": "caption-word-37-0",
+          "text": "Thirty",
+          "start": 35.761,
+          "end": 36.017
+        },
+        {
+          "id": "caption-word-37-1",
+          "text": "services.",
+          "start": 36.103,
+          "end": 36.657
+        }
+      ]
+    },
+    {
+      "id": "caption-group-38",
+      "frame": 7,
+      "start": 36.956,
+      "end": 38.057,
+      "text": "Five phases.",
+      "words": [
+        {
+          "id": "caption-word-38-0",
+          "text": "Five",
+          "start": 36.956,
+          "end": 37.212
+        },
+        {
+          "id": "caption-word-38-1",
+          "text": "phases.",
+          "start": 37.34,
+          "end": 37.937
+        }
+      ]
+    },
+    {
+      "id": "caption-group-39",
+      "frame": 7,
+      "start": 38.236,
+      "end": 38.663,
+      "text": "A gate",
+      "words": [
+        {
+          "id": "caption-word-39-0",
+          "text": "A",
+          "start": 38.236,
+          "end": 38.364
+        },
+        {
+          "id": "caption-word-39-1",
+          "text": "gate",
+          "start": 38.407,
+          "end": 38.62
+        }
+      ]
+    },
+    {
+      "id": "caption-group-40",
+      "frame": 7,
+      "start": 38.663,
+      "end": 39.479,
+      "text": "at every seam.",
+      "words": [
+        {
+          "id": "caption-word-40-0",
+          "text": "at",
+          "start": 38.663,
+          "end": 38.791
+        },
+        {
+          "id": "caption-word-40-1",
+          "text": "every",
+          "start": 38.833,
+          "end": 38.876
+        },
+        {
+          "id": "caption-word-40-2",
+          "text": "seam.",
+          "start": 39.004,
+          "end": 39.359
+        }
+      ]
+    }
+  ]
+}

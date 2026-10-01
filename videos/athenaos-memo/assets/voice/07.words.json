@@ -1,0 +1,74 @@
+[
+  {
+    "id": "w0",
+    "text": "A",
+    "start": 0.299,
+    "end": 0.341
+  },
+  {
+    "id": "w1",
+    "text": "governed",
+    "start": 0.384,
+    "end": 0.6827
+  },
+  {
+    "id": "w2",
+    "text": "pipeline.",
+    "start": 0.768,
+    "end": 1.408
+  },
+  {
+    "id": "w3",
+    "text": "Thirty",
+    "start": 1.621,
+    "end": 1.877
+  },
+  {
+    "id": "w4",
+    "text": "services.",
+    "start": 1.963,
+    "end": 2.517
+  },
+  {
+    "id": "w5",
+    "text": "Five",
+    "start": 2.816,
+    "end": 3.072
+  },
+  {
+    "id": "w6",
+    "text": "phases.",
+    "start": 3.2,
+    "end": 3.797
+  },
+  {
+    "id": "w7",
+    "text": "A",
+    "start": 4.096,
+    "end": 4.224
+  },
+  {
+    "id": "w8",
+    "text": "gate",
+    "start": 4.267,
+    "end": 4.48
+  },
+  {
+    "id": "w9",
+    "text": "at",
+    "start": 4.523,
+    "end": 4.651
+  },
+  {
+    "id": "w10",
+    "text": "every",
+    "start": 4.693,
+    "end": 4.736
+  },
+  {
+    "id": "w11",
+    "text": "seam.",
+    "start": 4.864,
+    "end": 5.21891156462585
+  }
+]

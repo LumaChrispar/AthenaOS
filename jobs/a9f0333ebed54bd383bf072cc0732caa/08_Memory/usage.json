@@ -1,5 +1,5 @@
 {
-  "calls": 19,
+  "calls": 21,
   "prompt_tokens": 113599,
   "completion_tokens": 434499,
   "by_service": {
@@ -18,11 +18,11 @@
       "failures": 0
     },
     "SRV-003": {
-      "calls": 1,
+      "calls": 3,
       "prompt_tokens": 3784,
       "completion_tokens": 19363,
-      "response_seconds": 302.43,
-      "failures": 0
+      "response_seconds": 305.98,
+      "failures": 2
     },
     "SRV-004": {
       "calls": 1,
@@ -67,6 +67,13 @@
       "completion_tokens": 434499,
       "response_seconds": 6043.9,
       "failures": 5
+    },
+    "inclusionai/ling-3.0-flash:free": {
+      "calls": 2,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "response_seconds": 3.55,
+      "failures": 2
     }
   }
 }

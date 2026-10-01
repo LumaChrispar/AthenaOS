@@ -1,0 +1,23 @@
+{
+  "calls": 1,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "by_service": {
+    "SRV-001": {
+      "calls": 1,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "response_seconds": 1.17,
+      "failures": 1
+    }
+  },
+  "by_model": {
+    "inclusionai/ling-3.0-flash:free": {
+      "calls": 1,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "response_seconds": 1.17,
+      "failures": 1
+    }
+  }
+}

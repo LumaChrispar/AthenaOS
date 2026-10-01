@@ -1,0 +1,8 @@
+
+--- STAGE 1: CONCEPT & INTAKE (SRV-001) ---
+Saved artifact to C:\Users\Luma Chrisparr\Desktop\AthenaOS\jobs\cb53b94975c14aa488c12fc45b253694\08_Memory\intake_brief.json
+[SRV-001] Sending task (model: inclusionai/ling-3.0-flash:free, temp: 0.15)...
+[SRV-001] Request budget: prompt≈2018 tokens; output≤8192; context=32768.
+[SRV-001] Request ended after 1.2s.
+Error calling model API: Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}
+Job stopped: Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}

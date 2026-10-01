@@ -1,0 +1,56 @@
+[
+  {
+    "id": "w0",
+    "text": "This",
+    "start": 0.299,
+    "end": 0.4267
+  },
+  {
+    "id": "w1",
+    "text": "is",
+    "start": 0.469,
+    "end": 0.5547
+  },
+  {
+    "id": "w2",
+    "text": "not",
+    "start": 0.597,
+    "end": 0.768
+  },
+  {
+    "id": "w3",
+    "text": "a",
+    "start": 0.811,
+    "end": 0.853
+  },
+  {
+    "id": "w4",
+    "text": "prompt.",
+    "start": 0.896,
+    "end": 1.429
+  },
+  {
+    "id": "w5",
+    "text": "It's",
+    "start": 1.664,
+    "end": 1.877
+  },
+  {
+    "id": "w6",
+    "text": "a",
+    "start": 1.92,
+    "end": 1.9627
+  },
+  {
+    "id": "w7",
+    "text": "thirty-service",
+    "start": 2.005,
+    "end": 2.56
+  },
+  {
+    "id": "w8",
+    "text": "pipeline.",
+    "start": 2.773,
+    "end": 3.2568253968253966
+  }
+]

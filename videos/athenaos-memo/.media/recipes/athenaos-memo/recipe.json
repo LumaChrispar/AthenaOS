@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "name": "athenaos-memo",
+  "workflow": "faceless-explainer",
+  "approved_at": "2026-10-01T20:26:47.110Z",
+  "source_project": "athenaos-memo",
+  "destination": "youtube",
+  "aspect": "1920x1080",
+  "language": "en"
+}

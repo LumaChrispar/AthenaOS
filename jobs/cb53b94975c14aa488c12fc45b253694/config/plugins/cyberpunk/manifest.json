@@ -1,0 +1,18 @@
+{
+  "plugin_id": "PLG-CYBERPUNK",
+  "name": "Cyberpunk Core Extension",
+  "version": "1.0",
+  "description": "Injects cyberpunk-specific capabilities, knowledge domains, and QA rules into the Athena Runtime.",
+  "services_provided": [
+    "SRV-CYB-01: Cybernetics Architect",
+    "SRV-CYB-02: Megacorporation Profiler"
+  ],
+  "domains_injected": [
+    "DOM-Tech: Neuromods & Hacking",
+    "DOM-Society: Hyper-Capitalism"
+  ],
+  "qa_rules": [
+    "QAR-CYB-01: Ensure no faster-than-light travel exists.",
+    "QAR-CYB-02: Technology must always have a biological or societal cost."
+  ]
+}

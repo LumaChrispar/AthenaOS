@@ -4,3 +4,4 @@
 {"id":"sfx_004","type":"sfx","path":"assets/sfx/whoosh-short.mp3","source":"bundled","description":"whoosh-short","duration":0.6,"provenance":{"provider":"bundled.sfx","prompt":"whoosh-short"}}
 {"id":"sfx_005","type":"sfx","path":"assets/sfx/click-soft.mp3","source":"bundled","description":"click-soft","duration":0.4,"provenance":{"provider":"bundled.sfx","prompt":"click-soft"}}
 {"id":"sfx_006","type":"sfx","path":"assets/sfx/pop.mp3","source":"bundled","description":"pop","duration":0.7,"provenance":{"provider":"bundled.sfx","prompt":"pop"}}
+{"id":"recipe_001","type":"recipe","path":".media/recipes/athenaos-memo/recipe.json","entity":"athenaos-memo","description":"recipe: athenaos-memo (faceless-explainer, v1)","provenance":{"provider":"recipe.freeze","version":1,"source_project":"athenaos-memo"}}

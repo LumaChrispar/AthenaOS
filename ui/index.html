@@ -24,7 +24,7 @@
         <textarea id="concept" required maxlength="30000" rows="3" placeholder="Tell Athena about your book…"></textarea>
         <div class="composer-toolbar"><div class="chapter-control"><label for="chapters">Chapters</label><input id="chapters" type="number" min="1" max="200" placeholder="Auto" aria-label="Chapter count, leave blank for automatic"></div><button type="submit" id="start" class="send-button" aria-label="Start writing this book">↑</button></div>
       </form>
-      <div class="composer-caption"><span id="saved-model">Loading settings…</span><a id="configure-model" href="/settings">Settings</a></div>
+      <div class="composer-caption"><span id="saved-model">Loading settings…</span><span id="unsaved-settings" class="warn" role="status" aria-live="polite" hidden></span><a id="configure-model" href="/settings">Settings</a></div>
       <p class="composer-note">Your first message starts the book. Athena’s progress will appear in the conversation.</p>
     </div>
   </section>

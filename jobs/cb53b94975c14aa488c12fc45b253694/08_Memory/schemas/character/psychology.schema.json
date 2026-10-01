@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Character Psychology Schema",
+  "type": "object",
+  "properties": {
+    "core_belief": { "type": "string" },
+    "fatal_flaw": { "type": "string" },
+    "trauma": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "moral_alignment": { "type": "string" },
+    "introversion_extroversion": { "type": "integer", "minimum": 1, "maximum": 10 },
+    "logic_emotion": { "type": "integer", "minimum": 1, "maximum": 10 },
+    "habits": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "fears": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["core_belief", "fatal_flaw", "moral_alignment"]
+}

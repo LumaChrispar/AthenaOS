@@ -1,0 +1,53 @@
+{
+  "title": "The Witches of Wyrmwood Moor",
+  "beat_sheets": [
+    {
+      "act": 1,
+      "name": "The Summons",
+      "beats": [
+        {
+          "beat_id": 1,
+          "goal": "Introduce Captain Edric Vane returning from war to plague-ravaged Wyrmwood Moor, where Huldah, Ysop, and Merrin exploit his grievance against King Alaric's unpaid veterans.",
+          "conflict": "Alaric has stripped Edric's rank; the witches offer a stolen royal seal and evidence of corruption in exchange for secrecy, while his pride makes acceptance feel like justice.",
+          "outcome": "Edric takes the blackthorn token and returns to court. Huldah will voice fate, Ysop engineer events, and Merrin manufacture witnesses; each helps design his destruction."
+        }
+      ]
+    },
+    {
+      "act": 2,
+      "name": "The Prophecy",
+      "beats": [
+        {
+          "beat_id": 2,
+          "goal": "Ysop places Edric at an eclipse banquet, Merrin supplies false witnesses, and Huldah proclaims: 'When the black sun starves, the king shall pay with blood; the captain who spurned the moor shall wear his ring; the crowned wolf shall call thrice and feed the moor his ghosts.'",
+          "conflict": "Every omen traces back to Edric's grievance and choices, but accepting their guidance offers Chancellor Merea Voss proof that Alaric is a tyrant deserving removal.",
+          "outcome": "Edric wins Merea's support, then knowingly prepares a poisoned cup and positions himself to seize the king's signet, mistaking his own design for destiny."
+        }
+      ]
+    },
+    {
+      "act": 3,
+      "name": "The Harvest",
+      "beats": [
+        {
+          "beat_id": 3,
+          "goal": "Intercut Edric's eclipse feast with the witches' private counsel as he attempts regicide, claims the crown, and converts Merea's support into political leverage.",
+          "conflict": "The poison fails, Alaric exposes the plot, and Merea turns against Edric; the witches deepen his guilt with manufactured voices and signs that may be illusion or ritual.",
+          "outcome": "Edric murders Alaric, frames Merea for treason, and forces his coronation. When the crown speaks with Huldah's voice, he calls upon the moor and condemns their bargain."
+        }
+      ]
+    },
+    {
+      "act": 4,
+      "name": "The Moor",
+      "beats": [
+        {
+          "beat_id": 4,
+          "goal": "Edric names the moor three times, attempting to break the compact, confront the witches, return the stolen signet, and confess his crimes.",
+          "conflict": "The witches reveal that no prophecy compelled him: each fulfillment followed a choice he willingly made, though their supernatural connection remains disturbingly real.",
+          "outcome": "Edric submits to Merea's council, which voids his rule, frees his prisoners, and restores Alaric's son. Edric is executed as the witches declare, 'We sow no seed, yet harvest every soul.'"
+        }
+      ]
+    }
+  ]
+}

@@ -181,7 +181,7 @@
     }
   </style>
 
-  <div id="root" data-composition-id="04-five-phases" data-start="0" data-duration="7.08" data-width="1920" data-height="1080">
+  <div id="root" data-composition-id="04-five-phases" data-start="0" data-duration="6.66" data-width="1920" data-height="1080">
 
 
   <!-- full-bleed ground rides on a clip layer, never on #root -->
@@ -260,7 +260,7 @@
       var ROW_H = 130;
       var ROW_DUR = 0.65;
       var ROW_EASE = "power3.out";
-      var CUE = [0.97, 1.73, 2.48, 3.24, 4.0];
+      var CUE = [0.907, 1.618, 2.319, 3.03, 3.741];
       /* center-outward-expansion, "starting partially-spread" short-path form:
          each row slides a short distance directly into its own slot. */
       var START_PROGRESS = 0.34;
@@ -276,19 +276,19 @@
       tl.fromTo(
         "#f04-five-phases-spike",
         { opacity: 0, y: -10, scale: 0.92 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" },0.108);
+        { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" },0.101);
       tl.fromTo(
         "#f04-five-phases-kicker-word",
         { opacity: 0, y: -8 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },0.173);
+        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },0.162);
       tl.fromTo(
         "#f04-five-phases-kicker-meta",
         { opacity: 0 },
-        { opacity: 1, duration: 0.7, ease: "power1.out" },0.288);
+        { opacity: 1, duration: 0.7, ease: "power1.out" },0.269);
       tl.fromTo(
         "#f04-five-phases-kicker-rule",
         { scaleX: 0 },
-        { scaleX: 1, duration: 0.9, ease: "power2.inOut" },0.252);
+        { scaleX: 1, duration: 0.9, ease: "power2.inOut" },0.236);
 
       // Scene 2 (1.2–7.4s): one row per spoken cue, even stagger.
       for (var i = 0; i < ROWS; i++) {
@@ -363,7 +363,7 @@
       }
 
       // Scene 3 (7.4–9.0s): held read — no drift, no breathing. Tick rests on row 05.
-      tl.to({ _hold: 0 }, { _hold: 1, duration: 2.2, ease: "none" },4.824);
+      tl.to({ _hold: 0 }, { _hold: 1, duration: 2.2, ease: "none" },4.511);
 
       window.__timelines = window.__timelines || {};
       window.__timelines["04-five-phases"] = tl;

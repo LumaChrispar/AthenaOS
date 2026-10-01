@@ -1,8 +1,15 @@
 {
   "provider": "openrouter",
   "base_url": "https://openrouter.ai/api/v1",
-  "model": "inclusionai/ling-3.0-flash:free",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
   "max_calls_per_job": 200,
   "max_output_tokens": 12000,
-  "timeout_seconds": 600
+  "timeout_seconds": 600,
+  "role_models": {
+    "architecture-reasoning": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "character-world-building": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "prose-generation": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "voice-variation": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "analysis-critique": "nvidia/nemotron-3-ultra-550b-a55b:free"
+  }
 }

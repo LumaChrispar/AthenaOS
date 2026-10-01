@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "concept": "could you write a Shakespeare horror titled The witches of Wyrmwood Moor\na darker cousin to Macbeth.Three witches don't predict the future, they create it. A soldier who seeks power realizes every prophecy was a trap designed to lead him to his own ruin. \"we sow no seed, yet harvest every soul\"",
+  "chapters": 4,
+  "status": "failed",
+  "completed_steps": [
+    "intake",
+    "architecture",
+    "characters",
+    "world",
+    "voice"
+  ],
+  "active_step": "chapter_1",
+  "error": "Add your OpenRouter API key in Settings, or set OPENROUTER_API_KEY.",
+  "created_at": 1790737070.2743416,
+  "updated_at": 1790883021.1518166,
+  "active_started_at": null,
+  "active_attempt": 1,
+  "step_durations_seconds": {
+    "intake": 26.69,
+    "architecture": 142.54,
+    "characters": 302.47,
+    "world": 535.94,
+    "voice": 368.52,
+    "chapter_1": 228.33
+  }
+}
