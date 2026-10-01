@@ -1,0 +1,496 @@
+<template>
+  <style>
+    /* ---- Code editorial · frame 02-failure-mode ----
+       Ground: cream paper. Content gathers on a tile half-step.
+       Coral = ONE voltage moment (the right-margin index mark).
+       Root is styled by #root, never by a class (lint: subcomposition_root_styled_by_class). */
+
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: italic;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/Inter-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #141413;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- layer 1 · full-bleed ground (rides on a clip, never on #root) ---- */
+    #02-ground {
+      position: absolute;
+      inset: 0;
+      background: #faf9f5;
+    }
+
+    /* ---- memo chrome strip above the field band (cream ground) ---- */
+    #02-chrome {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 88px;
+    }
+    #02-chrome-l,
+    #02-chrome-r {
+      position: absolute;
+      top: 34px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 1.04cqw; /* 20px */
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(20, 20, 19, 0.42);
+      white-space: nowrap;
+    }
+    #02-chrome-l { left: 80px; }
+    #02-chrome-r { right: 80px; }
+
+    /* ---- layer 2 · the memo field band (tile half-step), scrolls into place ---- */
+    #02-field {
+      position: absolute;
+      left: 0;
+      top: 88px;
+      width: 1920px;
+      height: 792px;
+    }
+    #02-band {
+      position: absolute;
+      inset: 0;
+      background: #efe9de;
+    }
+    #02-band-top,
+    #02-band-bot {
+      position: absolute;
+      left: 0;
+      width: 1920px;
+      height: 1px;
+      background: rgba(20, 20, 19, 0.1);
+    }
+    #02-band-top { top: 0; }
+    #02-band-bot { bottom: 0; }
+
+    /* ---- layer 3 · type on the band ---- */
+    #02-kicker {
+      position: absolute;
+      left: 80px;
+      top: 138px;
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 1.46cqw; /* 28px */
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #141413;
+      white-space: nowrap;
+    }
+    #02-spike {
+      font-family: "EB Garamond", Georgia, serif;
+      font-size: 1.3cqw;
+      color: #cc785c; /* the brand glyph — always coral */
+      line-height: 1;
+    }
+
+    /* solid redaction bar, sitting over an unseen line */
+    #02-redaction {
+      position: absolute;
+      left: 80px;
+      top: 236px;
+      width: 1000px;
+      height: 58px;
+      border-radius: 6px;
+      background: #ece3d4;
+      border: 1px solid rgba(20, 20, 19, 0.08);
+    }
+    #02-caret-bar {
+      position: absolute;
+      left: 80px;
+      top: 236px;
+      width: 5px;
+      height: 58px;
+      background: #141413;
+    }
+
+    /* typewriter line (JetBrains Mono, code voice) */
+    #02-type-line {
+      position: absolute;
+      left: 80px;
+      top: 340px;
+      display: flex;
+      align-items: baseline;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.67cqw; /* 32px */
+      line-height: 1.6;
+      color: #141413;
+      white-space: pre;
+    }
+    #02-type-wrap {
+      display: inline-flex;
+      align-items: baseline;
+      min-width: 490px; /* >= widest state — stops right-edge jitter */
+      white-space: pre;
+    }
+    #02-type-text { white-space: pre; }
+    #02-caret-type {
+      display: inline-block;
+      width: 10px;
+      height: 30px;
+      margin-left: 4px;
+      background: #141413;
+      vertical-align: -4px;
+    }
+
+    /* right-margin rail + the single coral index mark */
+    #02-rail {
+      position: absolute;
+      left: 1820px;
+      top: 138px;
+      width: 1px;
+      height: 420px;
+      background: rgba(20, 20, 19, 0.14);
+    }
+    #02-rail-idx {
+      position: absolute;
+      left: 1819px;
+      top: 292px;
+      width: 3px;
+      height: 46px;
+      background: #cc785c; /* the ONE coral moment in this frame */
+      border-radius: 1px;
+    }
+
+    /* hero · EB Garamond display-italic, left-aligned on the rule-of-thirds line */
+    #02-hero-line {
+      position: absolute;
+      left: 640px;
+      top: 378px;
+      display: flex;
+      align-items: baseline;
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 6.7cqw; /* 128.6px */
+      line-height: 1.05;
+      letter-spacing: -0.012em;
+      color: #141413;
+      white-space: pre;
+    }
+    #02-hero-wrap {
+      display: inline-flex;
+      align-items: baseline;
+      min-width: 540px;
+      white-space: pre;
+    }
+    #02-hero-text { white-space: pre; }
+    #02-caret-hero {
+      display: inline-block;
+      width: 11px;
+      height: 108px;
+      margin-left: 8px;
+      background: #141413;
+      vertical-align: -10px;
+    }
+
+    /* the hairline rule that stops mid-stroke */
+    #02-rule-svg {
+      position: absolute;
+      left: 640px;
+      top: 566px;
+      width: 1180px;
+      height: 1px;
+      overflow: visible;
+    }
+    #02-rule-line {
+      fill: none;
+      stroke: rgba(20, 20, 19, 0.2);
+      stroke-width: 1;
+      stroke-linecap: butt;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="02-failure-mode"
+    data-width="1920"
+    data-height="1080"
+  >
+    <!-- depth layer 1 · full-bleed cream ground, full-duration clip -->
+    <div
+      class="clip"
+      id="02-ground"
+      data-start="0"
+      data-duration="7"
+      data-track-index="0"
+    ></div>
+
+    <!-- depth layer 2/3 · memo chrome + field band + type -->
+    <div id="02-chrome">
+      <div id="02-chrome-l">Internal memo</div>
+      <div id="02-chrome-r">Eyes only</div>
+    </div>
+
+    <div id="02-field">
+      <div id="02-band"></div>
+      <div id="02-band-top"></div>
+      <div id="02-band-bot"></div>
+
+      <div id="02-kicker">
+        <span id="02-spike">&#10035;</span><span>Failure mode</span>
+      </div>
+
+      <div id="02-redaction"></div>
+      <div id="02-caret-bar"></div>
+
+      <div id="02-type-line">
+        <div id="02-type-wrap">
+          <span id="02-type-text"></span><span id="02-caret-type"></span>
+        </div>
+      </div>
+
+      <div id="02-rail"></div>
+      <div id="02-rail-idx"></div>
+
+      <div id="02-hero-line">
+        <div id="02-hero-wrap">
+          <span id="02-hero-text"></span><span id="02-caret-hero"></span>
+        </div>
+      </div>
+
+      <svg id="02-rule-svg" viewBox="0 0 1180 1" preserveAspectRatio="none" aria-hidden="true">
+        <line id="02-rule-line" x1="0" y1="0.5" x2="1180" y2="0.5" />
+      </svg>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var DURATION = 7;
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---------- housekeeping ---------- */
+      // No CSS transforms are authored on any GSAP-animated element.
+
+      var ruleLine = document.getElementById("02-rule-line");
+      var ruleLen = 1180; // straight horizontal <line> — measured geometry, no guessing
+      ruleLine.style.strokeDasharray = ruleLen;
+      ruleLine.style.strokeDashoffset = ruleLen;
+
+      /* ---------- typewriter state ----------
+         discrete-text-sequence: a sparse { t, text, seg } array, reverse-searched
+         on every frame. context-sensitive-cursor: the caret's background follows
+         the active segment (dim while transcribing the field label, solid on the
+         value). The hero line types in EB Garamond with a longer word-break pause. */
+
+      function buildSeq(str, start, perChar, spacePause) {
+        var seq = [{ t: start, text: "", seg: "key" }];
+        var t = start;
+        for (var i = 0; i < str.length; i++) {
+          var ch = str.charAt(i);
+          t += perChar + (ch === " " ? spacePause : 0);
+          seq.push({ t: t, text: str.slice(0, i + 1), seg: str.charAt(i + 1) === ":" ? "key" : "value" });
+        }
+        return seq;
+      }
+
+      var MONO_LINE = "CONTEXT HELD: ONE SESSION";
+      var HERO_LINE = "Chapter 4";
+      var SEQ_MONO = buildSeq(MONO_LINE, 1.6, 0.05, 0.2); // ends 3.45
+      var SEQ_HERO = buildSeq(HERO_LINE, 5.2, 0.085, 0.3); // ends 6.265
+
+      function entryAt(seq, time) {
+        for (var i = seq.length - 1; i >= 0; i--) {
+          if (time >= seq[i].t) return seq[i];
+        }
+        return seq[0];
+      }
+
+      var INK = "#141413";
+      var INK_DIM = "rgba(20,20,19,0.45)";
+
+      var typeText = document.getElementById("02-type-text");
+      var caretType = document.getElementById("02-caret-type");
+      var heroText = document.getElementById("02-hero-text");
+      var caretHero = document.getElementById("02-caret-hero");
+      var caretBar = document.getElementById("02-caret-bar");
+
+      var MONO_END = SEQ_MONO[SEQ_MONO.length - 1].t;
+      var BAR_HANDOFF_START = 1.55;
+      var BAR_HANDOFF_DUR = 0.22;
+
+      // Blink is a deterministic square wave over a WHOLE number of cycles
+      // (10 cycles / 7s = 0.70s period). Every gate below is a pure function of
+      // driver time, so scrubbing backwards reproduces the frame exactly.
+      var BLINK_CYCLES = 10;
+
+      function blinkOn(p) {
+        return Math.sin(p) > 0 ? 1 : 0;
+      }
+
+      var driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: DURATION,
+          duration: DURATION,
+          ease: "none",
+          onUpdate: function () {
+            var t = driver.t;
+
+            // --- Scene 2 · mono line types under the bar ---
+            var m = entryAt(SEQ_MONO, t);
+            typeText.textContent = t >= 1.6 ? m.text : "";
+            caretType.style.background = m.seg === "key" ? INK_DIM : INK;
+            // solid while keystrokes are landing, blinking on the pauses; off after the caret stops
+            var typingMono = t >= 1.6 && t <= MONO_END;
+            caretType.style.opacity =
+              t >= 1.6 && t < 3.62 ? (typingMono ? 1 : blinkOn((t / 0.7) * Math.PI * 2)) : 0;
+
+            // --- Scene 1 · caret parked at the redaction bar's left edge, then
+            //     hands off down to the typing line (fades across the handoff) ---
+            var barFade = 1;
+            if (t >= BAR_HANDOFF_START) {
+              barFade = Math.max(
+                0,
+                1 - (t - BAR_HANDOFF_START) / BAR_HANDOFF_DUR
+              );
+            }
+            caretBar.style.opacity =
+              t >= 0.62 && t < BAR_HANDOFF_START + BAR_HANDOFF_DUR
+                ? blinkOn((t / 0.7) * Math.PI * 2) * barFade
+                : 0;
+
+            // --- Scene 4 · hero types, then the caret stops dead (solid, then out) ---
+            var h = entryAt(SEQ_HERO, t);
+            heroText.textContent = t >= 5.2 ? h.text : "";
+            caretHero.style.background = INK;
+            // solid from the first keystroke, then it simply STOPS DEAD at 6.9 —
+            // no blink on the hero caret: the flatline is the point.
+            caretHero.style.opacity = t >= 5.2 && t < 6.9 ? 1 : 0;
+          },
+        },
+        0
+      );
+
+      /* ---------- Scene 1 (0.0-1.6s) · the memo scrolls to a new field ---------- */
+
+      // The field band slides down into place (the memo being scrolled).
+      tl.fromTo(
+        "#02-field",
+        { y: -150, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+        0
+      );
+      tl.fromTo(
+        "#02-chrome",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        0.05
+      );
+
+      // Kicker sets at the upper-left.
+      tl.fromTo(
+        "#02-kicker",
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
+        0.18
+      );
+
+      // The solid redaction bar wipes over the unseen line.
+      tl.fromTo(
+        "#02-redaction",
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.5, ease: "power3.out", transformOrigin: "left center" },
+        0.42
+      );
+      // svg-path-draw: the right-margin rail traces in, hairline, power2.out
+      tl.fromTo(
+        "#02-rail",
+        { scaleY: 0, opacity: 0 },
+        { scaleY: 1, opacity: 1, duration: 0.45, ease: "power2.out", transformOrigin: "center top" },
+        0.9
+      );
+
+      // The caret hands off from the bar down to the typing line. Only `y` is tweened
+      // here — the fade across the handoff is owned by the typewriter driver, which
+      // rewrites this element's opacity every frame.
+      tl.fromTo(
+        "#02-caret-bar",
+        { y: 0 },
+        { y: 104, duration: 0.22, ease: "power2.in" },
+        1.55
+      );
+
+      /* ---------- Scene 2 (1.6-3.6s) · the line types; the coral index mark sets ---------- */
+      tl.fromTo(
+        "#02-rail-idx",
+        { scaleY: 0, opacity: 0 },
+        { scaleY: 1, opacity: 1, duration: 0.28, ease: "power3.out", transformOrigin: "center top" },
+        1.95
+      );
+
+      /* ---------- Scene 3 (3.6-5.2s) · "flatlines" · the line collapses away ----------
+         scale-swap-transition's collapse half, at text-scale blur: the assembly
+         rushes down and out of the focal plane, leaving the bar and empty space. */
+      tl.fromTo(
+        "#02-type-line",
+        { scale: 1, filter: "blur(0px)", opacity: 1 },
+        { scale: 0.84, filter: "blur(10px)", opacity: 0, duration: 0.42, ease: "power3.in", transformOrigin: "left center" },
+        3.62
+      );
+
+      /* ---------- Scene 4 (5.2-7.0s) · the hero types, the rule dies mid-stroke ---------- */
+      // (the hero text itself is driven by the typewriter above)
+
+      // svg-path-draw at constant pen rate — draws to ~60% and STOPS DEAD.
+      tl.fromTo(
+        "#02-rule-line",
+        { strokeDashoffset: ruleLen },
+        { strokeDashoffset: ruleLen - ruleLen * 0.6, duration: 0.55, ease: "none" },
+        6.35
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["02-failure-mode"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>

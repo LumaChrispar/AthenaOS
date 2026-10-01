@@ -143,3 +143,13 @@ Job stopped: The model reached its response or context limit before finishing. I
 [SRV-005] Request ended after 46.1s.
 Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
 Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
+
+=== Chapter 1, Attempt 1/3 ===
+
+--- CHAPTER 1: PROSE DRAFTING (SRV-005) ---
+[SRV-005] Sending task (model: stealth/space-bunny-alpha, temp: 0.75)...
+[SRV-005] Request budget: prompt≈9284 tokens; output≤12000; context=1000000.
+[SRV-005] Model response received in 227.4s.
+[SRV-005] Request ended after 227.4s.
+Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
+Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.

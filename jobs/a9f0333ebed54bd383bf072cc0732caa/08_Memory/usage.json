@@ -1,7 +1,7 @@
 {
-  "calls": 18,
-  "prompt_tokens": 107234,
-  "completion_tokens": 422499,
+  "calls": 19,
+  "prompt_tokens": 113599,
+  "completion_tokens": 434499,
   "by_service": {
     "SRV-001": {
       "calls": 1,
@@ -39,11 +39,11 @@
       "failures": 0
     },
     "SRV-005": {
-      "calls": 8,
-      "prompt_tokens": 51681,
-      "completion_tokens": 174789,
-      "response_seconds": 2374.44,
-      "failures": 3
+      "calls": 9,
+      "prompt_tokens": 58046,
+      "completion_tokens": 186789,
+      "response_seconds": 2601.89,
+      "failures": 4
     },
     "SRV-027": {
       "calls": 3,
@@ -62,11 +62,11 @@
   },
   "by_model": {
     "stealth/space-bunny-alpha": {
-      "calls": 18,
-      "prompt_tokens": 107234,
-      "completion_tokens": 422499,
-      "response_seconds": 5816.45,
-      "failures": 4
+      "calls": 19,
+      "prompt_tokens": 113599,
+      "completion_tokens": 434499,
+      "response_seconds": 6043.9,
+      "failures": 5
     }
   }
 }

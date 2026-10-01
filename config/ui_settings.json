@@ -1,7 +1,7 @@
 {
   "provider": "openrouter",
   "base_url": "https://openrouter.ai/api/v1",
-  "model": "stealth/space-bunny-alpha",
+  "model": "inclusionai/ling-3.0-flash:free",
   "max_calls_per_job": 200,
   "max_output_tokens": 12000,
   "timeout_seconds": 600

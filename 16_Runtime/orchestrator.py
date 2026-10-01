@@ -16,6 +16,92 @@ def parse_json(response):
         text = text.split('\n', 1)[1].rsplit('```', 1)[0]
     return json.loads(text)
 
+
+def apply_passage_edits(chapter_response, edit_response, label='edit'):
+    """Apply exact, non-overlapping passage replacements without rewriting a chapter."""
+    chapter = parse_json(chapter_response) if isinstance(chapter_response, str) else dict(chapter_response)
+    result = parse_json(edit_response) if isinstance(edit_response, str) else edit_response
+    prose = chapter.get('prose_content')
+    edits = result.get('edits') if isinstance(result, dict) else None
+    if not isinstance(prose, str) or not isinstance(edits, list) or len(edits) > 12:
+        raise ValueError(f'{label} must return JSON with at most 12 targeted edits.')
+    spans = []
+    for edit in edits:
+        if not isinstance(edit, dict):
+            raise ValueError(f'{label} edit entries must be objects.')
+        target = edit.get('target_text')
+        replacement = edit.get('replacement')
+        if not isinstance(target, str) or not target.strip() or not isinstance(replacement, str):
+            raise ValueError(f'{label} edits need exact target_text and replacement strings.')
+        if len(target) > 4000 or len(replacement) > 4000:
+            raise ValueError(f'{label} edits must stay within a single passage.')
+        start = prose.find(target)
+        if start < 0 or prose.find(target, start + 1) >= 0:
+            raise ValueError(f'{label} target passage must match exactly once in the chapter.')
+        end = start + len(target)
+        if any(start < other_end and end > other_start for other_start, other_end, _, _ in spans):
+            raise ValueError(f'{label} target passages must not overlap.')
+        spans.append((start, end, target, replacement))
+    for start, end, target, replacement in sorted(spans, reverse=True):
+        prose = prose[:start] + replacement + prose[end:]
+    chapter['prose_content'] = prose
+    if spans:
+        chapter.setdefault('change_log', []).extend(
+            [str(edit.get('reason', label))[:300] for edit in edits if isinstance(edit, dict)])
+    return json.dumps(chapter, ensure_ascii=False, indent=2)
+
+
+def _short_value(value, depth=0):
+    if isinstance(value, str):
+        text = value.strip()
+        return text if len(text) <= 360 else text[:357].rsplit(' ', 1)[0] + '…'
+    if isinstance(value, list):
+        return [_short_value(item, depth + 1) for item in value[:6]]
+    if isinstance(value, dict):
+        limit = 5 if depth >= 2 else 8
+        return {str(key): _short_value(item, depth + 1)
+                for key, item in list(value.items())[:limit]}
+    return value if value is None or isinstance(value, (int, float, bool)) else str(value)[:360]
+
+
+def relevant_character_context(response, relevance_text, limit=6):
+    """Extract a few named profiles from the psychologist artifact, if available."""
+    try:
+        data = parse_json(response) if isinstance(response, str) else response
+    except (ValueError, TypeError):
+        return []
+    if isinstance(data, list):
+        profiles = data
+    elif isinstance(data, dict):
+        profiles = None
+        for key in ('characters', 'profiles', 'character_profiles', 'cast'):
+            value = data.get(key)
+            if isinstance(value, list):
+                profiles = value
+                break
+            if isinstance(value, dict):
+                profiles = [dict(item, name=item.get('name') or name)
+                            for name, item in value.items() if isinstance(item, dict)]
+                break
+        if profiles is None and data.get('name'):
+            profiles = [data]
+        if profiles is None:
+            profiles = [dict(item, name=item.get('name') or name)
+                        for name, item in data.items()
+                        if isinstance(item, dict) and name != 'error']
+    else:
+        return []
+    profiles = [item for item in profiles if isinstance(item, dict) and item.get('name')]
+    relevance = relevance_text.casefold()
+    matched = [item for item in profiles
+               if any(isinstance(name, str) and name.casefold() in relevance
+                      for name in [item.get('name'), *(item.get('aliases') or [])])]
+    selected = (matched or profiles)[:limit]
+    fields = ('name', 'aliases', 'status', 'arc_progress', 'psychology', 'history',
+              'voice', 'speech_style', 'motivation', 'core_belief', 'fatal_flaw', 'fears')
+    return [{key: _short_value(item[key]) for key in fields if item.get(key) is not None}
+            for item in selected]
+
 class Orchestrator:
     def __init__(self, base_dir: str):
         self.base_dir = base_dir
@@ -229,7 +315,8 @@ class Orchestrator:
         service_data = load_service("SRV-003", self.base_dir)
         system_prompt = format_system_prompt(service_data)
         
-        outline = self.memory.load_artifact("outline.json")
+        outline = normalize_outline(parse_json(self.memory.load_artifact("outline.json")))
+        self.memory.save_artifact('outline.json', json.dumps(outline, ensure_ascii=False, indent=2))
         character_schema = self.memory.load_schema("character.schema.json")
         
         user_prompt = f"""
@@ -244,6 +331,9 @@ class Orchestrator:
         """
         
         response = self.llm.execute_prompt("SRV-003", system_prompt, user_prompt)
+        profiles = parse_json(response)
+        if not isinstance(profiles, (dict, list)) or not profiles or (isinstance(profiles, dict) and profiles.get('error')):
+            raise ValueError('Character psychology must return profiles, not an error or empty object.')
         self.memory.save_artifact("psychology.json", response)
         
         self.pipeline_state["last_completed_phase"] = "phase_2"
@@ -269,6 +359,10 @@ class Orchestrator:
         """
         
         response = self.llm.execute_prompt("SRV-004", system_prompt, user_prompt)
+        world = parse_json(response)
+        if not isinstance(world, dict) or world.get('error') or not any(
+                key in world for key in ('world_bible', 'locations', 'rules', 'world_rules')):
+            raise ValueError('World planning must return a story bible, not an error or empty object.')
         self.memory.save_artifact("story_bible.json", response)
         self.memory.save_artifact('story_bible_initial.json', response)
         
@@ -293,25 +387,15 @@ class Orchestrator:
         system_prompt = format_system_prompt(service_data)
         
         outline = self.memory.load_artifact("outline.json")
-        project_schema = self.memory.load_schema("project.schema.json")
         
         user_prompt = f"""
-        Generate a 500-word prose sample that locks the book's voice fingerprint.
-        This is a calibration document, NOT part of the manuscript.
-        
-        The sample must establish:
-        - Sentence length profile (short/punchy, long/accumulative, varied)
-        - Relationship between interiority and action
-        - Adjective density and type
-        - Characteristic metaphor domain
-        - Narrative distance
-        - Tonal register
+        Create a compact voice card for prose generation. Do not write a prose sample.
+        Return 6 short bullets, no more than 120 words total, covering:
+        sentence rhythm, narrative distance, interiority, imagery, tone, and one
+        distinctive craft rule. Make each rule concrete and easy to apply.
         
         OUTLINE:
         {outline}
-        
-        PROJECT SCHEMA:
-        {project_schema}
         """
         
         response = self.llm.execute_prompt("SRV-028", system_prompt, user_prompt)
@@ -324,92 +408,153 @@ class Orchestrator:
         print("Voice Calibration Complete. Saved to 08_Memory/voice_sample.md")
 
     async def run_chapter_draft(self, chapter_number: int):
-        """SRV-005: Literary Author - draft a single chapter with full context."""
-        print(f"\n--- CHAPTER {chapter_number}: PROSE DRAFTING (SRV-005) ---")
+        """Plan and draft a chapter as resumable, individually bounded scenes."""
+        print(f"\n--- CHAPTER {chapter_number}: SCENE-BY-SCENE DRAFTING (SRV-005) ---")
         service_data = load_service("SRV-005", self.base_dir)
         system_prompt = format_system_prompt(service_data)
-        
-        # Build full context window
         context = self.context_builder.build(chapter_number)
-        
-        # Get chapter-specific data from outline
-        chapter_roadmap = context.get("current_chapter_roadmap", {})
-        
-        # Build scene brief
-        scene_brief = build_scene_brief(chapter_roadmap, context)
-        
-        outline = self.memory.load_artifact("outline.json")
-        psychology = self.memory.load_artifact("psychology.json")
-        story_bible = self.memory.load_artifact("story_bible.json")
-        chapter_schema = self.memory.load_schema("chapter.schema.json")
-        
-        user_prompt = f"""
-        SCENE BRIEF (mandatory pre-write context):
-        {json.dumps(scene_brief, indent=2)}
-        
-        Your first task: confirm you have absorbed this brief by stating in one sentence what changes in this scene and why it matters to the larger story.
-        Your second task: write the scene.
-        
-        FULL CONTEXT:
-        Outline: {outline}
-        Characters: {psychology}
-        World Rules: {json.dumps(context.get('context_fragment', {}), indent=2)}
-        Previous Chapter Tail (500 words): {context.get('previous_chapter_tail', '')}
-        Next Chapter Roadmap: {json.dumps(context.get('next_chapter_roadmap', {}), indent=2)}
-        Voice Sample: {context.get('voice_sample', '')}
-        Continuity Flags: {json.dumps(context.get('continuity_flags', []), indent=2)}
-        Active Critique Notes: {json.dumps(context.get('active_critique_notes', []), indent=2)}
-        Required Payoffs: {json.dumps(context.get('required_payoffs', []), indent=2)}
-        
-        TASK:
-        Write the prose for Chapter {chapter_number}. Follow the Sensory Writing Protocol.
-        Output ONLY the JSON representation of the chapter according to:
-        {chapter_schema}
-        """
-        
-        response = self.llm.execute_prompt("SRV-005", system_prompt, user_prompt)
-        self.memory.save_artifact(f"chapter_{chapter_number:02d}.json", response)
-        
-        # Canon is extracted only after the chapter passes review and copy editing.
-        
-        print(f"Chapter {chapter_number} Draft Complete. Triggered event: DraftCompleted")
+        roadmap = context.get('current_chapter_roadmap', {})
+        chapter_dir = os.path.join(self.base_dir, '08_Memory', 'scenes', f'chapter_{chapter_number:02d}')
+        os.makedirs(chapter_dir, exist_ok=True)
+        plan_path = os.path.join(self.base_dir, '08_Memory', f'chapter_{chapter_number:02d}_scene_plan.json')
+
+        plan = None
+        if os.path.exists(plan_path):
+            try:
+                with open(plan_path, encoding='utf-8') as stream:
+                    plan = json.load(stream)
+                self._validate_scene_plan(plan)
+            except (OSError, ValueError, TypeError):
+                plan = None
+        if plan is None:
+            planner_prompt = f"""
+            Break this single chapter beat into 3–5 causally connected scenes.
+            Do not add a subplot or change the promised chapter outcome. Give each
+            scene one POV character, an immediate goal, an opposing force, and a
+            meaningful turn. Keep every field concise. Return only JSON:
+            {{"title":"chapter title","summary":"one-sentence summary",
+              "cliffhanger":"final tension or image","continuity_notes":[],
+              "scenes":[{{"title":"3–6 word title","pov_character":"name",
+              "location":"place","characters_present":["name"],"goal":"...",
+              "conflict":"...","turn":"..."}}]}}
+            CHAPTER BEAT: {json.dumps(roadmap, ensure_ascii=False)}
+            PREVIOUS CHAPTER SUMMARY: {context.get('previous_chapter_tail', '')}
+            """
+            plan_response = self.llm.execute_prompt('SRV-002',
+                'You are a scene architect. Return concise, valid JSON only. Preserve the supplied plot beat.',
+                planner_prompt)
+            plan = parse_json(plan_response)
+            self._validate_scene_plan(plan)
+            atomic_json(plan_path, plan)
+
+        target_words = int(self.quality_config.get('chapter_targets', {}).get('word_count_target', 3000))
+        scene_target = max(500, min(1100, target_words // len(plan['scenes'])))
+        chapter_reference = json.dumps(roadmap, ensure_ascii=False)
+        relevant_text = chapter_reference + json.dumps(plan['scenes'], ensure_ascii=False)
+        characters = relevant_character_context(self.memory.load_artifact('psychology.json'), relevant_text)
+        scene_prose = []
+        for scene in plan['scenes']:
+            number = scene['scene_number']
+            scene_path = os.path.join(chapter_dir, f'scene_{number:02d}.json')
+            saved = None
+            if os.path.exists(scene_path):
+                try:
+                    with open(scene_path, encoding='utf-8') as stream:
+                        saved = json.load(stream)
+                    if not isinstance(saved.get('prose_content'), str) or not saved['prose_content'].strip():
+                        saved = None
+                except (OSError, ValueError, TypeError):
+                    saved = None
+            if saved is None:
+                scene_context = {
+                    'chapter_beat': roadmap,
+                    'scene': scene,
+                    'relevant_characters': characters,
+                    'world_facts': context.get('context_fragment', {}),
+                    'previous_chapter_summary': context.get('previous_chapter_tail', ''),
+                    'voice_card': context.get('voice_sample', ''),
+                    'continuity_flags': context.get('continuity_flags', []),
+                    'active_critique_notes': context.get('active_critique_notes', []),
+                    'required_payoffs': context.get('required_payoffs', []),
+                }
+                scene_prompt = f"""
+                Write only this scene of the chapter, approximately {scene_target} words.
+                Start in the scene, dramatize its goal and conflict, and end with its
+                specified turn. Keep cause and effect clear. Do not summarize, explain
+                the brief, add a heading, or output JSON. Use standard novel dialogue
+                with quotation marks; never use Markdown blockquotes. Preserve the
+                supplied facts and voice card. Return only polished scene prose.
+
+                SCENE CONTEXT:
+                {json.dumps(scene_context, ensure_ascii=False)}
+                """
+                prose = self.llm.execute_prompt('SRV-005', system_prompt, scene_prompt).strip()
+                if not prose:
+                    raise ValueError(f'Scene {number} returned empty prose.')
+                saved = {'scene_number': number, 'title': scene['title'],
+                         'prose_content': prose}
+                atomic_json(scene_path, saved)
+            scene_prose.append(f"### Scene {number}: {scene['title']}\n\n{saved['prose_content'].strip()}")
+
+        chapter = {
+            'id': f'CHAP-{chapter_number:02d}',
+            'title': str(plan.get('title') or f'Chapter {chapter_number}').strip(),
+            'objective': roadmap.get('goal', ''),
+            'summary': str(plan.get('summary') or roadmap.get('outcome') or '').strip(),
+            'cliffhanger': str(plan.get('cliffhanger') or roadmap.get('outcome') or '').strip(),
+            'continuity_notes': plan.get('continuity_notes', [])[:12],
+            'prose_content': '\n\n'.join(scene_prose),
+        }
+        response = json.dumps(chapter, ensure_ascii=False, indent=2)
+        self.memory.save_artifact(f'chapter_{chapter_number:02d}.json', response)
+        print(f"Chapter {chapter_number} draft assembled from {len(scene_prose)} saved scenes.")
         return response
 
+    @staticmethod
+    def _validate_scene_plan(plan):
+        if not isinstance(plan, dict) or not isinstance(plan.get('scenes'), list):
+            raise ValueError('Scene plan must contain a scenes array.')
+        if not 3 <= len(plan['scenes']) <= 5:
+            raise ValueError('Scene plan must contain 3–5 scenes.')
+        for number, scene in enumerate(plan['scenes'], 1):
+            if not isinstance(scene, dict):
+                raise ValueError('Each planned scene must be an object.')
+            for field in ('title', 'pov_character', 'goal', 'conflict', 'turn'):
+                if not isinstance(scene.get(field), str) or not scene[field].strip():
+                    raise ValueError(f'Planned scene {number} needs {field}.')
+            scene['scene_number'] = number
+            scene['characters_present'] = [str(name) for name in scene.get('characters_present', [])[:8]]
+
     async def run_voice_variation(self, chapter_number: int):
-        """SRV-027: Voice Variation Engine - mandatory post-draft pass."""
+        """SRV-027: Return small, exact edits that strengthen the voice."""
         print(f"\n--- CHAPTER {chapter_number}: VOICE VARIATION (SRV-027) ---")
         service_data = load_service("SRV-027", self.base_dir)
         system_prompt = format_system_prompt(service_data)
         
-        raw_chapter = self.memory.load_artifact(f"chapter_{chapter_number:02d}.json")
+        chapter = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}.json"))
         voice_sample = self.memory.load_artifact("voice_sample.md")
         
         # Override temperature for SRV-027 (0.9)
         user_prompt = f"""
-        Execute all five phases of the Variation Protocol on the following prose.
-        
-        VOICE REFERENCE SAMPLE (maintain this fingerprint):
-        {voice_sample}
-        
-        CHAPTER PROSE TO PROCESS:
-        {raw_chapter}
-        
-        Apply in sequence:
-        Phase 1: Rhythmic Audit — flag homogeneous sentence sequences
-        Phase 2: Variation Injection — apply transformations to flagged sequences
-        Phase 3: Adjective Chain Surgery — cut to single most specific adjective
-        Phase 4: Atmospheric Budget Enforcement — max 1 descriptor per 500 words
-        Phase 5: Specificity Injection — replace generic descriptors with character-grounded details
-        
-        Output one chapter JSON object, preserving all fields and containing
-        the complete revised prose in prose_content; add change_log as a field.
+        Review the prose for at most five high-value voice improvements. Return
+        JSON only: {{"edits":[{{"target_text":"an exact, unique excerpt",
+        "replacement":"the revised excerpt","reason":"brief craft reason"}}]}}.
+        Keep edits local, preserve meaning and continuity, and leave effective prose
+        untouched. If no passage needs work, return {{"edits":[]}}.
+
+        VOICE CARD:
+        {voice_sample[:1200]}
+
+        CHAPTER PROSE:
+        {chapter.get('prose_content', '')}
         """
         
         # Note: Temperature 0.9 for SRV-027 would need model routing fix (H4)
-        response = self.llm.execute_prompt("SRV-027", system_prompt, user_prompt)
-        self.memory.save_artifact(f"chapter_{chapter_number:02d}_varied.json", response)
-        print(f"Phase 4b Complete. Voice variation applied to Chapter {chapter_number}.")
-        return response
+        edit_response = self.llm.execute_prompt("SRV-027", system_prompt, user_prompt)
+        revised = apply_passage_edits(chapter, edit_response, 'Voice variation')
+        self.memory.save_artifact(f"chapter_{chapter_number:02d}_varied.json", revised)
+        print(f"Targeted voice edits complete for Chapter {chapter_number}.")
+        return revised
 
     async def run_continuity_check(self, chapter_number: int):
         """SRV-016: Continuity Editor - check chapter for consistency."""
@@ -659,7 +804,7 @@ class Orchestrator:
         service_data = load_service("SRV-013", self.base_dir)
         system_prompt = format_system_prompt(service_data)
         
-        chapter = self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json")
+        chapter = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json"))
         psychology = self.memory.load_artifact("psychology.json")
         
         user_prompt = f"""
@@ -866,25 +1011,26 @@ class Orchestrator:
             dialogue_audit = json.load(f)
         
         user_prompt = f"""
-        TASK: Dialogue rewrite only. Do not touch the prose descriptions.
+        Identify at most five exact dialogue passages where a local edit would
+        improve subtext or distinguish a character's voice. Do not rewrite the chapter.
         
         DIALOGUE AUDIT FINDINGS:
         {json.dumps(dialogue_audit, indent=2)}
         
-        CHAPTER (rewrite only the flagged dialogue lines):
-        {chapter}
-        
-        For each flagged line:
-        1. State what the subtext is (what the character actually means)
-        2. Write the surface dialogue that carries the subtext without stating it
-        3. Add a beat (physical action) that reinforces the subtext
-        
-        Return the full chapter with only the dialogue sections replaced.
+        CHAPTER PROSE:
+        {chapter.get('prose_content', '')}
+
+        Return JSON only: {{"edits":[{{"target_text":"an exact, unique excerpt",
+        "replacement":"the revised excerpt","reason":"brief subtext or voice goal"}}]}}.
+        Include only passages the audit actually flags. Keep narration outside dialogue,
+        use standard quotation marks, and preserve all unflagged text. If no changes
+        are warranted, return {{"edits":[]}}.
         """
         
-        revised = self.llm.execute_prompt("SRV-005", system_prompt, user_prompt)
+        edit_response = self.llm.execute_prompt("SRV-005", system_prompt, user_prompt)
+        revised = apply_passage_edits(chapter, edit_response, 'Dialogue revision')
         self.memory.save_artifact(f"chapter_{chapter_number:02d}_varied.json", revised)
-        print(f"Dialogue rewrite complete for Chapter {chapter_number}.")
+        print(f"Targeted dialogue edits complete for Chapter {chapter_number}.")
 
     async def run_opening_specialist(self):
         """A3: SRV-029 Opening Specialist - run after Chapter 1 QA approval."""

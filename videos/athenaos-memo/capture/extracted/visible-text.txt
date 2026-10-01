@@ -1,0 +1,64 @@
+# AthenaOS — Source Notes for Explainer Video
+
+Working title: THE MANUSCRIPT FILE — internal memo, classified.
+Subject: one novel, moving through a governed pipeline.
+
+## What AthenaOS is
+
+AthenaOS is a custom publishing operating system for novel writing. It is not a
+prompt. It is not a chatbot with a system message. It is a 30-service pipeline
+where every stage of turning an idea into a finished, edited, publishable novel
+is a separate service with its own written protocol, its own inputs, its own
+outputs, and its own quality gate.
+
+Real structure from the repository:
+
+- 30 services, numbered SRV-001 through SRV-030. (SRV-021 is reserved — a
+  deliberate gap in the numbering, not a missing file.)
+- Each service is a written .md protocol. A service is dispatched as a subagent
+  seeded with its full unabridged protocol file as persona.
+- 16 top-level directories: Constitution, Philosophy, Governance, Registry,
+  Organization, Departments, Services, Domains, SOPs, Memory, Communication,
+  Workflows, QualityAssurance, Automation, SelfImprovement, Publishing.
+
+## The five phases
+
+1. ARCHITECTURE — SRV-002, the Literary Architect. Decides the shape of the book
+   before a word is written: structure, act breaks, POV strategy, target length.
+2. CHARACTER & WORLD — SRV-003 Character Psychologist, SRV-004 World Builder.
+   Interiority and world systems, built before drafting.
+3. VOICE CALIBRATION — SRV-028, the Voice Calibrator. Produces a 500-word voice
+   fingerprint. Runs after world building, before drafting. SRV-027 is the
+   Voice Variation Engine, which de-AI-ifies the prose.
+4. DRAFTING — SRV-005 Literary Author, SRV-006 Shakespearean Stylist.
+5. EDITING — SRV-007 Developmental Editor through SRV-016. Sixteen services of
+   developmental editing, line editing, and structural passes.
+
+PUBLISHING — SRV-017 through SRV-026 takes it to market.
+
+Quality services sit across all of it: SRV-029 Opening Specialist (three
+strategic alternate openings after Chapter 1 QA), SRV-030 Reader Proxy (a naive
+reader audit — does the prose actually land on someone who hasn't been briefed).
+
+## The two things that make it different
+
+**Governance before generation.** There is a Constitution, a Governance layer,
+and a Registry that exist before any service runs. The rules of the system are
+written down and enforced, not implied by whatever prompt happened to run.
+
+**Voice is measured, not vibes.** A 500-word voice fingerprint is taken before
+drafting starts, and SRV-027 exists specifically to strip AI tells out of the
+prose afterward. The pipeline treats prose quality as something with a spec and
+a test.
+
+## Audience and tone
+
+For the owner of the system, and for anyone who has tried to get a model to
+write a whole novel and watched it flatline in chapter four. Dry, precise,
+documentary. The memo format does the persuading: this reads like an internal
+record of a process that is already running.
+
+## Core message
+
+AthenaOS is not a prompt that writes your novel. It is a governed pipeline that
+does — thirty services, five phases, and a quality gate at every seam.

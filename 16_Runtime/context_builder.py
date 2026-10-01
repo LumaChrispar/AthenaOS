@@ -2,6 +2,22 @@ import os
 import json
 from memory_manager import MemoryManager
 
+
+def _compact(value, depth=0):
+    """Bound nested memory fragments before including them in prose prompts."""
+    if isinstance(value, str):
+        text = value.strip()
+        return text if len(text) <= 420 else text[:417].rsplit(' ', 1)[0] + '…'
+    if isinstance(value, list):
+        return [_compact(item, depth + 1) for item in value[:8]]
+    if isinstance(value, dict):
+        limit = 6 if depth >= 3 else 10
+        return {str(key): _compact(item, depth + 1)
+                for key, item in list(value.items())[:limit]}
+    if isinstance(value, (int, float, bool)) or value is None:
+        return value
+    return str(value)[:420]
+
 class ContextBuilder:
     """Assembles a sliding context window before every SRV-005 call."""
     
@@ -76,7 +92,10 @@ class ContextBuilder:
         # 1. Previous chapter tail (500 words verbatim)
         prev_chapter_tail = ""
         if chapter_number > 1:
-            prev_chapter_tail = self.memory.get_chapter_tail(chapter_number - 1, word_count=500)
+            previous_summary = self.memory.load_chapter_summary(chapter_number - 1)
+            prev_chapter_tail = (json.dumps(_compact(previous_summary), ensure_ascii=False)
+                                 if previous_summary else
+                                 self.memory.get_chapter_tail(chapter_number - 1, word_count=180))
         
         # 2. Current chapter's scene objective from outline.json
         current_roadmap = self.get_chapter_roadmap(chapter_number)
@@ -103,11 +122,11 @@ class ContextBuilder:
             "previous_chapter_tail": prev_chapter_tail,
             "current_chapter_roadmap": current_roadmap,
             "next_chapter_roadmap": next_roadmap,
-            "context_fragment": context_fragment,
+            "context_fragment": _compact(context_fragment),
             "continuity_flags": continuity_flags,
-            "voice_sample": voice_sample,
-            "active_critique_notes": active_critique,
-            "required_payoffs": required_payoffs,
+            "voice_sample": voice_sample[:1200],
+            "active_critique_notes": _compact(active_critique[-5:]),
+            "required_payoffs": _compact(required_payoffs[:8]),
             "chapter_number": chapter_number
         }
     

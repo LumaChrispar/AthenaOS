@@ -1,0 +1,497 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+  <style>
+    /* ── Brand faces — shipped as local files in assets/fonts/ (build-frame.mjs contract).
+          Never link Google Fonts for these; the render machine is a clean headless Chrome. ── */
+    @font-face {
+      font-family: "EB Garamond";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/EBGaramond-Regular.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+
+    /* ── The frame root: styled via #root, never a class (a class here gets scoped to a
+          descendant selector at render and the whole scene would go unstyled).
+          NO background here — the full-bleed ground rides on the .clip track below. ── */
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #141413;
+      font-family: "Inter", ui-sans-serif, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .vfp05-bg {
+      position: absolute;
+      inset: 0;
+      background: #faf9f5;
+    }
+
+    .vfp05-stage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ── header chrome ─────────────────────────────────────────── */
+    .vfp05-kicker {
+      position: absolute;
+      left: 84px;
+      top: 96px;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6em;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-weight: 500;
+      font-size: 1.46cqw; /* kicker ramp */
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #141413;
+      white-space: nowrap;
+    }
+    .vfp05-spike {
+      color: #cc785c; /* the brand glyph — always coral */
+      font-size: 1.1em;
+      line-height: 1;
+    }
+
+    .vfp05-rule {
+      position: absolute;
+      left: 84px;
+      top: 168px;
+      width: 1752px;
+      height: 1px;
+      background: rgba(20, 20, 19, 0.12); /* the only separator in this system */
+      transform-origin: left center;
+    }
+
+    /* ── left column: one EB Garamond display moment, subordinate to the slab ── */
+    .vfp05-display {
+      position: absolute;
+      left: 84px;
+      top: 320px;
+      width: 540px;
+      font-family: "EB Garamond", Georgia, serif;
+      font-style: italic; /* the synthesized slant — the expressive register */
+      font-weight: 400;
+      font-size: 4.79cqw; /* between headline (4.6) and display (7.3) */
+      line-height: 1.06;
+      letter-spacing: -0.012em;
+      color: rgba(20, 20, 19, 0.82);
+    }
+    .vfp05-display div {
+      height: 1.06em;
+    }
+
+    .vfp05-index {
+      position: absolute;
+      left: 84px;
+      top: 580px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 1.15cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(20, 20, 19, 0.48);
+    }
+    .vfp05-index div {
+      height: 1.9em;
+    }
+
+    /* ── right-margin rail ─────────────────────────────────────── */
+    .vfp05-rail {
+      position: absolute;
+      top: 214px;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 1.15cqw;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .vfp05-rail-words {
+      left: 1740px;
+      color: rgba(20, 20, 19, 0.62);
+    }
+    .vfp05-rail-spec {
+      left: 1800px;
+      color: rgba(20, 20, 19, 0.3);
+    }
+
+    /* ── coral progress tick: rail + travelling head ───────────── */
+    .vfp05-tick-rail {
+      position: absolute;
+      left: 693px;
+      top: 214px;
+      width: 1px;
+      height: 572px;
+      background: rgba(20, 20, 19, 0.09);
+    }
+    .vfp05-tick-bar {
+      position: absolute;
+      left: 692px;
+      top: 214px;
+      width: 3px;
+      height: 572px;
+      background: #cc785c;
+      transform-origin: top center;
+    }
+    .vfp05-tick-head {
+      position: absolute;
+      left: 686px;
+      top: 214px;
+      width: 14px;
+      height: 14px;
+      background: #cc785c;
+    }
+
+    /* ── the fingerprint slab: the focal, a dense warm-tile block ── */
+    .vfp05-slab {
+      position: absolute;
+      left: 720px;
+      top: 214px;
+      width: 970px;
+      height: 572px;
+      padding: 40px;
+      box-sizing: border-box;
+      background: #efe9de; /* half-step warm surface, not a cast shadow */
+      border: 1px solid rgba(20, 20, 19, 0.12);
+      border-radius: 12px;
+      box-shadow:
+        0 1px 3px rgba(20, 20, 19, 0.08),
+        0 4px 16px rgba(20, 20, 19, 0.04);
+    }
+    .vfp05-line {
+      height: 41px;
+      line-height: 41px;
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 400;
+      font-size: 1.5cqw; /* body ramp */
+      color: #141413;
+      white-space: pre;
+    }
+    .vfp05-tx {
+      white-space: pre;
+    }
+    /* one span per typed character — the reveal unit is a real tween on this, which
+       is what keeps a reverse scrub identical to a forward play */
+    .vfp05-ch {
+      display: inline;
+    }
+    /* the caret is a colored BLOCK — color goes on background, never on color */
+    .vfp05-caret {
+      display: inline-block;
+      width: 3px;
+      height: 26px;
+      margin-left: 4px;
+      background: #cc785c;
+      vertical-align: -4px;
+    }
+
+    /* ── SRV-027 strip ─────────────────────────────────────────── */
+    .vfp05-strip {
+      position: absolute;
+      left: 720px;
+      top: 816px;
+      width: 970px;
+      height: 68px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 32px;
+      background: #ece3d4;
+      border: 1px solid rgba(20, 20, 19, 0.12);
+      border-radius: 8px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 1.2cqw;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(20, 20, 19, 0.6);
+      white-space: nowrap;
+    }
+    .vfp05-strip-dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(20, 20, 19, 0.3);
+      flex: 0 0 auto;
+    }
+    .vfp05-strip-id {
+      color: #141413;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="05-voice-fingerprint"
+    data-start="0"
+    data-duration="10"
+    data-fps="30"
+    data-width="1920"
+    data-height="1080"
+  >
+    <!-- full-bleed cream ground — a dedicated .clip track, never a background on #root -->
+    <div
+      id="05-voice-fingerprint-bg"
+      class="clip vfp05-bg"
+      data-start="0"
+      data-duration="10"
+      data-track-index="0"
+      aria-hidden="true"
+    ></div>
+
+    <div
+      id="05-voice-fingerprint-stage"
+      class="clip vfp05-stage"
+      data-start="0"
+      data-duration="10"
+      data-track-index="1"
+    >
+      <!-- header chrome -->
+      <div id="05-voice-fingerprint-kicker" class="vfp05-kicker">
+        <span class="vfp05-spike">&#10033;</span><span>Voice fingerprint</span>
+      </div>
+      <div id="05-voice-fingerprint-rule" class="vfp05-rule"></div>
+
+      <!-- left column -->
+      <div id="05-voice-fingerprint-display" class="vfp05-display">
+        <div>Not a vibe.</div>
+        <div>A spec.</div>
+      </div>
+      <div id="05-voice-fingerprint-index" class="vfp05-index">
+        <div>Memo &mdash; internal</div>
+        <div>Pre-draft measure</div>
+      </div>
+
+      <!-- right-margin rail -->
+      <div id="05-voice-fingerprint-rail-words" class="vfp05-rail vfp05-rail-words">500 words</div>
+      <div id="05-voice-fingerprint-rail-spec" class="vfp05-rail vfp05-rail-spec">Prose specimen</div>
+
+      <!-- coral progress tick -->
+      <div id="05-voice-fingerprint-tick-rail" class="vfp05-tick-rail"></div>
+      <div id="05-voice-fingerprint-tick-bar" class="vfp05-tick-bar"></div>
+      <div id="05-voice-fingerprint-tick-head" class="vfp05-tick-head"></div>
+
+      <!-- the focal: dense Garamond specimen slab -->
+      <div id="05-voice-fingerprint-slab" class="vfp05-slab">
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-0" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-0" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-1" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-1" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-2" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-2" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-3" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-3" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-4" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-4" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-5" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-5" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-6" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-6" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-7" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-7" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-8" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-8" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-9" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-9" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-10" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-10" class="vfp05-caret"></span></div>
+        <div class="vfp05-line"><span id="05-voice-fingerprint-tx-11" class="vfp05-tx"></span><span id="05-voice-fingerprint-caret-11" class="vfp05-caret"></span></div>
+      </div>
+
+      <!-- supporting service strip -->
+      <div id="05-voice-fingerprint-strip" class="vfp05-strip">
+        <span class="vfp05-strip-dot"></span>
+        <span class="vfp05-strip-id">SRV-027</span>
+        <span>&middot; Voice variation engine &mdash; remove AI tells</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var DURATION = 10;
+      var T_SETTLE = 7.0; /* Scene 4 — the held breather */
+      var T_STRIP = 6.7; /* the strip lands on the voice's "stripping" */
+
+      /* The specimen — a voice fingerprint is a sample of the writer's prose.
+         Twelve discrete states; each line types at its own t (accelerating), and
+         the blank lines are the writer's pauses. */
+      var LINES = [
+        "He kept the letter in his coat pocket for eleven days,",
+        "not to send it, but to keep the paper near his chest",
+        "and let it warm. The stamp had come loose by then, a",
+        "small grey thing gone quiet in the crease, and he read",
+        "the address four times without once meaning to leave.",
+        "",
+        "In the garden the light came in sideways, the way it",
+        "does when there is a wall worth leaning on. She had cut",
+        "the hedge in June and not thought about it since, so the",
+        "yew had gone back to its own opinions.",
+        "",
+        "That is the whole of it: a man, a letter, a hedge.",
+      ];
+      var LINE_T = [1.6, 1.95, 2.27, 2.57, 2.86, 3.2, 3.58, 3.85, 4.11, 4.35, 4.58, 4.62];
+      var LINE_D = [0.32, 0.29, 0.27, 0.26, 0.25, 0.001, 0.24, 0.23, 0.22, 0.2, 0.001, 0.22];
+      var PAUSE_LINES = [5, 10];
+
+      var T_FIRST = LINE_T[0];
+      var T_DONE = 4.9; /* block complete; the caret settles and stops blinking */
+      var TICK_TRAVEL = 558;
+
+      var CORAL = "#cc785c";
+      var DIM = "rgba(20, 20, 19, 0.22)";
+
+      var $ = function (id) {
+        return document.getElementById(id);
+      };
+
+      var spans = [];
+      var carets = [];
+      for (var i = 0; i < LINES.length; i++) {
+        spans.push($("05-voice-fingerprint-tx-" + i));
+        carets.push($("05-voice-fingerprint-caret-" + i));
+      }
+
+      /* Ids here begin with a digit, which is NOT a valid CSS selector — so every
+         tween takes an element reference resolved by getElementById, never a
+         selector string. */
+      var el = {
+        slab: $("05-voice-fingerprint-slab"),
+        kicker: $("05-voice-fingerprint-kicker"),
+        rule: $("05-voice-fingerprint-rule"),
+        display: $("05-voice-fingerprint-display"),
+        index: $("05-voice-fingerprint-index"),
+        railWords: $("05-voice-fingerprint-rail-words"),
+        railSpec: $("05-voice-fingerprint-rail-spec"),
+        tickRail: $("05-voice-fingerprint-tick-rail"),
+        tickBar: $("05-voice-fingerprint-tick-bar"),
+        tickHead: $("05-voice-fingerprint-tick-head"),
+        strip: $("05-voice-fingerprint-strip"),
+      };
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      /* ── Scene 1 (0.0–1.6) — chrome sets, caret blinks on an empty block ── */
+      tl.fromTo(el.slab, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0);
+      tl.fromTo(el.kicker, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.42, ease: "power2.out" }, 0.1);
+      tl.fromTo(el.rule, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.out" }, 0.34);
+      tl.fromTo(el.display, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.55);
+      tl.fromTo(el.railWords, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.45);
+      tl.fromTo(el.railSpec, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.5);
+      tl.fromTo(el.tickRail, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.5);
+      tl.fromTo(el.index, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.95);
+
+      /* ── Scene 2 (1.6–4.9) — the block types, the coral tick rides down ──
+            The typed text is a discrete per-character schedule: every character is
+            its own inline span, revealed by a plain opacity tween. Two hard engine
+            constraints force this shape, and both were verified against this
+            project's GSAP build:
+              · the renderer seeks frame by frame, and GSAP does NOT fire onUpdate on
+                a seek — so ANY callback that writes text (the rule recipe's proxy-
+                driver pattern) renders every seeked frame blank or stale;
+              · a zero-duration tl.set() is not a substitute: it has no baked start
+                value, so scrubbing backward restores whatever the previous frame
+                left rather than the correct earlier text.
+            A real tween has a baked from-value, so forward play and reverse scrub
+            land on identical frames. Characters are spaced across each line's
+            duration, which is what makes the run read as keystrokes rather than a
+            bulk paste, and it is the packet's line-by-line setting made literal. */
+      LINES.forEach(function (line, i) {
+        var host = spans[i];
+        host.textContent = "";
+        if (line.length === 0) return;
+        var step = Math.max(LINE_D[i], 0.001) / line.length;
+        for (var c = 0; c < line.length; c++) {
+          var ch = document.createElement("span");
+          ch.className = "vfp05-ch";
+          ch.textContent = line.charAt(c);
+          host.appendChild(ch);
+          /* duration 0 keeps the reveal a hard keystroke, but the tween (not a set)
+             is what makes the pre-reveal state baked and therefore seek-exact */
+          tl.fromTo(ch, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none" }, LINE_T[i] + step * c);
+        }
+      });
+
+      tl.fromTo(el.tickBar, { scaleY: 0 }, { scaleY: 1, duration: T_DONE - T_FIRST, ease: "none" }, T_FIRST);
+      tl.fromTo(
+        el.tickHead,
+        { y: 0 },
+        { y: TICK_TRAVEL, duration: T_DONE - T_FIRST, ease: "none" },
+        T_FIRST,
+      );
+
+      /* ── Scene 3 (4.6–7.0) — the strip sets on the voice's "stripping" ── */
+      tl.fromTo(el.strip, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, T_STRIP);
+
+      /* ── the caret: context-sensitive color + blink.
+            Same rule as the text — every caret state is a tl.set at a baked time,
+            so a seek to any t restores the exact caret (which line owns it, its
+            color, and whether it is mid-blink) with no callback involved. The
+            schedule is generated once here from a pure function of time, so it is
+            identical on a forward render or a scrub back through it. ── */
+      var BLINK_HALF = 0.31; /* ~0.62s period, inside the rule's 0.6–1.2s band */
+      var LAST = LINES.length - 1;
+
+      function caretOwner(t) {
+        if (t >= T_DONE) return LAST;
+        for (var i = LINE_T.length - 1; i >= 0; i--) if (t >= LINE_T[i]) return i;
+        return 0; /* before the first keystroke: parked at the block's start */
+      }
+
+      /* Baseline: every caret dark, nothing blinking yet. */
+      carets.forEach(function (c) {
+        tl.set(c, { opacity: 0, background: CORAL }, 0);
+      });
+
+      /* One owner at a time: at each line's start, hand the caret over explicitly —
+         light the new owner in its CURRENT blink phase and dark the one it replaces,
+         so carets never stack and the handoff is never a dark gap. */
+      function blinkOn(t) {
+        return Math.floor(t / BLINK_HALF) % 2 === 0;
+      }
+      LINE_T.forEach(function (t0, i) {
+        var tint = PAUSE_LINES.indexOf(i) === -1 ? CORAL : DIM;
+        if (i > 0) tl.set(carets[i - 1], { opacity: 0 }, t0);
+        tl.set(carets[i], { opacity: blinkOn(t0) ? 1 : 0, background: tint }, t0);
+      });
+
+      /* Blink only while the block is live: a square wave stepped on the timeline.
+         It stops dead at T_DONE — the caret settles and stops blinking (Scene 3). */
+      var t = 0;
+      var on = true;
+      while (t < T_DONE) {
+        var owner = caretOwner(t);
+        tl.set(carets[owner], { opacity: on ? 1 : 0 }, t);
+        /* re-assert the owner on every toggle so a hand-off mid-cycle is exact */
+        tl.set(carets[owner], { background: PAUSE_LINES.indexOf(owner) === -1 ? CORAL : DIM }, t);
+        t += BLINK_HALF;
+        on = !on;
+      }
+      /* settled: solid, at the last line, for the whole breather */
+      tl.set(carets[LAST], { opacity: 1, background: CORAL }, T_DONE);
+
+      /* ── Scene 4 (7.0–10.0) — the breather. No drift, no breathing: at most a
+            faint jitter in the settled caret, stepped on the timeline so it too is
+            seek-exact. The caret carries no CSS transform, so this x is safe to own. ── */
+      var JITTER_STEP = 0.42;
+      for (var jt = T_SETTLE; jt < DURATION; jt += JITTER_STEP) {
+        tl.set(carets[LAST], { x: Math.sin(jt * 9.1) * 1.2 }, jt);
+      }
+
+      /* full-span anchor so the sub-composition timeline spans the whole frame */
+      tl.to({}, { duration: DURATION }, 0);
+
+      window.__timelines["05-voice-fingerprint"] = tl;
+    })();
+  </script>
+</template>

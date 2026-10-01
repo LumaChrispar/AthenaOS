@@ -189,16 +189,27 @@ class MemoryManager:
         except:
             return {}
         
-        # Extract chapter-specific context
-        # This would ideally use chapter roadmap to know which characters/locations appear
-        # For now, return the full bible but this is the extension point
+        world = data.get('world_bible', {})
+        if not isinstance(world, dict):
+            world = {}
+        profile = data.get('genre_profile', {})
+        if not isinstance(profile, dict):
+            profile = {}
+        if world:
+            world = {key: world[key] for key in
+                     ('scope', 'cosmology', 'geography', 'government_and_law',
+                      'society_and_culture', 'religion_and_belief', 'magic', 'factions')
+                     if key in world}
+        else:  # Older projects used a flat story-bible layout.
+            world = {key: data[key] for key in
+                     ('world_rules', 'rules', 'locations', 'timeline', 'mysteries', 'relationships', 'objects')
+                     if key in data}
         return {
-            "character_profiles": data.get("character_profiles", {}),
-            "location_registry": data.get("location_registry", {}),
-            "world_rules": data.get("world_rules", {}),
-            "timeline": data.get("timeline", []),
-            "mysteries": data.get("mysteries", []),
-            "relationships": data.get("relationships", {}),
-            "objects": data.get("objects", {}),
-            "information_log": data.get("information_log", {})
+            'genre': profile.get('classification'),
+            'tone_constraints': profile.get('tone_constraints', []),
+            'world': world,
+            'rules': data.get('rules', []),
+            'locations': data.get('locations', []),
+            'glossary': data.get('glossary', {}),
+            'continuity_log': data.get('consistency_log', []),
         }

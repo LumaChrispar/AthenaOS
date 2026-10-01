@@ -1,0 +1,420 @@
+<template>
+  <style>
+    /* ---- fonts (staged by the assembler into assets/fonts/; stacks degrade gracefully) ---- */
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/EBGaramond-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/Inter-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-Medium.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+
+    /* ---- root: styled via #root only ---- */
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      background: transparent;
+      color: #141413;
+    }
+    #root * {
+      box-sizing: border-box;
+    }
+
+    /* ---- full-bleed ground on its own clip layer ---- */
+    #f06-the-gate-ground {
+      position: absolute;
+      inset: 0;
+      background: #faf9f5;
+    }
+    #f06-the-gate-ground::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+          to right,
+          rgba(20, 20, 19, 0.035) 0px,
+          rgba(20, 20, 19, 0.035) 1px,
+          transparent 1px,
+          transparent 96px
+        ),
+        repeating-linear-gradient(to bottom, rgba(20, 20, 19, 0.025) 0px, rgba(20, 20, 19, 0.025) 1px, transparent 1px, transparent 96px);
+    }
+
+    #f06-the-gate-stage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ---- top chrome ---- */
+    #f06-the-gate-kicker {
+      position: absolute;
+      left: 4.2cqw;
+      top: 6.6cqh;
+      font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-weight: 500;
+      font-size: 1.46cqw;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #141413;
+      white-space: nowrap;
+    }
+    #f06-the-gate-kicker .spike {
+      color: #cc785c;
+      margin-right: 0.6em;
+    }
+    #f06-the-gate-count {
+      position: absolute;
+      right: 4.2cqw;
+      top: 6.6cqh;
+      display: flex;
+      align-items: baseline;
+      gap: 0.9em;
+      font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-weight: 500;
+      font-size: 1.35cqw;
+      letter-spacing: 0.16em;
+      color: rgba(20, 20, 19, 0.32);
+      white-space: nowrap;
+    }
+    #f06-the-gate-count .tally {
+      display: inline-block;
+      min-width: 2.1ch;
+      padding-left: 0.5ch;
+      text-align: right;
+      border-left: 1px solid rgba(20, 20, 19, 0.12);
+    }
+    #f06-the-gate-rule {
+      position: absolute;
+      left: 4.2cqw;
+      top: 15.9cqh;
+      width: 91.6cqw;
+      height: 1px;
+      background: rgba(20, 20, 19, 0.14);
+      transform-origin: 0% 50%;
+    }
+
+    /* ---- gate rows ---- */
+    .gate-row {
+      position: absolute;
+      right: 4.2cqw;
+      width: 32.3cqw;
+      padding: 0 0 1.5cqh;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.6cqw;
+    }
+    .gate-row .hair {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: rgba(20, 20, 19, 0.12);
+      transform-origin: 100% 50%;
+    }
+    .gate-row .code-mask {
+      overflow: hidden;
+      display: block;
+    }
+    .gate-row .code {
+      display: block;
+      font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-weight: 500;
+      font-size: 1.35cqw;
+      letter-spacing: 0.02em;
+      color: rgba(20, 20, 19, 0.42);
+      white-space: nowrap;
+      padding-bottom: 0.35cqh;
+    }
+    .label-mask {
+      overflow: hidden;
+      display: block;
+    }
+    .gate-row .label {
+      display: block;
+      font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-weight: 500;
+      font-size: 1.35cqw;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #141413;
+      white-space: nowrap;
+    }
+    .stamp-mask {
+      display: block;
+    }
+    .stamp {
+      display: block;
+      font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-weight: 500;
+      font-size: 1.28cqw;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #cc785c;
+      border: 1px solid rgba(204, 120, 92, 0.55);
+      border-radius: 6px;
+      padding: 0.42em 0.72em 0.36em;
+      white-space: nowrap;
+    }
+
+    /* ---- the wide final row ---- */
+    #f06-the-gate-wide {
+      position: absolute;
+      left: 4.2cqw;
+      top: 64.8cqh;
+      width: 47cqw;
+      padding-bottom: 1.6cqh;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2.4cqw;
+    }
+    #f06-the-gate-wide .hair {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: rgba(20, 20, 19, 0.2);
+      transform-origin: 0% 50%;
+    }
+    #f06-the-gate-wide .srv-mask {
+      overflow: hidden;
+      display: block;
+      margin-bottom: 0.9cqh;
+    }
+    #f06-the-gate-wide .srv {
+      display: inline-block;
+      font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-weight: 500;
+      font-size: 1.35cqw;
+      letter-spacing: 0.16em;
+      color: rgba(20, 20, 19, 0.5);
+    }
+    #f06-the-gate-wide .name-mask {
+      overflow: hidden;
+      display: block;
+    }
+    #f06-the-gate-wide .name {
+      display: block;
+      font-family: "EB Garamond", Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 2.28cqw;
+      line-height: 1.05;
+      letter-spacing: -0.012em;
+      color: #141413;
+      white-space: nowrap;
+    }
+    #f06-the-gate-wide .stamp {
+      font-size: 1.46cqw;
+      padding: 0.46em 0.78em 0.4em;
+    }
+    #f06-the-gate-thud {
+      position: absolute;
+      left: 0;
+      bottom: -1.6cqh;
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(204, 120, 92, 0.6);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="06-the-gate"
+    data-width="1920"
+    data-height="1080"
+    data-start="0"
+    data-duration="8"
+  >
+    <div
+      id="f06-the-gate-ground"
+      class="clip"
+      data-start="0"
+      data-duration="8"
+      data-track-index="0"
+    ></div>
+
+    <div id="f06-the-gate-stage">
+      <div id="f06-the-gate-kicker"><span class="spike">&#10035;</span>Quality gate</div>
+
+      <div id="f06-the-gate-count">
+        <span>Passes</span>
+        <span class="tally" id="f06-the-gate-tally-1">01</span>
+        <span class="tally" id="f06-the-gate-tally-2">02</span>
+        <span class="tally" id="f06-the-gate-tally-3">03</span>
+        <span class="tally" id="f06-the-gate-tally-4">04</span>
+        <span class="tally" id="f06-the-gate-tally-5">05</span>
+      </div>
+
+      <div id="f06-the-gate-rule"></div>
+
+      <!-- Scene 2 — first row, set on "sixteen" -->
+      <div class="gate-row" id="f06-the-gate-row-1" style="top: 22.4cqh">
+        <div>
+          <div class="label-mask"><span class="label">Editing</span></div>
+          <div class="code-mask"><span class="code">SRV-007 → SRV-016</span></div>
+        </div>
+        <div class="stamp-mask"><span class="stamp">Pass</span></div>
+        <span class="hair"></span>
+      </div>
+
+      <!-- Scene 3 — the three seam rows, cascading -->
+      <div class="gate-row" id="f06-the-gate-row-2" style="top: 33.4cqh">
+        <div>
+          <div class="label-mask"><span class="label">Structural</span></div>
+        </div>
+        <div class="stamp-mask"><span class="stamp">Pass</span></div>
+        <span class="hair"></span>
+      </div>
+
+      <div class="gate-row" id="f06-the-gate-row-3" style="top: 43.4cqh">
+        <div>
+          <div class="label-mask"><span class="label">Line</span></div>
+        </div>
+        <div class="stamp-mask"><span class="stamp">Pass</span></div>
+        <span class="hair"></span>
+      </div>
+
+      <div class="gate-row" id="f06-the-gate-row-4" style="top: 53.4cqh">
+        <div>
+          <div class="label-mask"><span class="label">Continuity</span></div>
+        </div>
+        <div class="stamp-mask"><span class="stamp">Pass</span></div>
+        <span class="hair"></span>
+      </div>
+
+      <!-- Scene 4 — the wide reader-proxy row -->
+      <div id="f06-the-gate-wide">
+        <div>
+          <div class="srv-mask"><span class="srv">SRV-030</span></div>
+          <div class="name-mask"><span class="name">Reader proxy — naive reader audit</span></div>
+        </div>
+        <div class="stamp-mask"><span class="stamp">Pass</span></div>
+        <span class="hair"></span>
+        <span id="f06-the-gate-thud"></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var SEL = "#f06-the-gate-";
+      var rows = [
+        { row: SEL + "row-1", label: SEL + "row-1 .label", stamp: SEL + "row-1 .stamp", hair: SEL + "row-1 .hair", tally: SEL + "tally-1" },
+        { row: SEL + "row-2", label: SEL + "row-2 .label", stamp: SEL + "row-2 .stamp", hair: SEL + "row-2 .hair", tally: SEL + "tally-2" },
+        { row: SEL + "row-3", label: SEL + "row-3 .label", stamp: SEL + "row-3 .stamp", hair: SEL + "row-3 .hair", tally: SEL + "tally-3" },
+        { row: SEL + "row-4", label: SEL + "row-4 .label", stamp: SEL + "row-4 .stamp", hair: SEL + "row-4 .hair", tally: SEL + "tally-4" }
+      ];
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---- Scene 1 (0.0–1.4s) — kicker + section rule establish the strip ---- */
+      tl.fromTo(SEL + "kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.05);
+      tl.fromTo(SEL + "kicker .spike", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.2);
+      tl.fromTo(SEL + "count", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.25);
+      tl.fromTo(SEL + "rule", { scaleX: 0 }, { scaleX: 1, duration: 0.85, ease: "power2.inOut" }, 0.35);
+      tl.fromTo(
+        rows.map(function (r) { return r.row; }),
+        { opacity: 0, x: 46 },
+        { opacity: 1, x: 0, duration: 0.6, stagger: 0.07, ease: "power2.out" },
+        0.62
+      );
+
+      /* ---- Scene 2 (1.4–4.2s) — first row sets on "sixteen", PASS stamps at its right edge ---- */
+      tl.fromTo(rows[0].hair, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.inOut" }, 1.55);
+      tl.fromTo(
+        [rows[0].row + " .label", rows[0].row + " .code"],
+        { yPercent: 110 },
+        { yPercent: 0, duration: 0.55, stagger: 0.08, ease: "power3.out" },
+        1.6
+      );
+      tl.fromTo(rows[0].stamp, { opacity: 0, scale: 0.62 }, { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2.4)" }, 2.55);
+      tl.to(rows[0].tally, { color: "#cc785c", duration: 0.3, ease: "power1.out" }, 2.6);
+
+      /* ---- Scene 3 (4.2–5.8s) — three seam rows cascade in tight, each stamping in turn ---- */
+      tl.fromTo(
+        rows.slice(1).map(function (r) { return r.hair; }),
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.45, stagger: 0.2, ease: "power2.inOut" },
+        4.2
+      );
+      tl.fromTo(
+        rows.slice(1).map(function (r) { return r.label; }),
+        { yPercent: 115 },
+        { yPercent: 0, duration: 0.48, stagger: 0.2, ease: "power3.out" },
+        4.26
+      );
+      tl.fromTo(
+        rows.slice(1).map(function (r) { return r.stamp; }),
+        { opacity: 0, scale: 0.6 },
+        { opacity: 1, scale: 1, duration: 0.34, stagger: 0.2, ease: "back.out(2.2)" },
+        4.75
+      );
+      tl.to(
+        rows.slice(1).map(function (r) { return r.tally; }),
+        { color: "#cc785c", duration: 0.28, stagger: 0.2, ease: "power1.out" },
+        4.8
+      );
+
+      /* ---- Scene 4 (5.8–8.0s) — the wide reader-proxy row arrives, firmer stamp, held read ---- */
+      tl.fromTo(
+        [SEL + "wide .srv", SEL + "wide .name"],
+        { yPercent: 115 },
+        { yPercent: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" },
+        5.95
+      );
+      tl.fromTo(SEL + "wide .hair", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 5.9);
+      tl.fromTo(SEL + "wide .stamp", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.34, ease: "power4.out" }, 6.85);
+      tl.to(SEL + "tally-5", { color: "#cc785c", duration: 0.3, ease: "power1.out" }, 6.9);
+      tl.fromTo(
+        SEL + "thud",
+        { opacity: 0, scale: 1 },
+        { opacity: 0.75, scale: 1.035, duration: 0.16, ease: "power2.out" },
+        6.85
+      );
+      tl.to(SEL + "thud", { opacity: 0, scale: 1.07, duration: 0.5, ease: "power2.out" }, 7.01);
+
+      /* ---- blueprint signature: gentle continuous push-in under the assemble-and-hold ---- */
+      tl.fromTo(
+        SEL + "stage",
+        { scale: 1 },
+        { scale: 1.028, duration: 8, ease: "none" },
+        0
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["06-the-gate"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>

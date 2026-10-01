@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>html,body{margin:0;background:#000;width:1920px;height:1080px;overflow:hidden}</style>
+</head><body>
+<div id="slot" style="position:absolute;inset:0"></div>
+<script>
+window.__timelines = {};
+window.__errs = [];
+window.onerror = (m) => window.__errs.push(String(m + ' @ ' + (window.__last||'')));
+(async () => {
+  const url = "compositions/frames/02-failure-mode.html";
+  const txt = await (await fetch(url)).text();
+  const doc = new DOMParser().parseFromString(txt, "text/html");
+  const tpl = doc.querySelector("template");
+  const frag = tpl.content.cloneNode(true);
+  const slot = document.getElementById('slot');
+  slot.appendChild(frag);
+  // revive scripts the way a real mount does (template.content scripts are inert)
+  frag.querySelectorAll('script').forEach(old => {
+    const s = document.createElement('script');
+    for (const a of old.attributes) s.setAttribute(a.name, a.value);
+    s.textContent = old.textContent;
+    window.__last = s.src || 'inline';
+    old.replaceWith(s);
+  });
+  window.__mounted = true;
+})();
+</script></body></html>

@@ -14,6 +14,18 @@ def normalize_outline(value):
         if not isinstance(act, dict) or not isinstance(act.get('beats'), list) or not act['beats']:
             raise ValueError('Each outline act must contain chapter beats.')
         for beat in act['beats']:
-            if not isinstance(beat, dict) or not isinstance(beat.get('goal'), str) or not beat['goal'].strip():
-                raise ValueError('Each chapter beat must contain a nonempty goal.')
+            if not isinstance(beat, dict):
+                raise ValueError('Each chapter beat must be an object.')
+            for field in ('goal', 'conflict', 'outcome'):
+                if not isinstance(beat.get(field), str) or not beat[field].strip():
+                    raise ValueError(f'Each chapter beat must contain a nonempty {field}.')
+    if not isinstance(outline.get('title'), str) or not outline['title'].strip():
+        raise ValueError('Outline must contain a nonempty title.')
+    state = str(outline.get('state') or outline.get('status') or '').upper()
+    if state in ('REJECTED', 'REVISION_REQUIRED'):
+        raise ValueError('Outline is marked for revision and cannot be approved.')
+    # Runtime approval means the outline passed the structural checks above.
+    # It does not claim an editorial review that this pipeline does not run.
+    outline['state'] = 'APPROVED'
+    outline['approval_basis'] = 'Runtime structural validation: title and complete chapter beats.'
     return outline
