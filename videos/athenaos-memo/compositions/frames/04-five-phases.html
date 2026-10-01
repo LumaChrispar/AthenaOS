@@ -266,11 +266,10 @@
       var START_PROGRESS = 0.34;
       var CENTER = (ROWS - 1) / 2;
 
-      var root = document.getElementById("root");
       var tl = gsap.timeline({ paused: true });
 
       function q(id) {
-        return root.querySelector("#" + id);
+        return document.querySelector("[id='" + id + "']");
       }
 
       // Scene 1 (0.0–1.2s): kicker + its hairline, page otherwise empty cream.

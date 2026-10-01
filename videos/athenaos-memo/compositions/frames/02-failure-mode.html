@@ -303,13 +303,13 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
   <script>
     (function () {
-      var DURATION = 7;
+      var DURATION = 4.64;
       var tl = gsap.timeline({ paused: true });
 
       /* ---------- housekeeping ---------- */
       // No CSS transforms are authored on any GSAP-animated element.
 
-      var ruleLine = document.getElementById("02-rule-line");
+      var ruleLine = document.getElementById("f02-rule-line");
       var ruleLen = 1180; // straight horizontal <line> — measured geometry, no guessing
       ruleLine.style.strokeDasharray = ruleLen;
       ruleLine.style.strokeDashoffset = ruleLen;
@@ -346,11 +346,11 @@
       var INK = "#141413";
       var INK_DIM = "rgba(20,20,19,0.45)";
 
-      var typeText = document.getElementById("02-type-text");
-      var caretType = document.getElementById("02-caret-type");
-      var heroText = document.getElementById("02-hero-text");
-      var caretHero = document.getElementById("02-caret-hero");
-      var caretBar = document.getElementById("02-caret-bar");
+      var typeText = document.getElementById("f02-type-text");
+      var caretType = document.getElementById("f02-caret-type");
+      var heroText = document.getElementById("f02-hero-text");
+      var caretHero = document.getElementById("f02-caret-hero");
+      var caretBar = document.getElementById("f02-caret-bar");
 
       var MONO_END = SEQ_MONO[SEQ_MONO.length - 1].t;
       var BAR_HANDOFF_START = 1.55;

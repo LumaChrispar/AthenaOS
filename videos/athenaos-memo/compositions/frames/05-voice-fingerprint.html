@@ -357,25 +357,25 @@
       var spans = [];
       var carets = [];
       for (var i = 0; i < LINES.length; i++) {
-        spans.push($("05-voice-fingerprint-tx-" + i));
-        carets.push($("05-voice-fingerprint-caret-" + i));
+        spans.push($("f05-voice-fingerprint-tx-" + i));
+        carets.push($("f05-voice-fingerprint-caret-" + i));
       }
 
       /* Ids here begin with a digit, which is NOT a valid CSS selector — so every
          tween takes an element reference resolved by getElementById, never a
          selector string. */
       var el = {
-        slab: $("05-voice-fingerprint-slab"),
-        kicker: $("05-voice-fingerprint-kicker"),
-        rule: $("05-voice-fingerprint-rule"),
-        display: $("05-voice-fingerprint-display"),
-        index: $("05-voice-fingerprint-index"),
-        railWords: $("05-voice-fingerprint-rail-words"),
-        railSpec: $("05-voice-fingerprint-rail-spec"),
-        tickRail: $("05-voice-fingerprint-tick-rail"),
-        tickBar: $("05-voice-fingerprint-tick-bar"),
-        tickHead: $("05-voice-fingerprint-tick-head"),
-        strip: $("05-voice-fingerprint-strip"),
+        slab: $("f05-voice-fingerprint-slab"),
+        kicker: $("f05-voice-fingerprint-kicker"),
+        rule: $("f05-voice-fingerprint-rule"),
+        display: $("f05-voice-fingerprint-display"),
+        index: $("f05-voice-fingerprint-index"),
+        railWords: $("f05-voice-fingerprint-rail-words"),
+        railSpec: $("f05-voice-fingerprint-rail-spec"),
+        tickRail: $("f05-voice-fingerprint-tick-rail"),
+        tickBar: $("f05-voice-fingerprint-tick-bar"),
+        tickHead: $("f05-voice-fingerprint-tick-head"),
+        strip: $("f05-voice-fingerprint-strip"),
       };
 
       window.__timelines = window.__timelines || {};

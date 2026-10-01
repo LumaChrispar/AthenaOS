@@ -261,7 +261,7 @@
         /* ids are frame-prefixed and start with a digit, which is not a valid
            CSS ident — resolve every target by id, never by selector string. */
         function el(id) {
-          var node = document.getElementById("01-memo-opens-" + id);
+          var node = document.getElementById("f01-memo-opens-" + id);
           if (!node) throw new Error("missing element: " + id);
           return node;
         }

@@ -1,6 +1,6 @@
 # SCRIPT — athenaos-memo
 
-**Voice:** am_michael (Kokoro, offline)
+**Voice:** ElevenLabs eleven-v-4 (user-generated, 6 of 7 lines delivered)
 **Voice settings:** defaults
 **Voice direction:** Dry, level, documentary. A records clerk reading a file that
 already exists — no urgency, no salesmanship. Pace is even; let the words sit.
@@ -55,3 +55,11 @@ already exists — no urgency, no salesmanship. Pace is even; let the words sit.
 **Delivery:** Three phrases, each a separate statement with a small gap. Final phrase resolves, not fades.
 
     A governed pipeline. Thirty services. Five phases. A gate at every seam.
+
+---
+
+## NOT GENERATED
+
+Line 7 ("A governed pipeline. Thirty services. Five phases. A gate at every seam.")
+was not produced by the batch. Frame 7 is therefore a **silent close** — its
+thesis still appears on screen, paced to the visual track only.

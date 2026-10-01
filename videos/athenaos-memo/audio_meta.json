@@ -1,6 +1,31 @@
 {
   "bgm": null,
   "bgm_pending": false,
-  "voices": [],
+  "voices": [
+    {
+      "frame": 1,
+      "path": ".media/audio/01.mp3"
+    },
+    {
+      "frame": 2,
+      "path": ".media/audio/02.mp3"
+    },
+    {
+      "frame": 3,
+      "path": ".media/audio/03.mp3"
+    },
+    {
+      "frame": 4,
+      "path": ".media/audio/04.mp3"
+    },
+    {
+      "frame": 5,
+      "path": ".media/audio/05.mp3"
+    },
+    {
+      "frame": 6,
+      "path": ".media/audio/06.mp3"
+    }
+  ],
   "sfx": []
 }

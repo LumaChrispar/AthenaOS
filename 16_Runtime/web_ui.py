@@ -134,6 +134,7 @@ class Handler(BaseHTTPRequestHandler):
             static = {'/': ('index.html', 'text/html'), '/settings': ('index.html', 'text/html'), '/app.js': ('app.js', 'text/javascript'), '/style.css': ('style.css', 'text/css')}
             static['/settings.css'] = ('settings.css', 'text/css')
             static['/chat.css'] = ('chat.css', 'text/css')
+            static['/polish.css'] = ('polish.css', 'text/css')
             if re.fullmatch('/books/[0-9a-f]{32}', path):
                 static[path] = ('index.html', 'text/html')
             if path in static:
