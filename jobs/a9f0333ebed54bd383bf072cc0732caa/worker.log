@@ -153,3 +153,4 @@ Job stopped: The model reached its response or context limit before finishing. I
 [SRV-005] Request ended after 227.4s.
 Error calling model API: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
 Job stopped: The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.
+Job stopped: Add your OpenRouter API key in Settings, or set OPENROUTER_API_KEY.

@@ -1,6 +1,6 @@
 ---
 format: 1920x1080
-duration: 45s
+duration: 46s
 message: "AthenaOS is not a prompt that writes your novel — it is a governed pipeline that does"
 arc: concept-explainer with process
 audience: "the system owner, and anyone who has tried to get a model to write a whole novel"
@@ -39,7 +39,7 @@ music: none
 - blueprint: kinetic-type-beats (Adapt)
 - focal: the two-line statement — `NOT A PROMPT.` resolving in place to `A GOVERNED PIPELINE.`
 - roles: cream paper plane = background (full-bleed, unmodulated) · memo header fields + hairline rules = supporting · the two-line statement = foreground subject · coral `CLASSIFIED` stamp + rule = supporting accent
-- sfx: stamp-thud
+- sfx: impact-bass-1
 
 Adapt: keep the in-place token-swap signature (a fixed line swaps its words by hard cut, then the built line takes a single settling pop — no overshoot); the bold full-frame type becomes a memo field block with mono labels.
 
@@ -64,7 +64,7 @@ keyMessage: This is a system of record, not a prompt.
 - blueprint: typewriter-reveal (Adapt)
 - focal: the `CHAPTER 4` line and the rule that stops mid-stroke
 - roles: cream paper = background · field label `FAILURE MODE` + redaction bar = supporting · `CHAPTER 4` = foreground subject · the unfinished rule = supporting
-- sfx: pen-scratch, tick
+- sfx: typing
 
 Adapt: keep the signature live-caret type-and-edit (a caret types a line as a human would, then collapses it); the brand-payoff tail is dropped — this frame ends on the dead line instead, and the redaction bar stays opaque (it is not yet revealed).
 
@@ -90,7 +90,7 @@ keyMessage: The bottleneck is structural — one context can't carry a whole boo
 - blueprint: dataviz-countup (Adapt)
 - focal: the counting number `30`, display scale, with the label `SERVICES` beneath
 - roles: cream paper = background · the redaction bar + its coral leading edge = supporting · the number + label = foreground subject · the `SRV-001 → SRV-030` mono rail = supporting
-- sfx: tick, wipe-swipe
+- sfx: ping, whoosh-short
 
 Adapt: keep the count-up signature (a value eases from zero to its final number and lands with a restrained settle); the chart/ring is replaced by the memo field and the redaction wipe, which supplies the reveal event.
 
@@ -116,7 +116,7 @@ keyMessage: The work is decomposed into thirty separately-specified stages.
 - blueprint: grid-card-assemble (Reproduce)
 - focal: the five phase rows as one vertical list
 - roles: cream paper = background · hairline row rules = supporting · the five phase names = foreground subject · the service-number right rail = supporting · one coral index mark on the current row = accent
-- sfx: tick-soft per row
+- sfx: click-soft
 
 Reproduce: the staggered self-assembling list — items fade and travel into place with an even per-item stagger — instantiated as memo field rows.
 
@@ -141,7 +141,7 @@ keyMessage: A novel moves through five phases before it is a draft at all.
 - blueprint: typewriter-reveal (Adapt)
 - focal: the fingerprint block itself — a dense slab of Garamond body type, filling ~55% of frame
 - roles: cream paper = background · the `VOICE FINGERPRINT` kicker + its hairline = supporting · the fingerprint block = foreground subject · the coral progress tick at the left edge = accent · the `SRV-027` strip beneath = supporting
-- sfx: pen-scratch
+- sfx: typing
 
 Adapt: keep the signature caret-and-type (a line types as a human would, with a persistent caret); the payoff pop is dropped — the block simply completes and the frame holds, which is this video's designated breather.
 
@@ -167,7 +167,7 @@ keyMessage: Prose quality is measured against a fingerprint before drafting star
 - blueprint: grid-card-assemble (Adapt)
 - focal: the accumulated column of `PASS` stamps
 - roles: cream paper = background · hairline gate rows = supporting · the coral `PASS` marks = foreground subject · the final wide `SRV-030` row = foreground subject (widest, holds the eye at the end) · `GATE` kicker = supporting
-- sfx: stamp-tick per row
+- sfx: pop
 
 Adapt: keep the staggered assemble-and-hold signature; the accumulating list becomes a column of gate rows that each take a `PASS` stamp on its spoken cue, with the last row deliberately wider and later than the rest.
 
@@ -179,11 +179,11 @@ Scene 4 (6.1–8.4s): the final row arrives **wider** than the rest and sets on 
 narrativeRole: Supplies the evidence that the stages are enforced rather than merely listed — the gate is the system's real product.
 keyMessage: Nothing advances without passing a check, including a check by someone who knows nothing about the project.
 
-## Frame 7 — Declassified (silent close — no narration generated)
+## Frame 7 — Declassified
 
-- voiceover: ""
+- voiceover: "A governed pipeline. Thirty services. Five phases. A gate at every seam."
 - scene: The memo's cover block, full frame. The final redaction bar over `CLASSIFICATION` wipes off; the coral `CLASSIFIED` stamp rotates two degrees and fades as `FILED` sets beneath it
-- duration: 6.0s
+- duration: 7.12s
 - transition_in: wipe
 - status: outline
 - src: compositions/frames/07-declassified.html
@@ -193,14 +193,14 @@ keyMessage: Nothing advances without passing a check, including a check by someo
 - blueprint: kinetic-type-beats (Reproduce)
 - focal: the cover block — `CLASSIFICATION` value wiping to `FILED`, and the three-line thesis beneath
 - roles: cream paper = background · cover-block hairline frame + kicker = supporting · the `FILED` value + thesis lines = foreground subject · the coral stamp = accent, fading
-- sfx: stamp-thud, wipe-swipe
+- sfx: impact-bass-1, whoosh-short
 
 Reproduce: the statement builds across full-screen beats, each its own move, onto a held final read — here the statement is the memo's classification line plus the three-phrase thesis.
 
-Scene 1 (0–1.5s): the cover block, full frame — `CLASSIFICATION` label with its value hidden under a solid `tile-strong` redaction bar. The coral `CLASSIFIED` stamp sits over the block, rotated two degrees. Centered framing.
-Scene 2 (1.5–2.5s): the redaction wipe fires left-to-right with its coral leading edge, revealing the value `FILED` beneath it — the callback to the hook's bar, resolved. The stamp rotates a degree further and begins to fade.
-Scene 3 (2.5–4.8s): the thesis builds across three beats, each landing on its spoken phrase, set in display Garamond and filling ~55% of frame width, stacked with real vertical air: `A GOVERNED PIPELINE.` / `THIRTY SERVICES. FIVE PHASES.` / `A GATE AT EVERY SEAM.` Each line enters per-word, blurred to sharp.
-Scene 4 (4.8–6s): the `CLASSIFIED` stamp has faded out entirely; the hairline frame and `FILED` hold. Final frame — the only real exit — the thesis reads still and complete against the cream, no further motion.
+Scene 1 (0–1.3s): the cover block, full frame — `CLASSIFICATION` label with its value hidden under a solid `tile-strong` redaction bar. The coral `CLASSIFIED` stamp sits over the block, rotated two degrees. Centered framing.
+Scene 2 (1.3–2.2s): the redaction wipe fires left-to-right with its coral leading edge, revealing the value `FILED` beneath it — the callback to the hook's bar, resolved. The stamp rotates a degree further and begins to fade.
+Scene 3 (2.2–4.3s): the thesis builds across three beats, each landing on its spoken phrase, set in display Garamond and filling ~55% of frame width, stacked with real vertical air: `A GOVERNED PIPELINE.` / `THIRTY SERVICES. FIVE PHASES.` / `A GATE AT EVERY SEAM.` Each line enters per-word, blurred to sharp.
+Scene 4 (4.3–7.1s): the `CLASSIFIED` stamp has faded out entirely; the hairline frame and `FILED` hold. Final frame — the only real exit — the thesis reads still and complete against the cream, no further motion.
 
 narrativeRole: Closes by returning to the redaction bar from the hook and resolving it, then compresses the whole system into the thesis line.
 keyMessage: This is a pipeline with rules — and the rules are written down.

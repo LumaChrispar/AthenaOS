@@ -44,8 +44,11 @@ function showTab(name) {
   for (const tab of TABS) {
     $(`tab-${tab}`).classList.toggle('active', tab === activeTab);
     $(`tab-${tab}`).setAttribute('aria-selected', String(tab === activeTab));
-    $(`${tab}-panel`).hidden = tab !== activeTab;
+    const panel = $(`${tab}-panel`);
+    panel.hidden = tab !== activeTab;
+    if (tab === activeTab) panel.scrollTop = 0;
   }
+  if (activeTab === 'writing') $('thread-scroll').scrollTop = $('thread-scroll').scrollHeight;
   if (activeTab === 'pipeline' && selected) loadInspector(selected);
 }
 function renderKeyStatus(status) {
@@ -228,6 +231,7 @@ async function selectBook(id, navigate = true) {
   $('pipeline-view').replaceChildren(); $('log').textContent = 'Waiting for activity…';
   activeTab = 'writing'; showTab('writing');
   $('chat-input').value = chatDrafts.get(id) || '';
+  resizeChatInput();
   $('book-title').textContent = 'Loading your book…'; notice(''); await refresh();
 }
 function renderMessages(job) {
@@ -237,8 +241,16 @@ function renderMessages(job) {
   const nextActivity = JSON.stringify(activity);
   if (activitySignature !== nextActivity) {
     $('activity-messages').replaceChildren();
+    const grouped = [];
     for (const update of activity) {
-      const item = document.createElement('div'); item.className = `activity-message ${update.kind}`; item.textContent = update.text; $('activity-messages').append(item);
+      const previous = grouped[grouped.length - 1];
+      if (previous && previous.text === update.text && previous.kind === update.kind) previous.count += 1;
+      else grouped.push({...update, count: 1});
+    }
+    for (const update of grouped) {
+      const item = document.createElement('div'); item.className = `activity-message ${update.kind}`;
+      item.textContent = update.count > 1 ? `${update.text} · ${update.count} times` : update.text;
+      $('activity-messages').append(item);
     }
     activitySignature = nextActivity;
   }
@@ -257,6 +269,11 @@ function renderMessages(job) {
   $('chat-pending').hidden = !pendingReplies.has(job.id); $('send-chat').disabled = pendingReplies.has(job.id);
   if (nearBottom) scroller.scrollTop = scroller.scrollHeight;
 }
+function resizeChatInput() {
+  const input = $('chat-input');
+  input.style.height = 'auto';
+  input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
+}
 function renderDetail(job) {
   $('book-title').textContent = title(job); $('book-concept').textContent = job.concept;
   $('status').textContent = job.status;
@@ -273,7 +290,8 @@ function renderDetail(job) {
   for (const [value, name] of [[`${job.pipeline.last_completed_chapter || 0} / ${job.pipeline.total_chapters || job.chapters || '?'}`, 'Chapters completed'], [job.usage.calls || 0, 'Writing requests'], [job.chat_usage?.calls || 0, 'Chat requests'], [(job.usage.prompt_tokens || 0) + (job.usage.completion_tokens || 0), 'Writing tokens']]) {
     const item = document.createElement('div'), number = document.createElement('strong'); number.textContent = value; item.append(number, document.createTextNode(name)); $('metrics').append(item);
   }
-  $('resume').hidden = $('resume-current').hidden = job.status === 'completed' || job.status === 'running';
+  $('resume-current').hidden = job.status === 'completed' || job.status === 'running';
+  $('resume').hidden = $('resume-current').hidden || job.status === 'failed';
   $('resume-safer').hidden = job.status !== 'failed';
   $('continue-book').hidden = job.status !== 'completed';
   $('edit-book').disabled = $('delete-book').disabled = job.status === 'running';
@@ -304,9 +322,12 @@ function renderLog(job) {
 
 const formatNumber = value => (value || 0).toLocaleString();
 const kib = bytes => bytes >= 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${bytes} B`;
-function section(title, note) {
-  const wrap = el('section', 'pipe-section');
-  const head = el('h3', 'pipe-heading', title);
+function section(title, note, expanded = false) {
+  const wrap = document.createElement('details');
+  wrap.className = 'pipe-section';
+  wrap.open = expanded;
+  const head = el('summary', 'pipe-heading');
+  head.append(el('span', 'pipe-chevron', '›'), el('span', 'pipe-heading-title', title));
   if (note) head.append(el('span', 'pipe-note', note));
   wrap.append(head);
   return wrap;
@@ -519,6 +540,7 @@ for (const button of document.querySelectorAll('[data-prompt]')) button.onclick 
 for (const [input, form] of [['concept', 'book-form'], ['chat-input', 'chat-form']]) $(input).onkeydown = event => {
   if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (form !== 'chat-form' || !pendingReplies.has(selected)) $(form).requestSubmit(); }
 };
+$('chat-input').addEventListener('input', resizeChatInput);
 $('chat-form').onsubmit = async event => {
   event.preventDefault(); const id = selected, message = $('chat-input').value.trim();
   if (!id || !message || pendingReplies.has(id)) return;
@@ -527,7 +549,7 @@ $('chat-form').onsubmit = async event => {
   try {
     await api(`/api/jobs/${id}/messages`, {message});
     chatDrafts.delete(id);
-    if (selected === id) { $('chat-input').value = ''; await refresh(); }
+    if (selected === id) { $('chat-input').value = ''; resizeChatInput(); await refresh(); }
   } catch (error) { if (selected === id) notice(error.message, true); }
   finally {
     pendingReplies.delete(id);

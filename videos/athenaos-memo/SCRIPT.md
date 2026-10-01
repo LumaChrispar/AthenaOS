@@ -57,9 +57,3 @@ already exists — no urgency, no salesmanship. Pace is even; let the words sit.
     A governed pipeline. Thirty services. Five phases. A gate at every seam.
 
 ---
-
-## NOT GENERATED
-
-Line 7 ("A governed pipeline. Thirty services. Five phases. A gate at every seam.")
-was not produced by the batch. Frame 7 is therefore a **silent close** — its
-thesis still appears on screen, paced to the visual track only.

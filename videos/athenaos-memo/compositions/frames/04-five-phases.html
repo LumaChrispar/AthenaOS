@@ -139,14 +139,14 @@
       background: #cc785c;
     }
 
-    .04f-row {
+    .f04f-row {
       position: relative;
       height: 130px;
       display: grid;
       grid-template-columns: 150px 1fr 360px;
       align-items: center;
     }
-    .04f-rule {
+    .f04f-rule {
       position: absolute;
       left: 0;
       bottom: 0;
@@ -155,14 +155,14 @@
       background: rgba(20, 20, 19, 0.12);
       transform-origin: left center;
     }
-    .04f-idx {
+    .f04f-idx {
       font-family: "JetBrains Mono", Consolas, "SF Mono", monospace;
       font-weight: 400;
       font-size: 20px;
       letter-spacing: 0.18em;
       color: rgba(20, 20, 19, 0.66);
     }
-    .04f-name {
+    .f04f-name {
       font-family: "EB Garamond", Georgia, "Times New Roman", serif;
       font-weight: 400;
       font-size: 3.4cqw;
@@ -170,7 +170,7 @@
       letter-spacing: -0.018em;
       color: #141413;
     }
-    .04f-svc {
+    .f04f-svc {
       font-family: "JetBrains Mono", Consolas, "SF Mono", monospace;
       font-weight: 400;
       font-size: 20px;
@@ -181,7 +181,7 @@
     }
   </style>
 
-  <div id="root" data-composition-id="04-five-phases" data-start="0" data-duration="9" data-width="1920" data-height="1080">
+  <div id="root" data-composition-id="04-five-phases" data-start="0" data-duration="7.08" data-width="1920" data-height="1080">
 
 
   <!-- full-bleed ground rides on a clip layer, never on #root -->
@@ -213,39 +213,39 @@
         <span>Services</span>
       </div>
 
-      <div class="04f-row" id="f04-five-phases-row-0">
-        <span class="04f-idx">01</span>
-        <span class="04f-name">Architecture</span>
-        <span class="04f-svc">SRV-002</span>
-        <span class="04f-rule"></span>
+      <div class="f04f-row" id="f04-five-phases-row-0">
+        <span class="f04f-idx">01</span>
+        <span class="f04f-name">Architecture</span>
+        <span class="f04f-svc">SRV-002</span>
+        <span class="f04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="f04-five-phases-row-1">
-        <span class="04f-idx">02</span>
-        <span class="04f-name">Character &amp; world</span>
-        <span class="04f-svc">SRV-003 / 004</span>
-        <span class="04f-rule"></span>
+      <div class="f04f-row" id="f04-five-phases-row-1">
+        <span class="f04f-idx">02</span>
+        <span class="f04f-name">Character &amp; world</span>
+        <span class="f04f-svc">SRV-003 / 004</span>
+        <span class="f04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="f04-five-phases-row-2">
-        <span class="04f-idx">03</span>
-        <span class="04f-name">Voice calibration</span>
-        <span class="04f-svc">SRV-028</span>
-        <span class="04f-rule"></span>
+      <div class="f04f-row" id="f04-five-phases-row-2">
+        <span class="f04f-idx">03</span>
+        <span class="f04f-name">Voice calibration</span>
+        <span class="f04f-svc">SRV-028</span>
+        <span class="f04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="f04-five-phases-row-3">
-        <span class="04f-idx">04</span>
-        <span class="04f-name">Drafting</span>
-        <span class="04f-svc">SRV-005 / 006</span>
-        <span class="04f-rule"></span>
+      <div class="f04f-row" id="f04-five-phases-row-3">
+        <span class="f04f-idx">04</span>
+        <span class="f04f-name">Drafting</span>
+        <span class="f04f-svc">SRV-005 / 006</span>
+        <span class="f04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="f04-five-phases-row-4">
-        <span class="04f-idx">05</span>
-        <span class="04f-name">Editing</span>
-        <span class="04f-svc">SRV-007 → 016</span>
-        <span class="04f-rule"></span>
+      <div class="f04f-row" id="f04-five-phases-row-4">
+        <span class="f04f-idx">05</span>
+        <span class="f04f-name">Editing</span>
+        <span class="f04f-svc">SRV-007 → 016</span>
+        <span class="f04f-rule"></span>
       </div>
 
       <div id="f04-five-phases-tick"></div>
@@ -258,9 +258,9 @@
     (function () {
       var ROWS = 5;
       var ROW_H = 130;
-      var ROW_DUR = 0.9;
+      var ROW_DUR = 0.65;
       var ROW_EASE = "power3.out";
-      var CUE = [1.35, 2.4, 3.45, 4.5, 5.55];
+      var CUE = [0.97, 1.73, 2.48, 3.24, 4.0];
       /* center-outward-expansion, "starting partially-spread" short-path form:
          each row slides a short distance directly into its own slot. */
       var START_PROGRESS = 0.34;
@@ -276,31 +276,23 @@
       tl.fromTo(
         "#f04-five-phases-spike",
         { opacity: 0, y: -10, scale: 0.92 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" },
-        0.15
-      );
+        { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" },0.108);
       tl.fromTo(
         "#f04-five-phases-kicker-word",
         { opacity: 0, y: -8 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
-        0.24
-      );
+        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },0.173);
       tl.fromTo(
         "#f04-five-phases-kicker-meta",
         { opacity: 0 },
-        { opacity: 1, duration: 0.7, ease: "power1.out" },
-        0.4
-      );
+        { opacity: 1, duration: 0.7, ease: "power1.out" },0.288);
       tl.fromTo(
         "#f04-five-phases-kicker-rule",
         { scaleX: 0 },
-        { scaleX: 1, duration: 0.9, ease: "power2.inOut" },
-        0.35
-      );
+        { scaleX: 1, duration: 0.9, ease: "power2.inOut" },0.252);
 
       // Scene 2 (1.2–7.4s): one row per spoken cue, even stagger.
       for (var i = 0; i < ROWS; i++) {
-        var row = q("04-five-phases-row-" + i);
+        var row = q("f04-five-phases-row-" + i);
         var startY = (CENTER - i) * ROW_H * 0.28 * START_PROGRESS;
         var at = CUE[i];
 
@@ -311,25 +303,25 @@
           at
         );
         tl.fromTo(
-          row.querySelector(".04f-rule"),
+          row.querySelector(".f04f-rule"),
           { scaleX: 0 },
           { scaleX: 1, duration: 0.8, ease: "power2.inOut" },
           at + 0.1
         );
         tl.fromTo(
-          row.querySelector(".04f-idx"),
+          row.querySelector(".f04f-idx"),
           { opacity: 0, x: -10 },
           { opacity: 1, x: 0, duration: 0.6, ease: "power2.out" },
           at + 0.08
         );
         tl.fromTo(
-          row.querySelector(".04f-name"),
+          row.querySelector(".f04f-name"),
           { opacity: 0, y: 12 },
           { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
           at + 0.16
         );
         tl.fromTo(
-          row.querySelector(".04f-svc"),
+          row.querySelector(".f04f-svc"),
           { opacity: 0, x: 14 },
           { opacity: 1, x: 0, duration: 0.7, ease: "power2.out" },
           at + 0.26
@@ -371,7 +363,7 @@
       }
 
       // Scene 3 (7.4–9.0s): held read — no drift, no breathing. Tick rests on row 05.
-      tl.to({ _hold: 0 }, { _hold: 1, duration: 2.2, ease: "none" }, 6.7);
+      tl.to({ _hold: 0 }, { _hold: 1, duration: 2.2, ease: "none" },4.824);
 
       window.__timelines = window.__timelines || {};
       window.__timelines["04-five-phases"] = tl;

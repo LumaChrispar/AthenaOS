@@ -110,7 +110,7 @@
       font-size: 1.15cqw;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(20, 20, 19, 0.48);
+      color: rgba(20, 20, 19, 0.66);
     }
     .vfp05-index div {
       height: 1.9em;
@@ -134,7 +134,7 @@
     }
     .vfp05-rail-spec {
       left: 1800px;
-      color: rgba(20, 20, 19, 0.3);
+      color: rgba(20, 20, 19, 0.66);
     }
 
     /* ── coral progress tick: rail + travelling head ───────────── */
@@ -232,7 +232,7 @@
     .vfp05-strip-dot {
       width: 8px;
       height: 8px;
-      background: rgba(20, 20, 19, 0.3);
+      background: rgba(20, 20, 19, 0.66);
       flex: 0 0 auto;
     }
     .vfp05-strip-id {
@@ -339,16 +339,16 @@
         "",
         "That is the whole of it: a man, a letter, a hedge.",
       ];
-      var LINE_T = [1.6, 1.95, 2.27, 2.57, 2.86, 3.2, 3.58, 3.85, 4.11, 4.35, 4.58, 4.62];
-      var LINE_D = [0.32, 0.29, 0.27, 0.26, 0.25, 0.001, 0.24, 0.23, 0.22, 0.2, 0.001, 0.22];
+      var LINE_T = [1.96, 2.4, 2.78, 3.15, 3.5, 3.93, 4.39, 4.73, 5.05, 5.33, 5.62, 5.67];
+      var LINE_D = [0.415, 0.376, 0.35, 0.337, 0.324, 0.001, 0.311, 0.298, 0.285, 0.26, 0.001, 0.285];
       var PAUSE_LINES = [5, 10];
 
       var T_FIRST = LINE_T[0];
-      var T_DONE = 4.9; /* block complete; the caret settles and stops blinking */
+      var T_DONE = 6.3; /* block complete; the caret settles and stops blinking */
       var TICK_TRAVEL = 558;
 
       var CORAL = "#cc785c";
-      var DIM = "rgba(20, 20, 19, 0.22)";
+      var DIM = "rgba(20, 20, 19, 0.66)";
 
       var $ = function (id) {
         return document.getElementById(id);
@@ -382,14 +382,14 @@
       var tl = gsap.timeline({ paused: true });
 
       /* ── Scene 1 (0.0–1.6) — chrome sets, caret blinks on an empty block ── */
-      tl.fromTo(el.slab, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0);
-      tl.fromTo(el.kicker, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.42, ease: "power2.out" }, 0.1);
-      tl.fromTo(el.rule, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.out" }, 0.34);
-      tl.fromTo(el.display, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.55);
-      tl.fromTo(el.railWords, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.45);
-      tl.fromTo(el.railSpec, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.5);
-      tl.fromTo(el.tickRail, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.5);
-      tl.fromTo(el.index, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.95);
+      tl.fromTo(el.slab, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },0);
+      tl.fromTo(el.kicker, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.42, ease: "power2.out" },0.09);
+      tl.fromTo(el.rule, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.out" },0.305);
+      tl.fromTo(el.display, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },0.493);
+      tl.fromTo(el.railWords, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },0.403);
+      tl.fromTo(el.railSpec, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },0.448);
+      tl.fromTo(el.tickRail, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" },0.448);
+      tl.fromTo(el.index, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },0.851);
 
       /* ── Scene 2 (1.6–4.9) — the block types, the coral tick rides down ──
             The typed text is a discrete per-character schedule: every character is
@@ -450,7 +450,7 @@
 
       /* Baseline: every caret dark, nothing blinking yet. */
       carets.forEach(function (c) {
-        tl.set(c, { opacity: 0, background: CORAL }, 0);
+        tl.set(c, { opacity: 0, background: CORAL },0);
       });
 
       /* One owner at a time: at each line's start, hand the caret over explicitly —
@@ -489,7 +489,7 @@
       }
 
       /* full-span anchor so the sub-composition timeline spans the whole frame */
-      tl.to({}, { duration: DURATION }, 0);
+      tl.to({}, { duration: DURATION },0);
 
       window.__timelines["05-voice-fingerprint"] = tl;
     })();

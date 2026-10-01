@@ -11,9 +11,9 @@
     "voice"
   ],
   "active_step": "chapter_1",
-  "error": "The model reached its response or context limit before finishing. In Settings, check the output limit; for OpenRouter, also choose a model with a larger context limit or lower the output limit. Then use Resume with current settings. Repeating this same request unchanged will not fix it.",
+  "error": "Add your OpenRouter API key in Settings, or set OPENROUTER_API_KEY.",
   "created_at": 1790737070.2743416,
-  "updated_at": 1790815013.1549597,
+  "updated_at": 1790883021.1518166,
   "active_started_at": null,
   "active_attempt": 1,
   "step_durations_seconds": {

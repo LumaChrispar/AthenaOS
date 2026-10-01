@@ -140,15 +140,15 @@
 
       // ── Scene 1 (0.0–2.0s): the cover block builds, value still under the bar
       tl.fromTo("#d07-cover", { opacity: 0, clipPath: "inset(0% 100% 0% 0%)" },
-        { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "power3.out" }, 0.05);
-      tl.fromTo("#d07-kicker-l", { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.22);
-      tl.fromTo("#d07-kicker-r", { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.26);
-      tl.fromTo("#d07-cover-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.out" }, 0.3);
+        { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "power3.out" },0.045);
+      tl.fromTo("#d07-kicker-l", { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" },0.196);
+      tl.fromTo("#d07-kicker-r", { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" },0.231);
+      tl.fromTo("#d07-cover-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.out" },0.267);
       tl.fromTo("#d07-classlabel", { opacity: 0, "--dof": "10px" },
-        { opacity: 1, "--dof": "0px", duration: 0.45, ease: "power2.out" }, 0.5);
-      tl.fromTo("#d07-wipe-mask", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "none" }, 0.6);
+        { opacity: 1, "--dof": "0px", duration: 0.45, ease: "power2.out" },0.445);
+      tl.fromTo("#d07-wipe-mask", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "none" },0.534);
       tl.fromTo("#d07-stamp", { opacity: 0, scale: 1.22, rotation: 3.4 },
-        { opacity: 1, scale: 1, rotation: 2, duration: 0.55, ease: "back.out(2)" }, 0.62);
+        { opacity: 1, scale: 1, rotation: 2, duration: 0.55, ease: "back.out(2)" },0.552);
 
       // ── Scene 2 (2.0–3.4s): redaction wipe left→right, coral leading edge, FILED resolves
       var WIPE_AT = 2.05, WIPE_DUR = 1.0;
@@ -160,10 +160,10 @@
       tl.fromTo("#d07-stamp", { rotation: 2, opacity: 1 },
         { rotation: 3, opacity: 0.28, duration: 0.9, ease: "power2.inOut" }, WIPE_AT + 0.35);
       // hairline frame settles as the block closes out
-      tl.fromTo("#d07-cover", { scale: 1 }, { scale: 1.006, duration: 0.8, ease: "sine.inOut" }, 2.6);
+      tl.fromTo("#d07-cover", { scale: 1 }, { scale: 1.006, duration: 0.8, ease: "sine.inOut" },2.314);
 
       // ── Scene 3 (3.4–6.4s): thesis builds across three beats, per-word blurred→sharp
-      tl.fromTo("#d07-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, 3.45);
+      tl.fromTo("#d07-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" },3.071);
 
       var WORDS = [
         { sel: "#d07-line-1 .d07-w", at: 3.62 },
@@ -184,10 +184,10 @@
       });
 
       // ── Scene 4 (6.4–8.0s): stamp gone, hairline + FILED hold, thesis reads still
-      tl.to("#d07-stamp", { opacity: 0, duration: 0.45, ease: "power2.in" }, 6.45);
-      tl.to("#d07-line-2 .d07-w", { opacity: 0.46, duration: 0.45, ease: "power2.out" }, 6.55);
-      tl.to("#d07-line-1 .d07-w", { opacity: 0.4, duration: 0.45, ease: "power2.out" }, 6.62);
-      tl.to("#d07-thesis", { scale: 1, duration: 0.7, ease: "sine.inOut" }, 6.6);
+      tl.to("#d07-stamp", { opacity: 0, duration: 0.45, ease: "power2.in" },5.74);
+      tl.to("#d07-line-2 .d07-w", { opacity: 0.46, duration: 0.45, ease: "power2.out" },5.83);
+      tl.to("#d07-line-1 .d07-w", { opacity: 0.4, duration: 0.45, ease: "power2.out" },5.892);
+      tl.to("#d07-thesis", { scale: 1, duration: 0.7, ease: "sine.inOut" },5.874);
 
       window.__timelines = window.__timelines || {};
       window.__timelines["07-declassified"] = tl;

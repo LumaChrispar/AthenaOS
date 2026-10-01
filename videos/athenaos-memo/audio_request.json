@@ -1,38 +1,51 @@
 {
-  "provider": "auto",
-  "speed": 1,
   "lines": [
     {
       "id": "01",
-      "text": "This is not a prompt. It's a thirty-service pipeline."
+      "sfx": [
+        "impact-bass-1"
+      ]
     },
     {
       "id": "02",
-      "text": "One prompt doesn't hold a novel. It flatlines in chapter four."
+      "sfx": [
+        "typing"
+      ]
     },
     {
       "id": "03",
-      "text": "AthenaOS splits the work across thirty numbered services. Each one has a written protocol."
+      "sfx": [
+        "ping",
+        "whoosh-short"
+      ]
     },
     {
       "id": "04",
-      "text": "Architecture. Character and world. Voice calibration. Drafting. Editing."
+      "sfx": [
+        "click-soft"
+      ]
     },
     {
       "id": "05",
-      "text": "Before a word is drafted — a five-hundred-word voice fingerprint. Then a service whose only job is stripping the AI out."
+      "sfx": [
+        "typing"
+      ]
     },
     {
       "id": "06",
-      "text": "Sixteen editing services. And at every seam — a gate. Including a naive reader who's never been briefed."
+      "sfx": [
+        "pop"
+      ]
     },
     {
       "id": "07",
-      "text": "A governed pipeline. Thirty services. Five phases. A gate at every seam."
+      "sfx": [
+        "impact-bass-1",
+        "whoosh-short"
+      ]
     }
   ],
   "bgm": {
     "mode": "none"
-  },
-  "voice": "am_michael"
+  }
 }

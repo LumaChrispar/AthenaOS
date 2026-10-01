@@ -37,7 +37,7 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="44.64"
+      data-duration="45.76"
       data-width="1920"
       data-height="1080"
     >
@@ -47,8 +47,8 @@
         data-composition-id="01-memo-opens"
         data-composition-src="compositions/frames/01-memo-opens.html"
         data-start="0"
-        data-duration="3.76"
-        data-track-index="1"
+        data-duration="4.36"
+        data-track-index="0"
       ></div>
       <audio
         id="el-01-memo-opens-voice"
@@ -65,7 +65,7 @@
         data-composition-id="02-failure-mode"
         data-composition-src="compositions/frames/02-failure-mode.html"
         data-start="3.76"
-        data-duration="4.64"
+        data-duration="5.24"
         data-track-index="1"
       ></div>
       <audio
@@ -84,7 +84,7 @@
         data-composition-src="compositions/frames/03-thirty-services.html"
         data-start="8.399999999999999"
         data-duration="6.4"
-        data-track-index="1"
+        data-track-index="0"
       ></div>
       <audio
         id="el-03-thirty-services-voice"
@@ -101,7 +101,7 @@
         data-composition-id="04-five-phases"
         data-composition-src="compositions/frames/04-five-phases.html"
         data-start="14.799999999999999"
-        data-duration="6.48"
+        data-duration="7.08"
         data-track-index="1"
       ></div>
       <audio
@@ -120,7 +120,7 @@
         data-composition-src="compositions/frames/05-voice-fingerprint.html"
         data-start="21.28"
         data-duration="8.96"
-        data-track-index="1"
+        data-track-index="0"
       ></div>
       <audio
         id="el-05-voice-fingerprint-voice"
@@ -137,7 +137,7 @@
         data-composition-id="06-the-gate"
         data-composition-src="compositions/frames/06-the-gate.html"
         data-start="30.240000000000002"
-        data-duration="8.4"
+        data-duration="9"
         data-track-index="1"
       ></div>
       <audio
@@ -155,15 +155,112 @@
         data-composition-id="07-declassified"
         data-composition-src="compositions/frames/07-declassified.html"
         data-start="38.64"
-        data-duration="6"
-        data-track-index="1"
+        data-duration="7.12"
+        data-track-index="0"
       ></div>
+      <audio
+        id="el-07-declassified-voice"
+        src=".media/audio/07.mp3"
+        data-start="38.64"
+        data-duration="7.12"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
 
+      <!-- SFX -->
+      <audio
+        id="el-sfx-0"
+        src="assets/sfx/impact-bass-1.mp3"
+        data-start="0"
+        data-duration="2.12"
+        data-track-index="20"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-1"
+        src="assets/sfx/typing.mp3"
+        data-start="3.76"
+        data-duration="1.5"
+        data-track-index="21"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-2"
+        src="assets/sfx/ping.mp3"
+        data-start="8.4"
+        data-duration="1.32"
+        data-track-index="22"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-3"
+        src="assets/sfx/whoosh-short.mp3"
+        data-start="8.4"
+        data-duration="0.57"
+        data-track-index="23"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-4"
+        src="assets/sfx/click-soft.mp3"
+        data-start="14.8"
+        data-duration="0.37"
+        data-track-index="24"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-5"
+        src="assets/sfx/typing.mp3"
+        data-start="21.28"
+        data-duration="1.5"
+        data-track-index="25"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-6"
+        src="assets/sfx/pop.mp3"
+        data-start="30.24"
+        data-duration="0.72"
+        data-track-index="26"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-7"
+        src="assets/sfx/impact-bass-1.mp3"
+        data-start="38.64"
+        data-duration="2.12"
+        data-track-index="27"
+        data-volume="0.35"
+      ></audio>
+      <audio
+        id="el-sfx-8"
+        src="assets/sfx/whoosh-short.mp3"
+        data-start="38.64"
+        data-duration="0.57"
+        data-track-index="28"
+        data-volume="0.35"
+      ></audio>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       window.__timelines["main"] = gsap.timeline({ paused: true });
+      // ── frame transitions (injected by transitions.mjs) ──
+      (function () { var tl = window.__timelines["main"];
+        tl.to("#el-01-memo-opens", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 3.76);
+        tl.fromTo("#el-02-failure-mode", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 3.76);
+        tl.addLabel("hf:transition:01-memo-opens:02-failure-mode:blur-crossfade", 3.76);
+        tl.to("#el-02-failure-mode", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 8.4);
+        tl.fromTo("#el-03-thirty-services", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 8.4);
+        tl.addLabel("hf:transition:02-failure-mode:03-thirty-services:blur-crossfade", 8.4);
+        tl.to("#el-04-five-phases", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 21.28);
+        tl.fromTo("#el-05-voice-fingerprint", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 21.28);
+        tl.addLabel("hf:transition:04-five-phases:05-voice-fingerprint:blur-crossfade", 21.28);
+        tl.to("#el-06-the-gate", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 38.64);
+        tl.fromTo("#el-07-declassified", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 38.64);
+        tl.addLabel("hf:transition:06-the-gate:07-declassified:blur-crossfade", 38.64);
+        tl.to({}, { duration: 45.76 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
+      })();
     </script>
   </body>
 </html>
