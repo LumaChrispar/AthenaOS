@@ -101,6 +101,10 @@ class MemoryManager:
             raise
 
         atomic_json(filepath, json_data)
+        # A stale .raw from an earlier failed attempt would misdescribe the artifact
+        # that just landed on disk.
+        if os.path.exists(filepath + ".raw"):
+            os.remove(filepath + ".raw")
         print(f"Saved artifact to {filepath}")
 
     def save_text_artifact(self, artifact_name: str, content: str):
