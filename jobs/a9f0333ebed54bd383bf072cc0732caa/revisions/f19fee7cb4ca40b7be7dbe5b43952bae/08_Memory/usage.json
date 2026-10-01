@@ -1,0 +1,72 @@
+{
+  "calls": 16,
+  "prompt_tokens": 94504,
+  "completion_tokens": 414307,
+  "by_service": {
+    "SRV-001": {
+      "calls": 1,
+      "prompt_tokens": 1432,
+      "completion_tokens": 1707,
+      "response_seconds": 25.87,
+      "failures": 0
+    },
+    "SRV-002": {
+      "calls": 1,
+      "prompt_tokens": 3287,
+      "completion_tokens": 9581,
+      "response_seconds": 142.52,
+      "failures": 0
+    },
+    "SRV-003": {
+      "calls": 1,
+      "prompt_tokens": 3784,
+      "completion_tokens": 19363,
+      "response_seconds": 302.43,
+      "failures": 0
+    },
+    "SRV-004": {
+      "calls": 1,
+      "prompt_tokens": 2778,
+      "completion_tokens": 44519,
+      "response_seconds": 535.89,
+      "failures": 0
+    },
+    "SRV-028": {
+      "calls": 1,
+      "prompt_tokens": 2919,
+      "completion_tokens": 29597,
+      "response_seconds": 368.5,
+      "failures": 0
+    },
+    "SRV-005": {
+      "calls": 6,
+      "prompt_tokens": 38951,
+      "completion_tokens": 166597,
+      "response_seconds": 2280.08,
+      "failures": 1
+    },
+    "SRV-027": {
+      "calls": 3,
+      "prompt_tokens": 23662,
+      "completion_tokens": 109247,
+      "response_seconds": 1694.77,
+      "failures": 1
+    },
+    "SRV-013": {
+      "calls": 2,
+      "prompt_tokens": 17691,
+      "completion_tokens": 33696,
+      "response_seconds": 372.03,
+      "failures": 0
+    }
+  },
+  "by_model": {
+    "stealth/space-bunny-alpha": {
+      "calls": 16,
+      "prompt_tokens": 94504,
+      "completion_tokens": 414307,
+      "response_seconds": 5722.09,
+      "failures": 2
+    }
+  }
+}

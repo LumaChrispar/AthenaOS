@@ -50,7 +50,10 @@ def _estimate_tokens(text):
 
 def with_retry(max_attempts=3, base_delay=2.0):
     """Exponential backoff retry decorator for LLM calls."""
-    RETRYABLE_ERRORS = ['timeout', 'rate_limit', 'connection', '429', '503', '502', '504']
+    # 'empty content' is included because providers routinely return a completed-but-blank
+    # message (HTTP 200, null content) when an upstream generation hits its own ceiling.
+    RETRYABLE_ERRORS = ['timeout', 'rate_limit', 'connection', '429', '503', '502', '504',
+                        'empty content']
     
     def decorator(func):
         @wraps(func)
@@ -214,9 +217,29 @@ class AthenaLLMClient:
                 raise RuntimeError(f'The model reached its response or context limit before finishing. '
                                    f'In Settings, check the output limit; {provider_hint} Then use Resume '
                                    f'with current settings. Repeating this same request unchanged will not fix it.')
+            finish_reason = response.choices[0].finish_reason
+            if finish_reason == 'error':
+                # Providers signal an upstream generation failure with HTTP 200 and
+                # finish_reason 'error'. Retry it, and name the cause when we run out.
+                raise ValueError(
+                    f'empty content: the provider reported a generation error '
+                    f'(response id: {getattr(response, "id", "unknown")}). '
+                    f'This is usually an upstream capacity or timeout limit on the routed model.')
             content = response.choices[0].message.content
             if not content or not content.strip():
-                raise ValueError('Model returned empty content.')
+                # A blank completion is almost never the model's fault alone. Report the
+                # provider's own reason so the failure is actionable instead of opaque.
+                detail = finish_reason or 'unknown'
+                provider_message = ''
+                try:
+                    provider_message = (response.choices[0].message.model_extra or {}).get('provider_metadata') or ''
+                except (AttributeError, TypeError):
+                    pass
+                raise ValueError(
+                    f'Model returned empty content (finish_reason: {detail}). '
+                    f'The provider ended the generation without text. Lower the output limit in '
+                    f'Settings, or pick a model with a higher completion ceiling, then use Resume. '
+                    f'{provider_message}'.strip())
             service_usage['response_seconds'] += round(time.monotonic() - request_started, 2)
             model_usage['response_seconds'] += round(time.monotonic() - request_started, 2)
             atomic_json(self.usage_path, usage)
