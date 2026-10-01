@@ -339,8 +339,8 @@
         "",
         "That is the whole of it: a man, a letter, a hedge.",
       ];
-      var LINE_T = [1.84, 2.26, 2.61, 2.96, 3.29, 3.7, 4.13, 4.45, 4.75, 5.01, 5.29, 5.33];
-      var LINE_D = [0.391, 0.353, 0.33, 0.317, 0.305, 0.001, 0.292, 0.28, 0.268, 0.245, 0.001, 0.268];
+      var LINE_T = [2.152, 2.643, 3.052, 3.461, 3.847, 4.327, 4.829, 5.204, 5.554, 5.858, 6.186, 6.233];
+      var LINE_D = [0.457, 0.413, 0.386, 0.371, 0.357, 0.001, 0.341, 0.327, 0.313, 0.286, 0.001, 0.313];
       var PAUSE_LINES = [5, 10];
 
       var T_FIRST = LINE_T[0];
@@ -383,13 +383,13 @@
 
       /* ── Scene 1 (0.0–1.6) — chrome sets, caret blinks on an empty block ── */
       tl.fromTo(el.slab, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },0);
-      tl.fromTo(el.kicker, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.42, ease: "power2.out" },0.075);
-      tl.fromTo(el.rule, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.out" },0.253);
-      tl.fromTo(el.display, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },0.409);
-      tl.fromTo(el.railWords, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },0.335);
-      tl.fromTo(el.railSpec, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },0.372);
-      tl.fromTo(el.tickRail, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" },0.372);
-      tl.fromTo(el.index, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },0.707);
+      tl.fromTo(el.kicker, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.42, ease: "power2.out" },0.088);
+      tl.fromTo(el.rule, { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.out" },0.296);
+      tl.fromTo(el.display, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },0.478);
+      tl.fromTo(el.railWords, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },0.392);
+      tl.fromTo(el.railSpec, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },0.435);
+      tl.fromTo(el.tickRail, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" },0.435);
+      tl.fromTo(el.index, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },0.827);
 
       /* ── Scene 2 (1.6–4.9) — the block types, the coral tick rides down ──
             The typed text is a discrete per-character schedule: every character is

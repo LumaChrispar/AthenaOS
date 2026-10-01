@@ -250,7 +250,7 @@
     id="root"
     data-composition-id="02-failure-mode"
     data-width="1920"
-    data-height="1080" data-duration="4.99"
+    data-height="1080" data-duration="5.77"
   >
     <!-- depth layer 1 · full-bleed cream ground, full-duration clip -->
     <div
@@ -377,12 +377,12 @@
 
             // --- Scene 2 · mono line types under the bar ---
             var m = entryAt(SEQ_MONO, t);
-            typeText.textContent = t >= 1.004 ? m.text : "";
+            typeText.textContent = t >= 1.182 ? m.text : "";
             caretType.style.background = m.seg === "key" ? INK_DIM : INK;
             // solid while keystrokes are landing, blinking on the pauses; off after the caret stops
-            var typingMono = t >= 1.514 && t <= MONO_END;
+            var typingMono = t >= 1.783 && t <= MONO_END;
             caretType.style.opacity =
-              t >= 1.514 && t < 3.62 ? (typingMono ? 1 : blinkOn((t / 0.7) * Math.PI * 2)) : 0;
+              t >= 1.783 && t < 3.62 ? (typingMono ? 1 : blinkOn((t / 0.7) * Math.PI * 2)) : 0;
 
             // --- Scene 1 · caret parked at the redaction bar's left edge, then
             //     hands off down to the typing line (fades across the handoff) ---
@@ -394,17 +394,17 @@
               );
             }
             caretBar.style.opacity =
-              t >= 0.587 && t < BAR_HANDOFF_START + BAR_HANDOFF_DUR
+              t >= 0.691 && t < BAR_HANDOFF_START + BAR_HANDOFF_DUR
                 ? blinkOn((t / 0.7) * Math.PI * 2) * barFade
                 : 0;
 
             // --- Scene 4 · hero types, then the caret stops dead (solid, then out) ---
             var h = entryAt(SEQ_HERO, t);
-            heroText.textContent = t >= 3.261 ? h.text : "";
+            heroText.textContent = t >= 3.84 ? h.text : "";
             caretHero.style.background = INK;
             // solid from the first keystroke, then it simply STOPS DEAD at 4.4 —
             // no blink on the hero caret: the flatline is the point.
-            caretHero.style.opacity = t >= 3.261 && t < 4.4 ? 1 : 0;
+            caretHero.style.opacity = t >= 3.84 && t < 4.4 ? 1 : 0;
           },
         },0);
 
@@ -418,24 +418,24 @@
       tl.fromTo(
         "#f02-chrome",
         { opacity: 0 },
-        { opacity: 1, duration: 0.4, ease: "power2.out" },0.031);
+        { opacity: 1, duration: 0.4, ease: "power2.out" },0.037);
 
       // Kicker sets at the upper-left.
       tl.fromTo(
         "#f02-kicker",
         { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },0.113);
+        { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },0.133);
 
       // The solid redaction bar wipes over the unseen line.
       tl.fromTo(
         "#f02-redaction",
         { scaleX: 0, opacity: 0 },
-        { scaleX: 1, opacity: 1, duration: 0.5, ease: "power3.out", transformOrigin: "left center" },0.263);
+        { scaleX: 1, opacity: 1, duration: 0.5, ease: "power3.out", transformOrigin: "left center" },0.31);
       // svg-path-draw: the right-margin rail traces in, hairline, power2.out
       tl.fromTo(
         "#f02-rail",
         { scaleY: 0, opacity: 0 },
-        { scaleY: 1, opacity: 1, duration: 0.45, ease: "power2.out", transformOrigin: "center top" },0.565);
+        { scaleY: 1, opacity: 1, duration: 0.45, ease: "power2.out", transformOrigin: "center top" },0.665);
 
       // The caret hands off from the bar down to the typing line. Only `y` is tweened
       // here — the fade across the handoff is owned by the typewriter driver, which
@@ -443,13 +443,13 @@
       tl.fromTo(
         "#f02-caret-bar",
         { y: 0 },
-        { y: 104, duration: 0.22, ease: "power2.in" },0.972);
+        { y: 104, duration: 0.22, ease: "power2.in" },1.145);
 
       /* ---------- Scene 2 (1.1-2.4s) · the line types; the coral index mark sets ---------- */
       tl.fromTo(
         "#f02-rail-idx",
         { scaleY: 0, opacity: 0 },
-        { scaleY: 1, opacity: 1, duration: 0.28, ease: "power3.out", transformOrigin: "center top" },1.223);
+        { scaleY: 1, opacity: 1, duration: 0.28, ease: "power3.out", transformOrigin: "center top" },1.44);
 
       /* ---------- Scene 3 (2.4-3.4s) · "flatlines" · the line collapses away ----------
          scale-swap-transition's collapse half, at text-scale blur: the assembly
@@ -457,7 +457,7 @@
       tl.fromTo(
         "#f02-type-line",
         { scale: 1, filter: "blur(0px)", opacity: 1 },
-        { scale: 0.84, filter: "blur(10px)", opacity: 0, duration: 0.42, ease: "power3.in", transformOrigin: "left center" },2.271);
+        { scale: 0.84, filter: "blur(10px)", opacity: 0, duration: 0.42, ease: "power3.in", transformOrigin: "left center" },2.675);
 
       /* ---------- Scene 4 (3.4-4.6s) · the hero types, the rule dies mid-stroke ---------- */
       // (the hero text itself is driven by the typewriter above)
@@ -466,7 +466,7 @@
       tl.fromTo(
         "#f02-rule-line",
         { strokeDashoffset: ruleLen },
-        { strokeDashoffset: ruleLen - ruleLen * 0.6, duration: 0.55, ease: "none" },3.982);
+        { strokeDashoffset: ruleLen - ruleLen * 0.6, duration: 0.55, ease: "none" },4.69);
 
       window.__timelines = window.__timelines || {};
       window.__timelines["02-failure-mode"] = tl;

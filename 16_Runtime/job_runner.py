@@ -11,6 +11,8 @@ import subprocess
 import sys
 import yaml
 
+from providers import apply_role_models
+
 
 def atomic_json(path, data):
     path = Path(path)
@@ -36,6 +38,7 @@ def create_job(root, concept, chapters=None, model_config=None):
         config_path = job / 'config' / 'models.yaml'
         config = yaml.safe_load(config_path.read_text(encoding='utf-8'))
         config.update(model_config)
+        apply_role_models(config, config.get('role_models'), config.get('default_model'))
         config_path.write_text(yaml.safe_dump(config, sort_keys=False), encoding='utf-8')
     atomic_json(job / 'job.json', {
         'version': 1, 'concept': concept, 'chapters': chapters,

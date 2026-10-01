@@ -1,6 +1,6 @@
 ---
 format: 1920x1080
-duration: 40s
+duration: 46s
 message: "AthenaOS is not a prompt that writes your novel — it is a governed pipeline that does"
 arc: concept-explainer with process
 audience: "the system owner, and anyone who has tried to get a model to write a whole novel"
@@ -28,7 +28,7 @@ music: none
 
 - scene: A memo header block is already on screen; a `CLASSIFIED` stamp lands in the top-right, then a coral rule draws left-to-right under it
 - voiceover: "This is not a prompt. It's a thirty-service pipeline."
-- duration: 3.5s
+- duration: 4.13s
 - transition_in: cut
 - status: outline
 - src: compositions/frames/01-memo-opens.html
@@ -43,9 +43,9 @@ music: none
 
 Adapt: keep the in-place token-swap signature (a fixed line swaps its words by hard cut, then the built line takes a single settling pop — no overshoot); the bold full-frame type becomes a memo field block with mono labels.
 
-Scene 1 (0–0.84s): only the memo header band — `MEMORANDUM` kicker, a hairline rule, and the empty `SUBJECT:` / `FROM:` label pair — full-width strip across the top ~83%, left-aligned. Nothing else on the cream plane. Type enters per-word, blurred to sharp.
-Scene 2 (0.84–1.68s): the coral `CLASSIFIED` stamp drops into the top-right and settles hard with a small scale overshoot that damps immediately; the coral rule draws left-to-right beneath the header. Asymmetric 70/30, 3 depth layers (paper, rules, stamp).
-Scene 3 (1.68–3.54s): in the body, the statement sets in display: `NOT A PROMPT.` appears in `ink` at display scale, centered, occupying ~50% of frame width — then on the word "pipeline" it swaps **in place** to `A GOVERNED PIPELINE.` with a hard cut and one settling pop. Beneath it a mono-label rail types on: `SRV-001 → SRV-030`. Then hold completely still — no breathing, no drift.
+Scene 1 (0–0.99s): only the memo header band — `MEMORANDUM` kicker, a hairline rule, and the empty `SUBJECT:` / `FROM:` label pair — full-width strip across the top ~83%, left-aligned. Nothing else on the cream plane. Type enters per-word, blurred to sharp.
+Scene 2 (0.99–1.98s): the coral `CLASSIFIED` stamp drops into the top-right and settles hard with a small scale overshoot that damps immediately; the coral rule draws left-to-right beneath the header. Asymmetric 70/30, 3 depth layers (paper, rules, stamp).
+Scene 3 (1.98–4.18s): in the body, the statement sets in display: `NOT A PROMPT.` appears in `ink` at display scale, centered, occupying ~50% of frame width — then on the word "pipeline" it swaps **in place** to `A GOVERNED PIPELINE.` with a hard cut and one settling pop. Beneath it a mono-label rail types on: `SRV-001 → SRV-030`. Then hold completely still — no breathing, no drift.
 
 narrativeRole: Opens the document and immediately corrects the viewer's default assumption — that this is another AI writing tool.
 keyMessage: This is a system of record, not a prompt.
@@ -54,7 +54,7 @@ keyMessage: This is a system of record, not a prompt.
 
 - scene: The same memo, scrolled to a field labeled `FAILURE MODE`. One line sits under a solid ink redaction bar; a second line below it reads `CHAPTER 4` and stops dead, the rule beneath it trailing off unfinished
 - voiceover: "One prompt doesn't hold a novel. It flatlines in chapter four."
-- duration: 4.39s
+- duration: 5.17s
 - transition_in: wipe
 - status: outline
 - src: compositions/frames/02-failure-mode.html
@@ -68,10 +68,10 @@ keyMessage: This is a system of record, not a prompt.
 
 Adapt: keep the signature live-caret type-and-edit (a caret types a line as a human would, then collapses it); the brand-payoff tail is dropped — this frame ends on the dead line instead, and the redaction bar stays opaque (it is not yet revealed).
 
-Scene 1 (0–1.04s): a new memo field band in `tile` spans the frame width; `FAILURE MODE` sets as a kicker at the upper-left. Beneath it a solid `tile-strong` redaction bar sits over an unseen line, with a live caret blinking at its left edge. Rule-of-thirds, 3 depth layers.
-Scene 2 (1.04–2.27s): a mono line types out beneath the bar — `CONTEXT HELD: ONE SESSION` — the caret advancing with each character; the bar above stays fully opaque. Right-margin rail carries a small coral index mark.
-Scene 3 (2.27–3.22s): as the VO says "flatlines," the caret stops. The typewriter line collapses away (quick blur out), leaving the bar and empty space.
-Scene 4 (3.22–4.35s): `CHAPTER 4` types in display Garamond, large, left-aligned at the rule-of-thirds line — and the hairline rule beneath it draws only ~60% of its width, then stops dead, trailing off mid-stroke. Hold still; the incompleteness is the point.
+Scene 1 (0–1.22s): a new memo field band in `tile` spans the frame width; `FAILURE MODE` sets as a kicker at the upper-left. Beneath it a solid `tile-strong` redaction bar sits over an unseen line, with a live caret blinking at its left edge. Rule-of-thirds, 3 depth layers.
+Scene 2 (1.22–2.67s): a mono line types out beneath the bar — `CONTEXT HELD: ONE SESSION` — the caret advancing with each character; the bar above stays fully opaque. Right-margin rail carries a small coral index mark.
+Scene 3 (2.67–3.79s): as the VO says "flatlines," the caret stops. The typewriter line collapses away (quick blur out), leaving the bar and empty space.
+Scene 4 (3.79–5.12s): `CHAPTER 4` types in display Garamond, large, left-aligned at the rule-of-thirds line — and the hairline rule beneath it draws only ~60% of its width, then stops dead, trailing off mid-stroke. Hold still; the incompleteness is the point.
 
 narrativeRole: Names the exact failure the viewer has already watched happen, so the solution has something to be a solution to.
 keyMessage: The bottleneck is structural — one context can't carry a whole book.
@@ -80,7 +80,7 @@ keyMessage: The bottleneck is structural — one context can't carry a whole boo
 
 - scene: The redaction bar over `SUBJECT` wipes off to reveal `30 SERVICES`, the number counting up in large Garamond while a mono label beneath tallies `SRV-001 → SRV-030`
 - voiceover: "AthenaOS splits the work across thirty numbered services. Each one has a written protocol."
-- duration: 5.64s
+- duration: 6.61s
 - transition_in: wipe
 - status: outline
 - src: compositions/frames/03-thirty-services.html
@@ -94,10 +94,10 @@ keyMessage: The bottleneck is structural — one context can't carry a whole boo
 
 Adapt: keep the count-up signature (a value eases from zero to its final number and lands with a restrained settle); the chart/ring is replaced by the memo field and the redaction wipe, which supplies the reveal event.
 
-Scene 1 (0–1.41s): the `SUBJECT:` field, left-aligned at the upper third. Its value line is completely hidden under a solid `tile-strong` redaction bar with a thin coral leading edge. Full-width strip, cream plane, hairline rule above.
-Scene 2 (1.41–2.38s): the redaction wipe fires — the bar clears left-to-right via clip-path, revealing `SERVICES` in display Garamond as it goes. Behind it the number is already counting.
-Scene 3 (2.38–3.97s): `30` counts up to its final value in large display type, filling ~45% of frame width, with `SERVICES` set beneath in a tracked mono label. Long-tail ease, restrained settle — no bounce.
-Scene 4 (3.97–5.64s): beneath the number, a mono rail types on in segments — `SRV-001 → SRV-030` — and a second line sets under it on the word "protocol": `EACH: ONE WRITTEN PROTOCOL`. Then hold still.
+Scene 1 (0–1.65s): the `SUBJECT:` field, left-aligned at the upper third. Its value line is completely hidden under a solid `tile-strong` redaction bar with a thin coral leading edge. Full-width strip, cream plane, hairline rule above.
+Scene 2 (1.65–2.79s): the redaction wipe fires — the bar clears left-to-right via clip-path, revealing `SERVICES` in display Garamond as it goes. Behind it the number is already counting.
+Scene 3 (2.79–4.65s): `30` counts up to its final value in large display type, filling ~45% of frame width, with `SERVICES` set beneath in a tracked mono label. Long-tail ease, restrained settle — no bounce.
+Scene 4 (4.65–6.61s): beneath the number, a mono rail types on in segments — `SRV-001 → SRV-030` — and a second line sets under it on the word "protocol": `EACH: ONE WRITTEN PROTOCOL`. Then hold still.
 
 narrativeRole: Introduces the protagonist — the service count — and lands the key structural idea that each service is a document, not a call.
 keyMessage: The work is decomposed into thirty separately-specified stages.
@@ -106,7 +106,7 @@ keyMessage: The work is decomposed into thirty separately-specified stages.
 
 - scene: Same memo, widened. Five field rows cascade into place down the page — `ARCHITECTURE`, `CHARACTER & WORLD`, `VOICE CALIBRATION`, `DRAFTING`, `EDITING` — each with its service numbers set small and mono at the right margin
 - voiceover: "Architecture. Character and world. Voice calibration. Drafting. Editing."
-- duration: 6.06s
+- duration: 7.08s
 - transition_in: cut
 - status: outline
 - src: compositions/frames/04-five-phases.html
@@ -120,9 +120,9 @@ keyMessage: The work is decomposed into thirty separately-specified stages.
 
 Reproduce: the staggered self-assembling list — items fade and travel into place with an even per-item stagger — instantiated as memo field rows.
 
-Scene 1 (0–0.84s): a `PHASES` kicker sets top-left with a hairline rule under it. Centered framing; the page is otherwise empty cream. Nothing else enters.
-Scene 2 (0.84–4.96s): one row per spoken item cascades in, each on its own cue — label in tracked mono at left, phase name in display Garamond, service numbers set small at the right margin (`SRV-002`, `SRV-003 / 004`, `SRV-028`, `SRV-005 / 006`, `SRV-007 → 016`), with a hairline rule closing each row. Rows land on an even stagger; a small coral index tick rides the left edge marking the row currently being named. The list fills ~60% of frame height — the hero, not a decoration.
-Scene 3 (4.96–6.08s): all five rows hold, still and evenly spaced, the coral tick at rest on the last row. Held read — no drift, no breathing.
+Scene 1 (0–0.98s): a `PHASES` kicker sets top-left with a hairline rule under it. Centered framing; the page is otherwise empty cream. Nothing else enters.
+Scene 2 (0.98–5.79s): one row per spoken item cascades in, each on its own cue — label in tracked mono at left, phase name in display Garamond, service numbers set small at the right margin (`SRV-002`, `SRV-003 / 004`, `SRV-028`, `SRV-005 / 006`, `SRV-007 → 016`), with a hairline rule closing each row. Rows land on an even stagger; a small coral index tick rides the left edge marking the row currently being named. The list fills ~60% of frame height — the hero, not a decoration.
+Scene 3 (5.79–7.1s): all five rows hold, still and evenly spaced, the coral tick at rest on the last row. Held read — no drift, no breathing.
 
 narrativeRole: Reveals the spine of the system in order, one layer at a time — the process inner rhythm of the compound structure.
 keyMessage: A novel moves through five phases before it is a draft at all.
@@ -131,7 +131,7 @@ keyMessage: A novel moves through five phases before it is a draft at all.
 
 - scene: A single memo field, held close. Label `VOICE FINGERPRINT`; beneath it a 500-word block sets line by line in Garamond; a coral tick rides down the left edge as the block completes
 - voiceover: "Before a word is drafted — a five-hundred-word voice fingerprint. Then a service whose only job is stripping the AI out."
-- duration: 7.44s
+- duration: 8.7s
 - transition_in: wipe
 - status: outline
 - src: compositions/frames/05-voice-fingerprint.html
@@ -145,10 +145,10 @@ keyMessage: A novel moves through five phases before it is a draft at all.
 
 Adapt: keep the signature caret-and-type (a line types as a human would, with a persistent caret); the payoff pop is dropped — the block simply completes and the frame holds, which is this video's designated breather.
 
-Scene 1 (0–1.16s): `VOICE FINGERPRINT` sets as a kicker at the upper-left with its hairline rule; a blinking caret sits at the start of an empty block. Rule-of-thirds, the block occupying the right ~60%.
-Scene 2 (1.16–3.4s): the fingerprint block types out line by line in Garamond body — dense, small, real prose lines — while a coral tick rides down the left edge tracking the block's fill. Mono `500 WORDS` sits in the right-margin rail.
-Scene 3 (3.4–5.23s): the block completes; the caret settles and stops blinking. Beneath it a mono strip sets on the word "stripping": `SRV-027 · VOICE VARIATION ENGINE — REMOVE AI TELLS`.
-Scene 4 (5.23–7.47s): **held breather.** Everything on screen reads still and silent for the rest of the frame — no drift, no breathing, at most a faint jitter in the caret. The stillness is deliberate and is the pause before the gate.
+Scene 1 (0–1.36s): `VOICE FINGERPRINT` sets as a kicker at the upper-left with its hairline rule; a blinking caret sits at the start of an empty block. Rule-of-thirds, the block occupying the right ~60%.
+Scene 2 (1.36–3.98s): the fingerprint block types out line by line in Garamond body — dense, small, real prose lines — while a coral tick rides down the left edge tracking the block's fill. Mono `500 WORDS` sits in the right-margin rail.
+Scene 3 (3.98–6.12s): the block completes; the caret settles and stops blinking. Beneath it a mono strip sets on the word "stripping": `SRV-027 · VOICE VARIATION ENGINE — REMOVE AI TELLS`.
+Scene 4 (6.12–8.74s): **held breather.** Everything on screen reads still and silent for the rest of the frame — no drift, no breathing, at most a faint jitter in the caret. The stillness is deliberate and is the pause before the gate.
 
 narrativeRole: Isolates the single most distinctive mechanism in the system and shows it operating, so "voice quality" stops being a vibe and becomes a spec.
 keyMessage: Prose quality is measured against a fingerprint before drafting starts.
@@ -157,7 +157,7 @@ keyMessage: Prose quality is measured against a fingerprint before drafting star
 
 - scene: The memo's lower section. A row of small hairline-ruled gate rows; each stamps `PASS` in coral as the narration names it, ending on a wider row stamped `SRV-030 · READER PROXY — NAIVE READER AUDIT`
 - voiceover: "Sixteen editing services. And at every seam — a gate. Including a naive reader who's never been briefed."
-- duration: 7.11s
+- duration: 8.33s
 - transition_in: cut
 - status: outline
 - src: compositions/frames/06-the-gate.html
@@ -171,10 +171,10 @@ keyMessage: Prose quality is measured against a fingerprint before drafting star
 
 Adapt: keep the staggered assemble-and-hold signature; the accumulating list becomes a column of gate rows that each take a `PASS` stamp on its spoken cue, with the last row deliberately wider and later than the rest.
 
-Scene 1 (0–1.27s): a `QUALITY GATE` kicker sets top-left; a hairline rule spans the frame. Full-width strip, mirrored from earlier frames — content sits right-aligned this time. Empty rows wait beneath the rule.
-Scene 2 (1.27–3.72s): `SRV-007 → SRV-016 · EDITING` sets as the first row on the word "sixteen," and its `PASS` stamp lands in coral at the row's right edge.
-Scene 3 (3.72–5.16s): three further hairline gate rows cascade in tight below it — `STRUCTURAL`, `LINE`, `CONTINUITY` — each taking its `PASS` stamp in turn as the narration reaches "every seam." Small, even, per-row stagger.
-Scene 4 (5.16–7.11s): the final row arrives **wider** than the rest and sets on the words "naive reader": `SRV-030 · READER PROXY — NAIVE READER AUDIT`, its `PASS` stamp landing with a firmer thud. The column holds still, weighted to the bottom row, which fills ~45% of the frame width. Held read to the cut.
+Scene 1 (0–1.49s): a `QUALITY GATE` kicker sets top-left; a hairline rule spans the frame. Full-width strip, mirrored from earlier frames — content sits right-aligned this time. Empty rows wait beneath the rule.
+Scene 2 (1.49–4.36s): `SRV-007 → SRV-016 · EDITING` sets as the first row on the word "sixteen," and its `PASS` stamp lands in coral at the row's right edge.
+Scene 3 (4.36–6.05s): three further hairline gate rows cascade in tight below it — `STRUCTURAL`, `LINE`, `CONTINUITY` — each taking its `PASS` stamp in turn as the narration reaches "every seam." Small, even, per-row stagger.
+Scene 4 (6.05–8.33s): the final row arrives **wider** than the rest and sets on the words "naive reader": `SRV-030 · READER PROXY — NAIVE READER AUDIT`, its `PASS` stamp landing with a firmer thud. The column holds still, weighted to the bottom row, which fills ~45% of the frame width. Held read to the cut.
 
 narrativeRole: Supplies the evidence that the stages are enforced rather than merely listed — the gate is the system's real product.
 keyMessage: Nothing advances without passing a check, including a check by someone who knows nothing about the project.
@@ -183,7 +183,7 @@ keyMessage: Nothing advances without passing a check, including a check by someo
 
 - voiceover: "A governed pipeline. Thirty services. Five phases. A gate at every seam."
 - scene: The memo's cover block, full frame. The final redaction bar over `CLASSIFICATION` wipes off; the coral `CLASSIFIED` stamp rotates two degrees and fades as `FILED` sets beneath it
-- duration: 5.46s
+- duration: 6.4s
 - transition_in: wipe
 - status: outline
 - src: compositions/frames/07-declassified.html
@@ -197,10 +197,10 @@ keyMessage: Nothing advances without passing a check, including a check by someo
 
 Reproduce: the statement builds across full-screen beats, each its own move, onto a held final read — here the statement is the memo's classification line plus the three-phrase thesis.
 
-Scene 1 (0–1s): the cover block, full frame — `CLASSIFICATION` label with its value hidden under a solid `tile-strong` redaction bar. The coral `CLASSIFIED` stamp sits over the block, rotated two degrees. Centered framing.
-Scene 2 (1–1.69s): the redaction wipe fires left-to-right with its coral leading edge, revealing the value `FILED` beneath it — the callback to the hook's bar, resolved. The stamp rotates a degree further and begins to fade.
-Scene 3 (1.69–3.3s): the thesis builds across three beats, each landing on its spoken phrase, set in display Garamond and filling ~55% of frame width, stacked with real vertical air: `A GOVERNED PIPELINE.` / `THIRTY SERVICES. FIVE PHASES.` / `A GATE AT EVERY SEAM.` Each line enters per-word, blurred to sharp.
-Scene 4 (3.3–5.44s): the `CLASSIFIED` stamp has faded out entirely; the hairline frame and `FILED` hold. Final frame — the only real exit — the thesis reads still and complete against the cream, no further motion.
+Scene 1 (0–1.17s): the cover block, full frame — `CLASSIFICATION` label with its value hidden under a solid `tile-strong` redaction bar. The coral `CLASSIFIED` stamp sits over the block, rotated two degrees. Centered framing.
+Scene 2 (1.17–1.98s): the redaction wipe fires left-to-right with its coral leading edge, revealing the value `FILED` beneath it — the callback to the hook's bar, resolved. The stamp rotates a degree further and begins to fade.
+Scene 3 (1.98–3.87s): the thesis builds across three beats, each landing on its spoken phrase, set in display Garamond and filling ~55% of frame width, stacked with real vertical air: `A GOVERNED PIPELINE.` / `THIRTY SERVICES. FIVE PHASES.` / `A GATE AT EVERY SEAM.` Each line enters per-word, blurred to sharp.
+Scene 4 (3.87–6.38s): the `CLASSIFIED` stamp has faded out entirely; the hairline frame and `FILED` hold. Final frame — the only real exit — the thesis reads still and complete against the cream, no further motion.
 
 narrativeRole: Closes by returning to the redaction bar from the hook and resolving it, then compresses the whole system into the thesis line.
 keyMessage: This is a pipeline with rules — and the rules are written down.

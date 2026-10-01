@@ -6,6 +6,7 @@ import time
 import uuid
 import yaml
 from job_runner import atomic_json
+from providers import apply_role_models
 
 
 def read(path, default=None):
@@ -25,6 +26,7 @@ def update_model(job, config):
     path = job / 'config/models.yaml'
     current = yaml.safe_load(path.read_text(encoding='utf-8'))
     current.update(config)
+    apply_role_models(current, current.get('role_models'), current.get('default_model'))
     temporary = path.with_suffix('.yaml.tmp')
     temporary.write_text(yaml.safe_dump(current, sort_keys=False), encoding='utf-8')
     temporary.replace(path)

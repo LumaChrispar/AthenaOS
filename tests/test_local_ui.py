@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / '16_Runtime'))
 from providers import model_overrides, list_models, connection_settings
 from job_runner import create_job, atomic_json
 from llm_client import AthenaLLMClient
-from web_ui import AthenaServer
+from web_ui import AthenaServer, settings_config, validate_settings
 
 
 class ModelStub(BaseHTTPRequestHandler):
@@ -95,6 +95,27 @@ class LocalUiTests(unittest.TestCase):
         config = yaml.safe_load((job / 'config/models.yaml').read_text())
         self.assertEqual(config['default_model'], 'replacement-model')
         self.launcher.assert_called_once()
+
+    def test_job_model_table_matches_the_roles_that_actually_run(self):
+        import yaml
+        from providers import MODEL_GROUPS
+        settings = {'provider': 'openrouter', 'base_url': 'https://openrouter.ai/api/v1',
+                    'model': 'main-choice', 'max_calls_per_job': 200, 'max_output_tokens': 8192,
+                    'timeout_seconds': 900,
+                    'role_models': {group: f'{group}-choice' if group != 'prose-generation' else '' for group in MODEL_GROUPS}}
+        with self.request('/api/settings', settings):
+            pass
+        job = create_job(self.root, 'Role routing', model_config=settings_config(validate_settings(settings)))
+        config = yaml.safe_load((job / 'config/models.yaml').read_text())
+        by_id = {entry['id']: entry['model'] for entry in config['models']}
+        # Every entry names the model its role resolves to, so the file cannot read as a stale default.
+        self.assertEqual(by_id, {group: settings['role_models'][group] or 'main-choice' for group in MODEL_GROUPS})
+        client = None
+        with patch.dict(os.environ, {'OPENROUTER_API_KEY': 'test-key'}):
+            client = AthenaLLMClient(str(job / 'config/models.yaml'))
+        self.assertEqual(client.get_model_name('SRV-005'), 'main-choice')
+        self.assertEqual(client.get_model_name('SRV-001'), 'architecture-reasoning-choice')
+        client.client.close()
 
     def test_running_worker_prevents_library_mutations(self):
         from job_lock import job_lock

@@ -121,6 +121,21 @@ def model_overrides(provider, model, base_url=None):
     return {'connection': connection, 'default_model': model.strip(), 'use_default_model_for_all_services': True}
 
 
+def apply_role_models(config, role_models, fallback):
+    """Point every entry of the models: table at the model its role will actually run.
+
+    role_models wins per group, matching llm_client.get_model_for_service; local
+    runs have no role_models and fall back to the single default model.
+    """
+    for entry in config.get('models', []):
+        role = entry.get('id')
+        if role in (role_models or {}) and role_models[role]:
+            entry['model'] = role_models[role]
+        elif fallback:
+            entry['model'] = fallback
+    return config
+
+
 def list_models(provider, base_url=None, root=None):
     from openai import OpenAI
     settings = connection_settings(provider, base_url)
