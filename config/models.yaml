@@ -68,3 +68,8 @@ default_temperature: 0.5
 max_calls_per_job: 200
 max_output_tokens: 8192
 default_model: nvidia/nemotron-3-ultra-550b-a55b:free
+
+# Save every request verbatim to 08_Memory/prompts/ so the pipeline view can show
+# and copy what the model actually received. This includes your story text, and
+# snapshots copy it too, so set false to keep jobs small.
+capture_prompts: true

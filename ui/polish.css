@@ -345,3 +345,16 @@ aside { background: #35423b; box-shadow: 4px 0 16px rgb(24 34 29 / 3%); }
   text-overflow: clip;
   white-space: normal;
 }
+
+/* Captured prompts on each pipeline stage. */
+.prompt-calls { margin-top: 9px; }
+.prompt-calls > summary { font-size: 11px; color: #876b4e; }
+.prompt-call-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.prompt-call {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: #f3f1ea; border: 1px solid #e3dfd5; border-radius: 7px; padding: 7px 10px;
+}
+.prompt-call-label { font: 11px/1.5 ui-monospace, monospace; color: var(--muted); flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.prompt-call-actions { display: flex; gap: 6px; }
+.prompt-call-actions button { padding: 4px 11px; font-size: 11px; }
+#prompt-body { max-height: 52dvh; overflow: auto; background: #fffefa; }

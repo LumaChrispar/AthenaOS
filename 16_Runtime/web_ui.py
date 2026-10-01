@@ -15,7 +15,7 @@ import credentials
 from book_chat import read_messages, progress_messages, reply_to_book
 from job_lock import job_lock
 from book_library import editor_data, edit_book, continue_book, snapshot, update_model
-from pipeline_inspect import inspect_job, artifact_text
+from pipeline_inspect import inspect_job, artifact_text, prompt_text
 
 
 def read_json(path, default=None):
@@ -167,6 +167,10 @@ class Handler(BaseHTTPRequestHandler):
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/artifact/([^/]+)', path):
                 # One URL-encoded segment; artifact_text re-validates after decoding.
                 self.respond(artifact_text(self.job_path(match[1]), unquote(match[2])).encode('utf-8'),
+                             content_type='text/plain; charset=utf-8')
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/prompt/([^/]+)', path):
+                # One URL-encoded segment; prompt_text re-validates after decoding.
+                self.respond(prompt_text(self.job_path(match[1]), unquote(match[2])).encode('utf-8'),
                              content_type='text/plain; charset=utf-8')
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})(/manuscript)?', path):
                 job = self.job_path(match[1])

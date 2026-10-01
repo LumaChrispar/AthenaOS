@@ -364,11 +364,62 @@ async function loadInspector(id) {
   try {
     const detail = await api(`/api/jobs/${id}/inspect`);
     if (selected !== id) return;
-    const signature = JSON.stringify([detail.stages, detail.outline, detail.artifacts, detail.context, detail.budget, detail.chapter, detail.events.length]);
+    const signature = JSON.stringify([detail.stages, detail.outline, detail.artifacts, detail.context, detail.budget, detail.chapter, detail.events.length, Object.values(detail.prompts || {}).map(list => list.length)]);
     if (signature !== inspectSignature) { inspectSignature = signature; renderInspector(detail); }
   } catch (error) {
     if (selected === id) { inspectSignature = ''; $('pipeline-view').replaceChildren(el('p', 'hint', error.message)); }
   } finally { inspecting = null; }
+}
+// Captured prompts, oldest first, for every service this stage calls.
+function stagePromptCalls(detail, stage) {
+  const ids = String(stage.service || '').match(/SRV-\d+/g) || [];
+  return ids.flatMap(id => (detail.prompts?.[id] || []).map(call => ({ ...call, service: id })))
+    .sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
+}
+async function fetchText(path) {
+  const response = await fetch(path);
+  if (!response.ok) throw new Error('That prompt could not be loaded.');
+  return response.text();
+}
+function flashCopied(button) {
+  const label = button.textContent;
+  button.textContent = 'Copied';
+  setTimeout(() => { button.textContent = label; }, 1500);
+}
+async function copyPrompt(id, name, button) {
+  try { await navigator.clipboard.writeText(await fetchText(`/api/jobs/${id}/prompt/${encodeURIComponent(name)}`)); flashCopied(button); }
+  catch (error) { notice(error.message, true); }
+}
+async function openPrompt(id, name, title) {
+  try {
+    $('prompt-title').textContent = title;
+    $('prompt-body').textContent = 'Loading…';
+    $('prompt-dialog').showModal();
+    $('prompt-body').textContent = await fetchText(`/api/jobs/${id}/prompt/${encodeURIComponent(name)}`);
+  } catch (error) { notice(error.message, true); }
+}
+function promptCallsNode(detail, stage) {
+  const calls = stagePromptCalls(detail, stage);
+  if (!calls.length) return null;
+  const box = el('details', 'prompt-calls');
+  box.append(el('summary', null, `Prompts sent (${calls.length})`));
+  const list = el('ol', 'prompt-call-list');
+  calls.forEach((call, index) => {
+    const label = el('span', 'prompt-call-label',
+      `#${index + 1} · ${call.service} · ${call.model} · ~${formatNumber(call.prompt_tokens || 0)} tokens · ${kib(call.chars || 0)}`);
+    const view = el('button', 'secondary', 'View');
+    const copy = el('button', 'secondary', 'Copy');
+    const title = `${stage.label} · ${call.service} · call ${index + 1} of ${calls.length}`;
+    view.onclick = () => openPrompt(detail.id, call.name, title);
+    copy.onclick = () => copyPrompt(detail.id, call.name, copy);
+    const actions = el('span', 'prompt-call-actions');
+    actions.append(view, copy);
+    const item = el('li', 'prompt-call');
+    item.append(label, actions);
+    list.append(item);
+  });
+  box.append(list);
+  return box;
 }
 function renderInspector(detail) {
   const root = $('pipeline-view');
@@ -390,6 +441,8 @@ function renderInspector(detail) {
     title.append(el('span', 'stage-label', stage.label), el('code', 'stage-service', stage.service));
     const duration = stage.duration_seconds === null || stage.duration_seconds === undefined ? '' : ` · ${elapsed(stage.duration_seconds)}`;
     body.append(title, el('p', 'stage-note', stage.note + duration), el('p', 'stage-artifact', stage.artifact));
+    const prompts = promptCallsNode(detail, stage);
+    if (prompts) body.append(prompts);
     row.append(body);
     rail.append(row);
   }
@@ -694,6 +747,11 @@ $('resume').onclick = async () => {
 };
 let editorBook = null, editorContent = null, continuationBook = null;
 for (const button of document.querySelectorAll('[data-close]')) button.onclick = () => $(button.dataset.close).close();
+$('copy-prompt').onclick = async () => {
+  const button = $('copy-prompt');
+  try { await navigator.clipboard.writeText($('prompt-body').textContent); flashCopied(button); }
+  catch (error) { notice(error.message, true); }
+};
 $('resume-current').onclick = async () => {
   if (unsavedModelChanges()) { notice('Your model choice has unsaved changes. Save them in Settings before resuming with current settings.', true); return; }
   const id = selected; $('resume-current').disabled = true;

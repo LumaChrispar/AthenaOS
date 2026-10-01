@@ -117,6 +117,41 @@ class LocalUiTests(unittest.TestCase):
         self.assertEqual(client.get_model_name('SRV-001'), 'architecture-reasoning-choice')
         client.client.close()
 
+    def test_prompts_are_captured_and_readable_per_service(self):
+        from pipeline_inspect import prompt_calls, prompt_text
+        import yaml
+        job = create_job(self.root, 'Prompt capture', model_config=model_overrides('ollama', 'local-test-model'))
+        client = None
+        with patch.dict(os.environ, {'OPENROUTER_API_KEY': 'test-key'}):
+            client = AthenaLLMClient(str(job / 'config/models.yaml'))
+        try:
+            client._capture_prompt('SRV-005', 'local-test-model', 0.75, 1234, 'SYSTEM BODY', 'USER BODY')
+            client._capture_prompt('SRV-005', 'local-test-model', 0.75, 99, 'SYSTEM TWO', 'USER TWO')
+            client._capture_prompt('SRV-001', 'local-test-model', 0.15, 10, 'SYSTEM PLAN', 'USER PLAN')
+        finally:
+            client.client.close()
+        captured = prompt_calls(job)
+        self.assertEqual(sorted(captured), ['SRV-001', 'SRV-005'])
+        self.assertEqual([call['chars'] for call in captured['SRV-005']], [20, 18])
+        self.assertNotIn('system', captured['SRV-005'][0])
+        text = prompt_text(job, captured['SRV-005'][0]['name'])
+        self.assertIn('SYSTEM BODY', text)
+        self.assertIn('USER BODY', text)
+        self.assertIn('local-test-model', text)
+        with self.assertRaises(ValueError):
+            prompt_text(job, '../job.json')
+        # capture_prompts: false must leave the disk untouched.
+        off = yaml.safe_load((job / 'config/models.yaml').read_text())
+        off['capture_prompts'] = False
+        (job / 'config/models.yaml').write_text(yaml.safe_dump(off))
+        with patch.dict(os.environ, {'OPENROUTER_API_KEY': 'test-key'}):
+            client = AthenaLLMClient(str(job / 'config/models.yaml'))
+        try:
+            client._capture_prompt('SRV-002', 'local-test-model', 0.15, 5, 'x', 'y')
+        finally:
+            client.client.close()
+        self.assertNotIn('SRV-002', prompt_calls(job))
+
     def test_running_worker_prevents_library_mutations(self):
         from job_lock import job_lock
         job = create_job(self.root, 'Original idea')

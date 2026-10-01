@@ -123,5 +123,6 @@
   <label for="extra-chapters">Additional chapters</label><input id="extra-chapters" type="number" min="1" max="200" value="1" required>
   <div class="actions"><button type="submit" id="start-continuation">Continue writing</button><button type="button" class="secondary" data-close="continue-dialog">Cancel</button></div>
 </form></dialog>
+<dialog id="prompt-dialog" class="book-dialog"><h2 id="prompt-title">Prompt</h2><p class="hint">Exactly what Athena sent to the model for this call, unchanged.</p><pre id="prompt-body"></pre><div class="actions"><button type="button" id="copy-prompt">Copy prompt</button><button type="button" class="secondary" data-close="prompt-dialog">Close</button></div></dialog>
 <dialog id="trash-dialog" class="book-dialog"><h2>Deleted books</h2><p class="hint">Deleted books are hidden from your library and kept here for recovery.</p><div id="trash-books"></div><button class="secondary" data-close="trash-dialog">Close</button></dialog>
 </body></html>

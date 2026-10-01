@@ -7,6 +7,7 @@ so the view cannot drift into claiming work that did not happen: chapter-level
 progress comes from ``job.json``, never from inference.
 """
 import json
+import os
 import re
 from pathlib import Path
 
@@ -373,8 +374,49 @@ def inspect_job(job):
         'context': context_budget(job, current),
         'budget': call_budget(job),
         'events': events(log),
+        'prompts': prompt_calls(job),
         'log_truncated': truncated,
     }
+
+
+def prompt_calls(job):
+    """Captured prompts, grouped by service, newest call last.
+
+    Metadata only; the prompt bodies are large and are fetched one at a time by
+    ``prompt_text`` when the pipeline view opens one.
+    """
+    prompts = Path(job) / '08_Memory' / 'prompts'
+    grouped = {}
+    try:
+        names = sorted(name for name in os.listdir(prompts) if name.endswith('.json'))
+    except OSError:
+        return grouped
+    for name in names:
+        record = _read_json(prompts / name)
+        if not isinstance(record, dict) or not isinstance(record.get('service'), str):
+            continue
+        record['chars'] = sum(len(record.get(part) or '') for part in ('system', 'user'))
+        record.pop('system', None), record.pop('user', None)
+        record['name'] = name
+        grouped.setdefault(record['service'], []).append(record)
+    return grouped
+
+
+def prompt_text(job, name):
+    """One captured prompt, verbatim, for viewing or copying."""
+    if not isinstance(name, str) or not SAFE_NAME.fullmatch(name) or not name.endswith('.json'):
+        raise ValueError('Invalid prompt name.')
+    prompts = (Path(job) / '08_Memory' / 'prompts').resolve()
+    path = (prompts / name).resolve()
+    if not path.is_relative_to(prompts) or not path.is_file():
+        raise ValueError('That prompt does not exist.')
+    record = _read_json(path)
+    if not isinstance(record, dict):
+        raise ValueError('That prompt does not exist.')
+    header = (f"service: {record.get('service')}\nmodel: {record.get('model')}\n"
+              f"temperature: {record.get('temperature')}\ntokens: ~{record.get('prompt_tokens')}\n")
+    return header + '\n===== SYSTEM =====\n' + (record.get('system') or '') + \
+        '\n\n===== USER =====\n' + (record.get('user') or '')
 
 
 def artifact_text(job, name):

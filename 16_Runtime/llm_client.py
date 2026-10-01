@@ -95,6 +95,11 @@ class AthenaLLMClient:
             max_retries=0,
         )
         self.usage_path = os.path.join(os.path.dirname(config_path), '..', '08_Memory', 'usage.json')
+        self.prompt_dir = os.path.join(os.path.dirname(config_path), '..', '08_Memory', 'prompts')
+        # Every request is kept verbatim so the pipeline view can show and copy what
+        # the model actually received. Costs disk in 08_Memory and in every snapshot;
+        # set capture_prompts: false in models.yaml to turn it off.
+        self.capture_prompts = self.config.get('capture_prompts', True)
         self.max_calls = self.config.get('max_calls_per_job', 200)
         self.max_output_tokens = self.config.get('max_output_tokens', 8192)
         self.fallback_context_tokens = self.config.get('fallback_context_tokens', 32768)
@@ -124,6 +129,22 @@ class AthenaLLMClient:
         if getattr(self, 'use_default_model', False):
             config['model'] = self.default_model
         return config
+
+    def _capture_prompt(self, service_id, model_name, temperature, prompt_tokens, system_prompt, user_prompt):
+        """Save the exact request to disk. Never fails a real request over capture."""
+        if not getattr(self, 'capture_prompts', False):
+            return
+        try:
+            os.makedirs(self.prompt_dir, exist_ok=True)
+            existing = [name for name in os.listdir(self.prompt_dir)
+                        if name.startswith(f'{service_id}-') and name.endswith('.json')]
+            atomic_json(os.path.join(self.prompt_dir, f'{service_id}-{len(existing) + 1:04d}.json'), {
+                'service': service_id, 'model': model_name, 'temperature': temperature,
+                'prompt_tokens': prompt_tokens, 'created_at': time.time(),
+                'system': system_prompt, 'user': user_prompt,
+            })
+        except OSError:
+            pass
 
     def get_temperature(self, service_id: str) -> float:
         """Get temperature for a service ID."""
@@ -159,6 +180,7 @@ class AthenaLLMClient:
         
         print(f"[{service_id}] Sending task (model: {model_name}, temp: {temperature})...")
         print(f"[{service_id}] Request budget: prompt≈{prompt_tokens} tokens; output≤{request_output_tokens}; context={context_limit}.")
+        self._capture_prompt(service_id, model_name, temperature, prompt_tokens, system_prompt, user_prompt)
         
         try:
             usage = {'calls': 0, 'prompt_tokens': 0, 'completion_tokens': 0}
