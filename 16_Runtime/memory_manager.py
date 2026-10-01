@@ -204,6 +204,14 @@ class MemoryManager:
             world = {key: data[key] for key in
                      ('world_rules', 'rules', 'locations', 'timeline', 'mysteries', 'relationships', 'objects')
                      if key in data}
+        chapter_facts = data.get('chapter_facts', {})
+        if isinstance(chapter_facts, dict):
+            recent = [(key, value) for key, value in chapter_facts.items()
+                      if str(key).isdigit() and int(key) < chapter_number]
+            recent_chapter_facts = {key: value for key, value in
+                                    sorted(recent, key=lambda item: int(item[0]))[-2:]}
+        else:
+            recent_chapter_facts = {}
         return {
             'genre': profile.get('classification'),
             'tone_constraints': profile.get('tone_constraints', []),
@@ -212,4 +220,5 @@ class MemoryManager:
             'locations': data.get('locations', []),
             'glossary': data.get('glossary', {}),
             'continuity_log': data.get('consistency_log', []),
+            'recent_chapter_facts': recent_chapter_facts,
         }

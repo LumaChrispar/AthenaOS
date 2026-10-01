@@ -2,42 +2,42 @@
   <style>
     @font-face {
       font-family: "EB Garamond";
-      src: url("assets/fonts/EBGaramond-Regular.woff2") format("woff2");
+      src: url("assets/fonts/EBGaramond.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "EB Garamond";
-      src: url("assets/fonts/EBGaramond-Bold.woff2") format("woff2");
+      src: url("assets/fonts/EBGaramond.woff2") format("woff2");
       font-weight: 700;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "Inter";
-      src: url("assets/fonts/Inter-Regular.woff2") format("woff2");
+      src: url("assets/fonts/Inter.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "Inter";
-      src: url("assets/fonts/Inter-Medium.woff2") format("woff2");
+      src: url("assets/fonts/Inter.woff2") format("woff2");
       font-weight: 500;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "JetBrains Mono";
-      src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+      src: url("assets/fonts/JetBrainsMono.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "JetBrains Mono";
-      src: url("assets/fonts/JetBrainsMono-Medium.woff2") format("woff2");
+      src: url("assets/fonts/JetBrainsMono.woff2") format("woff2");
       font-weight: 500;
       font-style: normal;
       font-display: block;
@@ -55,19 +55,19 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    #04-five-phases-ground {
+    #f04-five-phases-ground {
       position: absolute;
       inset: 0;
       background: #faf9f5;
     }
 
-    #04-five-phases-stage {
+    #f04-five-phases-stage {
       position: absolute;
       inset: 0;
     }
 
     /* — kicker chrome, top-left — */
-    #04-five-phases-kicker {
+    #f04-five-phases-kicker {
       position: absolute;
       left: 80px;
       top: 84px;
@@ -75,13 +75,13 @@
       align-items: baseline;
       gap: 0.85em;
     }
-    #04-five-phases-spike {
+    #f04-five-phases-spike {
       font-family: "EB Garamond", Georgia, "Times New Roman", serif;
       font-size: 30px;
       line-height: 1;
       color: #cc785c;
     }
-    #04-five-phases-kicker-word {
+    #f04-five-phases-kicker-word {
       font-family: "JetBrains Mono", Consolas, "SF Mono", monospace;
       font-weight: 500;
       font-size: 28px;
@@ -89,14 +89,14 @@
       text-transform: uppercase;
       color: #141413;
     }
-    #04-five-phases-kicker-meta {
+    #f04-five-phases-kicker-meta {
       font-family: "JetBrains Mono", Consolas, "SF Mono", monospace;
       font-weight: 400;
       font-size: 26px;
       letter-spacing: 0.02em;
-      color: rgba(20, 20, 19, 0.34);
+      color: rgba(20, 20, 19, 0.66);
     }
-    #04-five-phases-kicker-rule {
+    #f04-five-phases-kicker-rule {
       position: absolute;
       left: 80px;
       top: 140px;
@@ -107,7 +107,7 @@
     }
 
     /* — the hero: five memo field rows — */
-    #04-five-phases-list {
+    #f04-five-phases-list {
       position: absolute;
       left: 80px;
       top: 200px;
@@ -115,7 +115,7 @@
       height: 648px;
     }
 
-    #04-five-phases-railhead {
+    #f04-five-phases-railhead {
       position: absolute;
       left: 0;
       top: -32px;
@@ -127,10 +127,10 @@
       font-size: 18px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(20, 20, 19, 0.3);
+      color: rgba(20, 20, 19, 0.66);
     }
 
-    #04-five-phases-tick {
+    #f04-five-phases-tick {
       position: absolute;
       left: -34px;
       top: 0;
@@ -160,7 +160,7 @@
       font-weight: 400;
       font-size: 20px;
       letter-spacing: 0.18em;
-      color: rgba(20, 20, 19, 0.38);
+      color: rgba(20, 20, 19, 0.66);
     }
     .04f-name {
       font-family: "EB Garamond", Georgia, "Times New Roman", serif;
@@ -176,14 +176,17 @@
       font-size: 20px;
       letter-spacing: 0.02em;
       text-align: right;
-      color: rgba(20, 20, 19, 0.52);
+      color: rgba(20, 20, 19, 0.66);
       white-space: nowrap;
     }
   </style>
 
+  <div id="root" data-composition-id="04-five-phases" data-start="0" data-duration="9" data-width="1920" data-height="1080">
+
+
   <!-- full-bleed ground rides on a clip layer, never on #root -->
   <div
-    id="04-five-phases-ground"
+    id="f04-five-phases-ground"
     class="clip"
     data-start="0"
     data-duration="9"
@@ -191,65 +194,66 @@
   ></div>
 
   <div
-    id="04-five-phases-stage"
+    id="f04-five-phases-stage"
     class="clip"
     data-start="0"
     data-duration="9"
     data-track-index="1"
   >
-    <div id="04-five-phases-kicker">
-      <span id="04-five-phases-spike">✱</span>
-      <span id="04-five-phases-kicker-word">Phases</span>
-      <span id="04-five-phases-kicker-meta">five</span>
+    <div id="f04-five-phases-kicker">
+      <span id="f04-five-phases-spike">✱</span>
+      <span id="f04-five-phases-kicker-word">Phases</span>
+      <span id="f04-five-phases-kicker-meta">five</span>
     </div>
-    <div id="04-five-phases-kicker-rule"></div>
+    <div id="f04-five-phases-kicker-rule"></div>
 
-    <div id="04-five-phases-list">
-      <div id="04-five-phases-railhead">
+    <div id="f04-five-phases-list">
+      <div id="f04-five-phases-railhead">
         <span>Phase</span>
         <span>Services</span>
       </div>
 
-      <div class="04f-row" id="04-five-phases-row-0">
+      <div class="04f-row" id="f04-five-phases-row-0">
         <span class="04f-idx">01</span>
         <span class="04f-name">Architecture</span>
         <span class="04f-svc">SRV-002</span>
         <span class="04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="04-five-phases-row-1">
+      <div class="04f-row" id="f04-five-phases-row-1">
         <span class="04f-idx">02</span>
         <span class="04f-name">Character &amp; world</span>
         <span class="04f-svc">SRV-003 / 004</span>
         <span class="04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="04-five-phases-row-2">
+      <div class="04f-row" id="f04-five-phases-row-2">
         <span class="04f-idx">03</span>
         <span class="04f-name">Voice calibration</span>
         <span class="04f-svc">SRV-028</span>
         <span class="04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="04-five-phases-row-3">
+      <div class="04f-row" id="f04-five-phases-row-3">
         <span class="04f-idx">04</span>
         <span class="04f-name">Drafting</span>
         <span class="04f-svc">SRV-005 / 006</span>
         <span class="04f-rule"></span>
       </div>
 
-      <div class="04f-row" id="04-five-phases-row-4">
+      <div class="04f-row" id="f04-five-phases-row-4">
         <span class="04f-idx">05</span>
         <span class="04f-name">Editing</span>
         <span class="04f-svc">SRV-007 → 016</span>
         <span class="04f-rule"></span>
       </div>
 
-      <div id="04-five-phases-tick"></div>
+      <div id="f04-five-phases-tick"></div>
     </div>
   </div>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script>
     (function () {
       var ROWS = 5;
@@ -271,25 +275,25 @@
 
       // Scene 1 (0.0–1.2s): kicker + its hairline, page otherwise empty cream.
       tl.fromTo(
-        "#04-five-phases-spike",
+        "#f04-five-phases-spike",
         { opacity: 0, y: -10, scale: 0.92 },
         { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" },
         0.15
       );
       tl.fromTo(
-        "#04-five-phases-kicker-word",
+        "#f04-five-phases-kicker-word",
         { opacity: 0, y: -8 },
         { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
         0.24
       );
       tl.fromTo(
-        "#04-five-phases-kicker-meta",
+        "#f04-five-phases-kicker-meta",
         { opacity: 0 },
         { opacity: 1, duration: 0.7, ease: "power1.out" },
         0.4
       );
       tl.fromTo(
-        "#04-five-phases-kicker-rule",
+        "#f04-five-phases-kicker-rule",
         { scaleX: 0 },
         { scaleX: 1, duration: 0.9, ease: "power2.inOut" },
         0.35
@@ -334,7 +338,7 @@
       }
 
       tl.fromTo(
-        "#04-five-phases-railhead",
+        "#f04-five-phases-railhead",
         { opacity: 0 },
         { opacity: 1, duration: 0.7, ease: "power1.out" },
         CUE[0]

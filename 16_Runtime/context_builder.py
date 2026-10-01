@@ -3,18 +3,28 @@ import json
 from memory_manager import MemoryManager
 
 
-def _compact(value, depth=0):
+def _compact(value, budget=None, depth=0):
     """Bound nested memory fragments before including them in prose prompts."""
+    if budget is None:
+        budget = [5000]
     if isinstance(value, str):
         text = value.strip()
-        return text if len(text) <= 420 else text[:417].rsplit(' ', 1)[0] + '…'
+        if len(text) <= min(420, budget[0]):
+            budget[0] -= len(text)
+            return text
+        if budget[0] <= 0:
+            return '[context omitted]'
+        kept = max(0, min(417, budget[0] - 3))
+        budget[0] -= kept
+        return text[:kept].rsplit(' ', 1)[0] + '…'
     if isinstance(value, list):
-        return [_compact(item, depth + 1) for item in value[:8]]
+        return [_compact(item, budget, depth + 1) for item in value[:8] if budget[0] > 0]
     if isinstance(value, dict):
         limit = 6 if depth >= 3 else 10
-        return {str(key): _compact(item, depth + 1)
-                for key, item in list(value.items())[:limit]}
+        return {str(key): _compact(item, budget, depth + 1)
+                for key, item in list(value.items())[:limit] if budget[0] > 0}
     if isinstance(value, (int, float, bool)) or value is None:
+        budget[0] -= 8
         return value
     return str(value)[:420]
 

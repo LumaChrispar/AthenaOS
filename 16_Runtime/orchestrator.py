@@ -4,7 +4,7 @@ import asyncio
 from llm_client import AthenaLLMClient
 from service_loader import load_service, format_system_prompt
 from memory_manager import MemoryManager
-from context_builder import ContextBuilder, build_scene_brief
+from context_builder import ContextBuilder
 from job_runner import atomic_json
 from outline_format import normalize_outline
 import yaml
@@ -46,8 +46,12 @@ def apply_passage_edits(chapter_response, edit_response, label='edit'):
         prose = prose[:start] + replacement + prose[end:]
     chapter['prose_content'] = prose
     if spans:
-        chapter.setdefault('change_log', []).extend(
-            [str(edit.get('reason', label))[:300] for edit in edits if isinstance(edit, dict)])
+        changes = chapter.get('change_log')
+        if not isinstance(changes, list):
+            changes = []
+        changes.extend([str(edit.get('reason', label))[:300]
+                        for edit in edits if isinstance(edit, dict)])
+        chapter['change_log'] = changes[-24:]
     return json.dumps(chapter, ensure_ascii=False, indent=2)
 
 
@@ -93,9 +97,15 @@ def relevant_character_context(response, relevance_text, limit=6):
         return []
     profiles = [item for item in profiles if isinstance(item, dict) and item.get('name')]
     relevance = relevance_text.casefold()
+    def names_for(item):
+        aliases = item.get('aliases') or []
+        if isinstance(aliases, str):
+            aliases = [aliases]
+        return [item.get('name'), *(name for name in aliases if isinstance(name, str))]
+
     matched = [item for item in profiles
                if any(isinstance(name, str) and name.casefold() in relevance
-                      for name in [item.get('name'), *(item.get('aliases') or [])])]
+                      for name in names_for(item))]
     selected = (matched or profiles)[:limit]
     fields = ('name', 'aliases', 'status', 'arc_progress', 'psychology', 'history',
               'voice', 'speech_style', 'motivation', 'core_belief', 'fatal_flaw', 'fears')
@@ -334,6 +344,8 @@ class Orchestrator:
         profiles = parse_json(response)
         if not isinstance(profiles, (dict, list)) or not profiles or (isinstance(profiles, dict) and profiles.get('error')):
             raise ValueError('Character psychology must return profiles, not an error or empty object.')
+        if not relevant_character_context(profiles, '', limit=12):
+            raise ValueError('Character psychology did not return any named character profiles.')
         self.memory.save_artifact("psychology.json", response)
         
         self.pipeline_state["last_completed_phase"] = "phase_2"
@@ -385,6 +397,7 @@ class Orchestrator:
         print("\n--- PHASE: VOICE CALIBRATION (SRV-028) ---")
         service_data = load_service("SRV-028", self.base_dir)
         system_prompt = format_system_prompt(service_data)
+        system_prompt += '\nRuntime override: return only a compact plain-text voice card, not a prose sample or project JSON.'
         
         outline = self.memory.load_artifact("outline.json")
         
@@ -412,6 +425,9 @@ class Orchestrator:
         print(f"\n--- CHAPTER {chapter_number}: SCENE-BY-SCENE DRAFTING (SRV-005) ---")
         service_data = load_service("SRV-005", self.base_dir)
         system_prompt = format_system_prompt(service_data)
+        system_prompt += ('\nRuntime override: this is one scene in a larger chapter. Return only scene prose, '
+                          'with no heading, JSON, checklist, or preamble. Use conventional quoted dialogue; '
+                          'never use Markdown blockquotes.')
         context = self.context_builder.build(chapter_number)
         roadmap = context.get('current_chapter_roadmap', {})
         chapter_dir = os.path.join(self.base_dir, '08_Memory', 'scenes', f'chapter_{chapter_number:02d}')
@@ -439,6 +455,7 @@ class Orchestrator:
               "conflict":"...","turn":"..."}}]}}
             CHAPTER BEAT: {json.dumps(roadmap, ensure_ascii=False)}
             PREVIOUS CHAPTER SUMMARY: {context.get('previous_chapter_tail', '')}
+            NEXT CHAPTER HANDOFF: {json.dumps(context.get('next_chapter_roadmap', {}), ensure_ascii=False)}
             """
             plan_response = self.llm.execute_prompt('SRV-002',
                 'You are a scene architect. Return concise, valid JSON only. Preserve the supplied plot beat.',
@@ -468,6 +485,7 @@ class Orchestrator:
             if saved is None:
                 scene_context = {
                     'chapter_beat': roadmap,
+                    'next_chapter_handoff': context.get('next_chapter_roadmap', {}),
                     'scene': scene,
                     'relevant_characters': characters,
                     'world_facts': context.get('context_fragment', {}),
@@ -516,6 +534,11 @@ class Orchestrator:
             raise ValueError('Scene plan must contain a scenes array.')
         if not 3 <= len(plan['scenes']) <= 5:
             raise ValueError('Scene plan must contain 3–5 scenes.')
+        notes = plan.get('continuity_notes', [])
+        if not isinstance(notes, list):
+            plan['continuity_notes'] = []
+        else:
+            plan['continuity_notes'] = [str(note).strip() for note in notes if str(note).strip()][:12]
         for number, scene in enumerate(plan['scenes'], 1):
             if not isinstance(scene, dict):
                 raise ValueError('Each planned scene must be an object.')
@@ -523,18 +546,22 @@ class Orchestrator:
                 if not isinstance(scene.get(field), str) or not scene[field].strip():
                     raise ValueError(f'Planned scene {number} needs {field}.')
             scene['scene_number'] = number
-            scene['characters_present'] = [str(name) for name in scene.get('characters_present', [])[:8]]
+            cast = scene.get('characters_present', [])
+            if not isinstance(cast, list):
+                cast = [cast] if cast else []
+            scene['characters_present'] = [str(name) for name in cast[:8]]
 
     async def run_voice_variation(self, chapter_number: int):
         """SRV-027: Return small, exact edits that strengthen the voice."""
         print(f"\n--- CHAPTER {chapter_number}: VOICE VARIATION (SRV-027) ---")
         service_data = load_service("SRV-027", self.base_dir)
         system_prompt = format_system_prompt(service_data)
+        system_prompt += '\nRuntime contract: return only the requested JSON edit list; do not output a replacement chapter.'
         
         chapter = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}.json"))
         voice_sample = self.memory.load_artifact("voice_sample.md")
         
-        # Override temperature for SRV-027 (0.9)
+        # Ask for local changes so the full chapter never needs to be regenerated.
         user_prompt = f"""
         Review the prose for at most five high-value voice improvements. Return
         JSON only: {{"edits":[{{"target_text":"an exact, unique excerpt",
@@ -549,7 +576,6 @@ class Orchestrator:
         {chapter.get('prose_content', '')}
         """
         
-        # Note: Temperature 0.9 for SRV-027 would need model routing fix (H4)
         edit_response = self.llm.execute_prompt("SRV-027", system_prompt, user_prompt)
         revised = apply_passage_edits(chapter, edit_response, 'Voice variation')
         self.memory.save_artifact(f"chapter_{chapter_number:02d}_varied.json", revised)
@@ -562,17 +588,20 @@ class Orchestrator:
         service_data = load_service("SRV-016", self.base_dir)
         system_prompt = format_system_prompt(service_data)
         
-        chapter_data = self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json")
-        story_bible = self.memory.load_artifact("story_bible.json")
+        chapter_data = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json"))
+        context = self.context_builder.build(chapter_number)
         
         user_prompt = f"""
         Check the following chapter for continuity against the Story Bible.
         
-        CHAPTER:
-        {chapter_data}
+        CHAPTER PROSE:
+        {chapter_data.get('prose_content', '')}
         
-        STORY BIBLE:
-        {story_bible}
+        RELEVANT CANON:
+        {json.dumps(context.get('context_fragment', {}), ensure_ascii=False)}
+
+        PREVIOUS CHAPTER SUMMARY:
+        {context.get('previous_chapter_tail', '')}
         
         Output JSON with:
         - score (0-10)
@@ -603,21 +632,20 @@ class Orchestrator:
         service_data = load_service("SRV-007", self.base_dir)
         system_prompt = format_system_prompt(service_data)
 
-        chapter_data = self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json")
-        outline = self.memory.load_artifact("outline.json")
-        story_bible = self.memory.load_artifact("story_bible.json")
+        chapter_data = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json"))
+        context = self.context_builder.build(chapter_number)
 
         user_prompt = f"""
         Perform a developmental edit on this chapter per your Evaluation Framework.
 
-        CHAPTER:
-        {chapter_data}
+        CHAPTER PROSE:
+        {chapter_data.get('prose_content', '')}
 
-        APPROVED OUTLINE (comparison baseline — did the author follow the beat sheet?):
-        {outline}
+        CHAPTER BEAT (comparison baseline):
+        {json.dumps(context.get('current_chapter_roadmap', {}), ensure_ascii=False)}
 
-        STORY BIBLE (character arcs, world rules):
-        {story_bible}
+        RELEVANT CANON (character arcs and world rules):
+        {json.dumps(context.get('context_fragment', {}), ensure_ascii=False)}
 
         Output JSON with:
         - score (0-10)
@@ -644,51 +672,44 @@ class Orchestrator:
         print(f"\n--- CHAPTER {chapter_number}: COPY EDIT (SRV-008) ---")
         service_data = load_service("SRV-008", self.base_dir)
         system_prompt = format_system_prompt(service_data)
+        system_prompt += '\nRuntime contract: return only the requested JSON edit list; do not output a replacement chapter.'
 
-        chapter_data = self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json")
+        chapter_data = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json"))
 
         user_prompt = f"""
-        Copy edit this APPROVED chapter. Grammar, mechanics, consistency, and
-        voice-preserving polish only — do not alter plot, dialogue meaning, or
-        structure. Flag anything you're uncertain about instead of guessing.
+        Copy edit this APPROVED chapter. Return at most 12 exact, unique local
+        replacements for clear grammar, mechanics, or consistency errors. Preserve
+        plot, voice, dialogue meaning, and all text not changed. Do not rewrite it.
 
-        CHAPTER:
-        {chapter_data}
+        CHAPTER PROSE:
+        {chapter_data.get('prose_content', '')}
 
-        Output a single corrected chapter JSON object with prose_content.
-        Include corrections_log and query_list as additional JSON fields.
+        Return JSON only: {{"edits":[{{"target_text":"exact passage",
+        "replacement":"corrected passage","reason":"brief correction"}}]}}.
+        If there are no clear corrections, return {{"edits":[]}}.
         """
 
-        response = self.llm.execute_prompt("SRV-008", system_prompt, user_prompt)
-        # Copy-edited prose plus logs — this is mixed content (JSON + logs), so
-        # store as text rather than forcing strict JSON validation.
-        self.memory.save_artifact(f"chapter_{chapter_number:02d}.json", response)
+        edit_response = self.llm.execute_prompt("SRV-008", system_prompt, user_prompt)
+        revised = apply_passage_edits(chapter_data, edit_response, 'Copy edit')
+        self.memory.save_artifact(f"chapter_{chapter_number:02d}.json", revised)
         print(f"Copy edit complete for Chapter {chapter_number}.")
-        return response
+        return revised
 
-    async def update_story_bible(self, bible_fragment: dict):
-        """Route story bible updates through SRV-009."""
-        print("\n--- STORY BIBLE UPDATE (SRV-009) ---")
-        service_data = load_service("SRV-009", self.base_dir)
-        system_prompt = format_system_prompt(service_data)
-        
-        current_bible = self.memory.load_artifact("story_bible.json")
-        
-        user_prompt = f"""
-        Merge the following updates into the Story Bible.
-        
-        CURRENT BIBLE:
-        {current_bible}
-        
-        UPDATES:
-        {json.dumps(bible_fragment, indent=2)}
-        
-        Output the complete updated story_bible.json
-        """
-        
-        response = self.llm.execute_prompt("SRV-009", system_prompt, user_prompt)
-        self.memory.save_artifact("story_bible.json", response)
-        print("Story Bible Updated.")
+    async def update_story_bible(self, bible_fragment: dict, chapter_number: int = None):
+        """Persist extracted chapter facts locally without regenerating the whole bible."""
+        if not isinstance(bible_fragment, dict):
+            raise ValueError('Story-bible updates must be an object.')
+        current = parse_json(self.memory.load_artifact('story_bible.json'))
+        if not isinstance(current, dict) or current.get('error'):
+            raise ValueError('The saved story bible is invalid; refusing to overwrite it.')
+        if chapter_number is None:
+            chapter_number = self.pipeline_state.get('last_completed_chapter', 0) + 1
+        facts = current.setdefault('chapter_facts', {})
+        if not isinstance(facts, dict):
+            raise ValueError('Saved chapter_facts must be an object.')
+        facts[str(chapter_number)] = bible_fragment
+        atomic_json(os.path.join(self.base_dir, '08_Memory', 'story_bible.json'), current)
+        print(f"Saved Chapter {chapter_number} canon updates without a full-bible rewrite.")
 
     async def run_qa_check(self, chapter_number: int):
         """SRV-010: QA Director - quality check with programmatic metrics."""
@@ -810,11 +831,12 @@ class Orchestrator:
         user_prompt = f"""
         Audit the dialogue in this chapter for subtext, distinctiveness, and narrative purpose.
         
-        CHAPTER:
-        {chapter}
+        CHAPTER PROSE:
+        {chapter.get('prose_content', '')}
         
         CHARACTER PSYCHOLOGY (speech_style for each character):
-        {psychology}
+        {json.dumps(relevant_character_context(psychology,
+            chapter.get('prose_content', '')), ensure_ascii=False)}
         
         Flag:
         - Lines that are "on the nose" (characters saying exactly what they mean)
@@ -837,26 +859,31 @@ class Orchestrator:
         print(f"\n--- CHAPTER {chapter_number}: REVISION ---")
         service_data = load_service("SRV-005", self.base_dir)
         system_prompt = format_system_prompt(service_data)
+        system_prompt += '\nRuntime contract: return only the requested JSON edit list; do not output a replacement chapter.'
         
-        chapter_data = self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json")
+        chapter_data = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json"))
         
         user_prompt = f"""
-        REVISE this chapter based on the continuity report.
+        Return at most eight exact, unique passage edits for the highest-priority
+        continuity or quality defects. Do not rewrite the chapter. Preserve every
+        unlisted passage.
         
         CONTINUITY REPORT:
         {json.dumps(continuity_report, indent=2)}
         
-        CURRENT CHAPTER:
-        {chapter_data}
+        CURRENT CHAPTER PROSE:
+        {chapter_data.get('prose_content', '')}
         
-        Fix all violations. Maintain the story events but correct continuity errors.
-        Output the revised chapter JSON.
+        Return JSON only: {{"edits":[{{"target_text":"exact passage",
+        "replacement":"corrected passage","reason":"specific defect fixed"}}]}}.
+        Every target must be copied exactly from the chapter and occur only once.
+        Return {{"edits":[]}} if no listed defect requires a text change.
         """
         
-        response = self.llm.execute_prompt("SRV-005", system_prompt, user_prompt)
-        self.memory.save_artifact(f"chapter_{chapter_number:02d}_varied.json", response)
-        
-        # Revision remains provisional until approval.
+        edit_response = self.llm.execute_prompt("SRV-005", system_prompt, user_prompt)
+        revised = apply_passage_edits(chapter_data, edit_response, 'Chapter revision')
+        self.memory.save_artifact(f"chapter_{chapter_number:02d}_varied.json", revised)
+        return revised
 
     async def post_chapter_extraction(self, chapter_number: int):
         """Commit facts from the final copy-edited chapter only."""
@@ -871,7 +898,7 @@ class Orchestrator:
         if not isinstance(result.get('summary'), dict) or not isinstance(result.get('bible_updates'), dict):
             raise ValueError('Extraction requires summary and bible_updates objects.')
         self.memory.save_chapter_summary(chapter_number, result['summary'])
-        await self.update_story_bible(result['bible_updates'])
+        await self.update_story_bible(result['bible_updates'], chapter_number)
         await self.update_foreshadowing_registry(chapter_number, result['summary'])
 
     async def update_foreshadowing_registry(self, chapter_number: int, summary: dict):
@@ -998,8 +1025,9 @@ class Orchestrator:
         print(f"\n--- CHAPTER {chapter_number}: DIALOGUE REWRITE (SRV-005) ---")
         service_data = load_service("SRV-005", self.base_dir)
         system_prompt = format_system_prompt(service_data)
+        system_prompt += '\nRuntime contract: return only the requested JSON edit list; do not output a replacement chapter.'
         
-        chapter = self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json")
+        chapter = parse_json(self.memory.load_artifact(f"chapter_{chapter_number:02d}_varied.json"))
         
         # Load dialogue audit report
         audit_file = os.path.join(self.base_dir, "08_Memory", f"dialogue_audit_chapter_{chapter_number:02d}.json")

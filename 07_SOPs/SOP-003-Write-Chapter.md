@@ -31,10 +31,13 @@ Failure on any check → `WriteChapter` command rejected with error detail.
 | Step | Action | Owner | Output |
 |---|---|---|---|
 | 1 | Load context: Beat Sheet + last chapter summary (Tier 2 memory) + world rules (Tier 1 memory) | Runtime / Memory | Context window loaded |
-| 2 | Decompose chapter Beat Sheet into individual scenes | SRV-002 (Literary Architect) | Scene list |
-| 3 | For each scene: populate `scene.schema.json` fields — `goal`, `conflict`, `disaster`, `pov_character`, `characters_present` | Literary Architect | Scene objects (no prose yet) |
-| 4 | Validate all scene objects pass structural logic (does each scene's `disaster` logically lead to the next scene's `goal`?) | QA Service (Structural check) | Structure approved |
-| 5 | Issue `WriteSceneProse` command for each scene | Literary Author Service | Prose generated per scene |
-| 6 | Populate `prose_content` field in each `scene.schema.json` | Literary Author | Scenes complete |
-| 7 | Assemble all scenes into `chapter.schema.json` — populate `summary`, `cliffhanger`, `continuity_notes[]` | Literary Architect | `chapter.schema.json` complete |
+| 2 | Decompose the chapter beat into 3–5 causally connected scenes | SRV-002 (Literary Architect) | Saved scene plan |
+| 3 | For each scene: populate scene fields — `goal`, `conflict`, `turn`, `pov_character`, `characters_present` | Literary Architect | Scene objects (no prose yet) |
+| 4 | Validate all scene objects pass structural logic (does each scene's `turn` logically lead to the next scene's `goal`?) | QA Service (Structural check) | Structure approved |
+| 5 | Issue `WriteSceneProse` for each scene and checkpoint it before moving on | Literary Author Service / Runtime | Resumable scene prose |
+| 6 | Use compact, scene-relevant character, canon, and voice context | Runtime | Bounded scene prompt |
+| 7 | Assemble scene prose into `chapter.schema.json`; runtime inserts scene headings and chapter metadata | Runtime | `chapter.schema.json` complete |
 | 8 | Publish `DraftCompleted` event | Runtime | QA pipeline triggered (SOP-005) |
+
+Dialogue uses standard quotation marks and paragraph breaks. Do not use Markdown
+blockquotes in manuscript prose.

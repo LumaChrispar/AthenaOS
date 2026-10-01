@@ -7,35 +7,35 @@
 
     @font-face {
       font-family: "EB Garamond";
-      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+      src: url("assets/fonts/EBGaramond.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "EB Garamond";
-      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+      src: url("assets/fonts/EBGaramond.woff2") format("woff2");
       font-weight: 400;
       font-style: italic;
       font-display: block;
     }
     @font-face {
       font-family: "Inter";
-      src: url("assets/fonts/Inter-400.woff2") format("woff2");
+      src: url("assets/fonts/Inter.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "JetBrains Mono";
-      src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+      src: url("assets/fonts/JetBrainsMono.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "JetBrains Mono";
-      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      src: url("assets/fonts/JetBrainsMono.woff2") format("woff2");
       font-weight: 500;
       font-style: normal;
       font-display: block;
@@ -53,22 +53,22 @@
     }
 
     /* ---- layer 1 · full-bleed ground (rides on a clip, never on #root) ---- */
-    #02-ground {
+    #f02-ground {
       position: absolute;
       inset: 0;
       background: #faf9f5;
     }
 
     /* ---- memo chrome strip above the field band (cream ground) ---- */
-    #02-chrome {
+    #f02-chrome {
       position: absolute;
       left: 0;
       top: 0;
       width: 1920px;
       height: 88px;
     }
-    #02-chrome-l,
-    #02-chrome-r {
+    #f02-chrome-l,
+    #f02-chrome-r {
       position: absolute;
       top: 34px;
       font-family: "JetBrains Mono", monospace;
@@ -79,35 +79,35 @@
       color: rgba(20, 20, 19, 0.42);
       white-space: nowrap;
     }
-    #02-chrome-l { left: 80px; }
-    #02-chrome-r { right: 80px; }
+    #f02-chrome-l { left: 80px; }
+    #f02-chrome-r { right: 80px; }
 
     /* ---- layer 2 · the memo field band (tile half-step), scrolls into place ---- */
-    #02-field {
+    #f02-field {
       position: absolute;
       left: 0;
       top: 88px;
       width: 1920px;
       height: 792px;
     }
-    #02-band {
+    #f02-band {
       position: absolute;
       inset: 0;
       background: #efe9de;
     }
-    #02-band-top,
-    #02-band-bot {
+    #f02-band-top,
+    #f02-band-bot {
       position: absolute;
       left: 0;
       width: 1920px;
       height: 1px;
       background: rgba(20, 20, 19, 0.1);
     }
-    #02-band-top { top: 0; }
-    #02-band-bot { bottom: 0; }
+    #f02-band-top { top: 0; }
+    #f02-band-bot { bottom: 0; }
 
     /* ---- layer 3 · type on the band ---- */
-    #02-kicker {
+    #f02-kicker {
       position: absolute;
       left: 80px;
       top: 138px;
@@ -122,7 +122,7 @@
       color: #141413;
       white-space: nowrap;
     }
-    #02-spike {
+    #f02-spike {
       font-family: "EB Garamond", Georgia, serif;
       font-size: 1.3cqw;
       color: #cc785c; /* the brand glyph — always coral */
@@ -130,7 +130,7 @@
     }
 
     /* solid redaction bar, sitting over an unseen line */
-    #02-redaction {
+    #f02-redaction {
       position: absolute;
       left: 80px;
       top: 236px;
@@ -140,7 +140,7 @@
       background: #ece3d4;
       border: 1px solid rgba(20, 20, 19, 0.08);
     }
-    #02-caret-bar {
+    #f02-caret-bar {
       position: absolute;
       left: 80px;
       top: 236px;
@@ -150,7 +150,7 @@
     }
 
     /* typewriter line (JetBrains Mono, code voice) */
-    #02-type-line {
+    #f02-type-line {
       position: absolute;
       left: 80px;
       top: 340px;
@@ -162,14 +162,14 @@
       color: #141413;
       white-space: pre;
     }
-    #02-type-wrap {
+    #f02-type-wrap {
       display: inline-flex;
       align-items: baseline;
       min-width: 490px; /* >= widest state — stops right-edge jitter */
       white-space: pre;
     }
-    #02-type-text { white-space: pre; }
-    #02-caret-type {
+    #f02-type-text { white-space: pre; }
+    #f02-caret-type {
       display: inline-block;
       width: 10px;
       height: 30px;
@@ -179,7 +179,7 @@
     }
 
     /* right-margin rail + the single coral index mark */
-    #02-rail {
+    #f02-rail {
       position: absolute;
       left: 1820px;
       top: 138px;
@@ -187,7 +187,7 @@
       height: 420px;
       background: rgba(20, 20, 19, 0.14);
     }
-    #02-rail-idx {
+    #f02-rail-idx {
       position: absolute;
       left: 1819px;
       top: 292px;
@@ -198,7 +198,7 @@
     }
 
     /* hero · EB Garamond display-italic, left-aligned on the rule-of-thirds line */
-    #02-hero-line {
+    #f02-hero-line {
       position: absolute;
       left: 640px;
       top: 378px;
@@ -213,14 +213,14 @@
       color: #141413;
       white-space: pre;
     }
-    #02-hero-wrap {
+    #f02-hero-wrap {
       display: inline-flex;
       align-items: baseline;
       min-width: 540px;
       white-space: pre;
     }
-    #02-hero-text { white-space: pre; }
-    #02-caret-hero {
+    #f02-hero-text { white-space: pre; }
+    #f02-caret-hero {
       display: inline-block;
       width: 11px;
       height: 108px;
@@ -230,7 +230,7 @@
     }
 
     /* the hairline rule that stops mid-stroke */
-    #02-rule-svg {
+    #f02-rule-svg {
       position: absolute;
       left: 640px;
       top: 566px;
@@ -238,7 +238,7 @@
       height: 1px;
       overflow: visible;
     }
-    #02-rule-line {
+    #f02-rule-line {
       fill: none;
       stroke: rgba(20, 20, 19, 0.2);
       stroke-width: 1;
@@ -255,47 +255,47 @@
     <!-- depth layer 1 · full-bleed cream ground, full-duration clip -->
     <div
       class="clip"
-      id="02-ground"
+      id="f02-ground"
       data-start="0"
       data-duration="7"
       data-track-index="0"
     ></div>
 
     <!-- depth layer 2/3 · memo chrome + field band + type -->
-    <div id="02-chrome">
-      <div id="02-chrome-l">Internal memo</div>
-      <div id="02-chrome-r">Eyes only</div>
+    <div id="f02-chrome">
+      <div id="f02-chrome-l">Internal memo</div>
+      <div id="f02-chrome-r">Eyes only</div>
     </div>
 
-    <div id="02-field">
-      <div id="02-band"></div>
-      <div id="02-band-top"></div>
-      <div id="02-band-bot"></div>
+    <div id="f02-field">
+      <div id="f02-band"></div>
+      <div id="f02-band-top"></div>
+      <div id="f02-band-bot"></div>
 
-      <div id="02-kicker">
-        <span id="02-spike">&#10035;</span><span>Failure mode</span>
+      <div id="f02-kicker">
+        <span id="f02-spike">&#10035;</span><span>Failure mode</span>
       </div>
 
-      <div id="02-redaction"></div>
-      <div id="02-caret-bar"></div>
+      <div id="f02-redaction"></div>
+      <div id="f02-caret-bar"></div>
 
-      <div id="02-type-line">
-        <div id="02-type-wrap">
-          <span id="02-type-text"></span><span id="02-caret-type"></span>
+      <div id="f02-type-line">
+        <div id="f02-type-wrap">
+          <span id="f02-type-text"></span><span id="f02-caret-type"></span>
         </div>
       </div>
 
-      <div id="02-rail"></div>
-      <div id="02-rail-idx"></div>
+      <div id="f02-rail"></div>
+      <div id="f02-rail-idx"></div>
 
-      <div id="02-hero-line">
-        <div id="02-hero-wrap">
-          <span id="02-hero-text"></span><span id="02-caret-hero"></span>
+      <div id="f02-hero-line">
+        <div id="f02-hero-wrap">
+          <span id="f02-hero-text"></span><span id="f02-caret-hero"></span>
         </div>
       </div>
 
-      <svg id="02-rule-svg" viewBox="0 0 1180 1" preserveAspectRatio="none" aria-hidden="true">
-        <line id="02-rule-line" x1="0" y1="0.5" x2="1180" y2="0.5" />
+      <svg id="f02-rule-svg" viewBox="0 0 1180 1" preserveAspectRatio="none" aria-hidden="true">
+        <line id="f02-rule-line" x1="0" y1="0.5" x2="1180" y2="0.5" />
       </svg>
     </div>
   </div>
@@ -414,13 +414,13 @@
 
       // The field band slides down into place (the memo being scrolled).
       tl.fromTo(
-        "#02-field",
+        "#f02-field",
         { y: -150, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
         0
       );
       tl.fromTo(
-        "#02-chrome",
+        "#f02-chrome",
         { opacity: 0 },
         { opacity: 1, duration: 0.4, ease: "power2.out" },
         0.05
@@ -428,7 +428,7 @@
 
       // Kicker sets at the upper-left.
       tl.fromTo(
-        "#02-kicker",
+        "#f02-kicker",
         { opacity: 0, y: 16 },
         { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
         0.18
@@ -436,14 +436,14 @@
 
       // The solid redaction bar wipes over the unseen line.
       tl.fromTo(
-        "#02-redaction",
+        "#f02-redaction",
         { scaleX: 0, opacity: 0 },
         { scaleX: 1, opacity: 1, duration: 0.5, ease: "power3.out", transformOrigin: "left center" },
         0.42
       );
       // svg-path-draw: the right-margin rail traces in, hairline, power2.out
       tl.fromTo(
-        "#02-rail",
+        "#f02-rail",
         { scaleY: 0, opacity: 0 },
         { scaleY: 1, opacity: 1, duration: 0.45, ease: "power2.out", transformOrigin: "center top" },
         0.9
@@ -453,7 +453,7 @@
       // here — the fade across the handoff is owned by the typewriter driver, which
       // rewrites this element's opacity every frame.
       tl.fromTo(
-        "#02-caret-bar",
+        "#f02-caret-bar",
         { y: 0 },
         { y: 104, duration: 0.22, ease: "power2.in" },
         1.55
@@ -461,7 +461,7 @@
 
       /* ---------- Scene 2 (1.6-3.6s) · the line types; the coral index mark sets ---------- */
       tl.fromTo(
-        "#02-rail-idx",
+        "#f02-rail-idx",
         { scaleY: 0, opacity: 0 },
         { scaleY: 1, opacity: 1, duration: 0.28, ease: "power3.out", transformOrigin: "center top" },
         1.95
@@ -471,7 +471,7 @@
          scale-swap-transition's collapse half, at text-scale blur: the assembly
          rushes down and out of the focal plane, leaving the bar and empty space. */
       tl.fromTo(
-        "#02-type-line",
+        "#f02-type-line",
         { scale: 1, filter: "blur(0px)", opacity: 1 },
         { scale: 0.84, filter: "blur(10px)", opacity: 0, duration: 0.42, ease: "power3.in", transformOrigin: "left center" },
         3.62
@@ -482,7 +482,7 @@
 
       // svg-path-draw at constant pen rate — draws to ~60% and STOPS DEAD.
       tl.fromTo(
-        "#02-rule-line",
+        "#f02-rule-line",
         { strokeDashoffset: ruleLen },
         { strokeDashoffset: ruleLen - ruleLen * 0.6, duration: 0.55, ease: "none" },
         6.35

@@ -1,9 +1,28 @@
 <template>
   <style>
-    /* Type families are the three frame.md declares (EB Garamond / Inter / JetBrains Mono),
-       all pre-bundled by the renderer. No local woff2 ships in this project's assets/,
-       so no @font-face is authored and no family falls back to a generic face. */
-    #root {
+        @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/EBGaramond.woff2") format("woff2");
+      font-weight: 400 700;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/Inter.woff2") format("woff2");
+      font-weight: 400 700;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono.woff2") format("woff2");
+      font-weight: 400 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+#root {
       position: relative;
       width: 1920px;
       height: 1080px;
@@ -53,7 +72,7 @@
     }
     #f3-folio {
       right: 80px;
-      color: rgba(20, 20, 19, 0.45);
+      color: rgba(20, 20, 19, 0.66);
     }
     #f3-spike {
       color: #cc785c;
@@ -122,9 +141,9 @@
     #f3-numberwrap {
       position: absolute;
       left: 80px;
-      top: 320px;
+      top: 312px;
       width: 1760px;
-      height: 380px;
+      height: 344px;
       display: flex;
       align-items: flex-start;
       justify-content: center;
@@ -134,7 +153,7 @@
       width: 700px;
       text-align: center;
       font-family: "EB Garamond", serif;
-      font-size: 400px;
+      font-size: 344px;
       font-weight: 400;
       line-height: 0.95;
       letter-spacing: -0.025em;
@@ -145,7 +164,7 @@
     #f3-label {
       position: absolute;
       left: 80px;
-      top: 726px;
+      top: 700px;
       width: 1760px;
       text-align: center;
       font-family: "JetBrains Mono", monospace;
@@ -159,7 +178,7 @@
     #f3-rule {
       position: absolute;
       left: 528px;
-      top: 792px;
+      top: 766px;
       width: 864px;
       height: 1px;
       background: rgba(20, 20, 19, 0.16);
@@ -170,7 +189,7 @@
     #f3-rail {
       position: absolute;
       left: 80px;
-      top: 814px;
+      top: 792px;
       width: 1760px;
       text-align: center;
       font-family: "JetBrains Mono", monospace;
@@ -192,7 +211,7 @@
     #f3-protocol {
       position: absolute;
       left: 80px;
-      top: 858px;
+      top: 838px;
       width: 1760px;
       text-align: center;
       font-family: "JetBrains Mono", monospace;

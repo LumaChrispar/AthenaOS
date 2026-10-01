@@ -1,5 +1,5 @@
 <template>
-  <div id="root" data-composition-id="01-memo-opens">
+  <div id="root" data-composition-id="01-memo-opens" data-width="1920" data-height="1080">
     <style>
       /* ---- fonts: the three frame.md families, staged under assets/fonts/ ---- */
       @font-face {
@@ -8,7 +8,7 @@
         font-weight: 400;
         font-display: block;
         src: local("EB Garamond"), local("EBGaramond-Regular"),
-          url("../../assets/fonts/EBGaramond-Regular.woff2") format("woff2");
+          url("assets/fonts/EBGaramond.woff2") format("woff2");
       }
       @font-face {
         font-family: "Inter";
@@ -16,7 +16,7 @@
         font-weight: 400;
         font-display: block;
         src: local("Inter"), local("Inter-Regular"),
-          url("../../assets/fonts/Inter-Regular.woff2") format("woff2");
+          url("assets/fonts/Inter.woff2") format("woff2");
       }
       @font-face {
         font-family: "JetBrains Mono";
@@ -24,7 +24,7 @@
         font-weight: 500;
         font-display: block;
         src: local("JetBrains Mono"), local("JetBrainsMono-Medium"),
-          url("../../assets/fonts/JetBrainsMono-Medium.woff2") format("woff2");
+          url("assets/fonts/JetBrainsMono.woff2") format("woff2");
       }
 
       /* ---- root: styled by ID (never by a class) ---- */
@@ -203,55 +203,55 @@
     <!-- layer 1 — the cream paper plane, full-bleed, full duration -->
     <div
       class="clip paper-plane"
-      id="01-memo-opens-paper"
+      id="f01-memo-opens-paper"
       data-start="0"
       data-duration="6"
       data-track-index="0"
     ></div>
 
     <!-- layer 2 — memo header band (the asymmetric 70/30 top strip) -->
-    <div class="hdr" id="01-memo-opens-header">
-      <div class="hdr-kicker m-mono" id="01-memo-opens-kicker">
-        <span class="kw kw-spike" id="01-memo-opens-kw-spike">&#10035;</span>
-        <span class="kw" id="01-memo-opens-kw-memo">Memorandum</span>
+    <div class="hdr" id="f01-memo-opens-header">
+      <div class="hdr-kicker m-mono" id="f01-memo-opens-kicker">
+        <span class="kw kw-spike" id="f01-memo-opens-kw-spike">&#10035;</span>
+        <span class="kw" id="f01-memo-opens-kw-memo">Memorandum</span>
       </div>
 
-      <div class="hdr-rule" id="01-memo-opens-header-rule"></div>
+      <div class="hdr-rule" id="f01-memo-opens-header-rule"></div>
 
       <div class="hdr-fields">
         <div class="fld-wrap">
           <div class="fld-label m-mono">
-            <span class="kw" id="01-memo-opens-kw-subject">Subject</span>
+            <span class="kw" id="f01-memo-opens-kw-subject">Subject</span>
           </div>
-          <div class="fld-rule" id="01-memo-opens-subject-rule"></div>
+          <div class="fld-rule" id="f01-memo-opens-subject-rule"></div>
         </div>
         <div class="fld-wrap">
           <div class="fld-label m-mono">
-            <span class="kw" id="01-memo-opens-kw-from">From</span>
+            <span class="kw" id="f01-memo-opens-kw-from">From</span>
           </div>
-          <div class="fld-rule" id="01-memo-opens-from-rule"></div>
+          <div class="fld-rule" id="f01-memo-opens-from-rule"></div>
         </div>
       </div>
 
-      <div class="coral-rule" id="01-memo-opens-coral-rule"></div>
+      <div class="coral-rule" id="f01-memo-opens-coral-rule"></div>
     </div>
 
     <!-- layer 3 — the CLASSIFIED stamp (tilt on a wrapper, motion on the inner) -->
     <div class="stamp-tilt">
-      <div class="stamp m-mono" id="01-memo-opens-stamp">Classified</div>
+      <div class="stamp m-mono" id="f01-memo-opens-stamp">Classified</div>
     </div>
 
     <!-- layer 4 — the statement: one fixed slot, two states, hard cut in place -->
-    <div class="statement" id="01-memo-opens-statement">
-      <div class="statement-line m-display" id="01-memo-opens-line-a">Not a prompt.</div>
-      <div class="statement-line m-display" id="01-memo-opens-line-b">A governed pipeline.</div>
+    <div class="statement" id="f01-memo-opens-statement">
+      <div class="statement-line m-display" id="f01-memo-opens-line-a">Not a prompt.</div>
+      <div class="statement-line m-display" id="f01-memo-opens-line-b">A governed pipeline.</div>
     </div>
 
     <!-- layer 5 — mono service rail -->
-    <div class="rail m-mono" id="01-memo-opens-rail">
+    <div class="rail m-mono" id="f01-memo-opens-rail">
       <span class="rail-wrap">
-        <span id="01-memo-opens-rail-text"></span
-        ><span class="rail-caret" id="01-memo-opens-rail-caret"></span>
+        <span id="f01-memo-opens-rail-text"></span
+        ><span class="rail-caret" id="f01-memo-opens-rail-caret"></span>
       </span>
     </div>
 

@@ -1,30 +1,38 @@
 <template>
   <style>
-    /* ---- fonts (staged by the assembler into assets/fonts/; stacks degrade gracefully) ---- */
+        @font-face {
+      font-family: "SFMono-Regular";
+      src: local("SF Mono"), local("SFMono-Regular"), local("Menlo"), local("Consolas");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+
+/* ---- fonts (staged by the assembler into assets/fonts/; stacks degrade gracefully) ---- */
     @font-face {
       font-family: "EB Garamond";
-      src: url("assets/fonts/EBGaramond-Regular.woff2") format("woff2");
+      src: url("assets/fonts/EBGaramond.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "Inter";
-      src: url("assets/fonts/Inter-Regular.woff2") format("woff2");
+      src: url("assets/fonts/Inter.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "JetBrains Mono";
-      src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+      src: url("assets/fonts/JetBrainsMono.woff2") format("woff2");
       font-weight: 400;
       font-style: normal;
       font-display: block;
     }
     @font-face {
       font-family: "JetBrains Mono";
-      src: url("assets/fonts/JetBrainsMono-Medium.woff2") format("woff2");
+      src: url("assets/fonts/JetBrainsMono.woff2") format("woff2");
       font-weight: 500;
       font-style: normal;
       font-display: block;
@@ -97,7 +105,7 @@
       font-weight: 500;
       font-size: 1.35cqw;
       letter-spacing: 0.16em;
-      color: rgba(20, 20, 19, 0.32);
+      color: rgba(20, 20, 19, 0.66);
       white-space: nowrap;
     }
     #f06-the-gate-count .tally {

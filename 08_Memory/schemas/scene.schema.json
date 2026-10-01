@@ -54,7 +54,7 @@
     },
     "prose_content": {
       "type": "string",
-      "description": "The actual written text of the scene. MUST follow SRV-005 Output Formatting Requirements: (1) Begin with '### Scene [N]: [Title]' header. (2) All dialogue in markdown blockquotes (>) with tags/beats inside. (3) No narrative prose inside dialogue blockquotes."
+      "description": "The actual written text of the scene. The runtime adds a descriptive scene heading when assembling the chapter. Format dialogue as conventional novel prose with quotation marks and paragraph breaks; never use Markdown blockquotes."
     }
   },
   "required": ["scene_id", "chapter_id", "pov_character", "goal", "conflict", "disaster", "scene_number", "scene_title", "prose_content"]

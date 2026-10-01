@@ -66,6 +66,53 @@ class JobRunner:
         self.state['updated_at'] = time.time()
         atomic_json(self.state_path, self.state)
 
+    def reconcile_planning_artifacts(self):
+        """Repair legacy planning gates and rerun steps that saved model errors as JSON."""
+        memory = self.job / '08_Memory'
+        if 'architecture' in self.state.get('completed_steps', []):
+            from outline_format import normalize_outline
+            outline_path = memory / 'outline.json'
+            outline = normalize_outline(json.loads(outline_path.read_text(encoding='utf-8')))
+            atomic_json(outline_path, outline)
+
+        for step, filename, expected in (
+            ('characters', 'psychology.json', None),
+            ('world', 'story_bible.json', ('world_bible', 'locations', 'rules', 'world_rules')),
+        ):
+            if step not in self.state.get('completed_steps', []):
+                continue
+            path = memory / filename
+            try:
+                data = json.loads(path.read_text(encoding='utf-8'))
+                valid = bool(data) and not (isinstance(data, dict) and data.get('error'))
+                if step == 'characters':
+                    if isinstance(data, list):
+                        valid = valid and any(isinstance(item, dict) and item.get('name') for item in data)
+                    elif isinstance(data, dict):
+                        named = bool(data.get('name'))
+                        named = named or any(
+                            isinstance(data.get(key), list) and any(
+                                isinstance(item, dict) and item.get('name') for item in data[key])
+                            for key in ('characters', 'profiles', 'character_profiles', 'cast'))
+                        named = named or any(
+                            isinstance(data.get(key), dict) and bool(data[key])
+                            for key in ('character_profiles', 'characters', 'profiles', 'cast'))
+                        valid = valid and named
+                    else:
+                        valid = False
+                if expected:
+                    valid = valid and isinstance(data, dict) and any(key in data for key in expected)
+            except (OSError, ValueError, TypeError):
+                valid = False
+            if valid:
+                continue
+            if path.exists():
+                backup = path.with_name(f'{path.stem}.invalid-{uuid.uuid4().hex[:8]}{path.suffix}')
+                path.replace(backup)
+            self.state['completed_steps'].remove(step)
+            self.state['error'] = None
+            self.save()
+
     async def step(self, name, function, *args):
         if name in self.state['completed_steps']:
             return
@@ -114,6 +161,7 @@ class JobRunner:
                 from orchestrator import Orchestrator
                 self.factory = Orchestrator
             orch = self.factory(str(self.job))
+            self.reconcile_planning_artifacts()
             concept = self.state['concept']
             if self.state['chapters']:
                 concept += f'\nPlan exactly {self.state["chapters"]} chapters, including the ending.'

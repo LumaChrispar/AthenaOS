@@ -40,7 +40,7 @@ PLANNING_STAGES = (
     ('world', 'World building', 'SRV-004', 'story_bible.json',
      'Establishes locations, world rules, and the timeline.'),
     ('voice', 'Voice calibration', 'SRV-028', 'voice_sample.md',
-     'Writes a calibration sample that fixes the prose voice before drafting.'),
+     'Creates a compact voice card that guides every drafted scene.'),
 )
 
 FINISH_STAGES = (
@@ -53,15 +53,15 @@ FINISH_STAGES = (
 # The per-chapter passes, in the order orchestrator.write_and_validate_chapter
 # runs them. Used to explain which services a chapter step calls.
 CHAPTER_PASSES = (
-    ('Prose drafting', 'SRV-005'),
-    ('Voice variation', 'SRV-027'),
+    ('Scene-by-scene drafting', 'SRV-005'),
+    ('Targeted voice edits', 'SRV-027'),
     ('Dialogue audit', 'SRV-013'),
-    ('Dialogue rewrite', 'SRV-005'),
+    ('Targeted dialogue edits', 'SRV-005'),
     ('Developmental edit', 'SRV-007'),
     ('Continuity check', 'SRV-016'),
     ('QA check', 'SRV-010'),
     ('Reader proxy', 'SRV-030'),
-    ('Copy edit', 'SRV-008'),
+    ('Targeted copy edit', 'SRV-008'),
 )
 
 # Artifacts grouped so the browser can say what each one is for.
@@ -174,13 +174,13 @@ def stages(job, state, pipeline, total):
         built.append(_stage(
             f'chapter_{number}', f'Chapter {number}', 'SRV-005 · SRV-027 · SRV-013 · SRV-007 · SRV-016 · SRV-010 · SRV-008',
             f'chapter_{suffix}.json',
-            'Drafts the prose, then runs voice, dialogue, editorial, continuity, QA, and copy passes '
-            'until every gate passes.',
+            'Plans and saves 3–5 scenes, drafts each separately, then runs focused voice, dialogue, '
+            'editorial, continuity, QA, and copy passes until every gate passes.',
             completed, active))
         built.append(_stage(
             f'canon_{number}', f'Canon {number}', 'SRV-009',
             f'chapters/chapter_{suffix}_summary.json',
-            'Extracts this chapter’s facts into the story bible and foreshadowing registry.',
+            'Extracts this chapter’s facts, then saves canon updates locally without regenerating the full bible.',
             completed, active))
         if number in checkpoints:
             built.append(_stage(
