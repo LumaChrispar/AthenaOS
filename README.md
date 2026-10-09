@@ -7,7 +7,11 @@
 
 **Open the writing studio:** run `python athena.py ui`, then visit
 http://127.0.0.1:8765. Choose LM Studio, Ollama, or OpenRouter; describe a book;
-follow progress and download the finished Markdown manuscript. Local providers
+follow progress and open each completed book in its reading and audiobook studio.
+Download a typeset PDF or Markdown, generate chapter or whole-book narration,
+and optionally build and render an illustrated HyperFrames video from the web UI.
+See [studio setup](AUTONOMOUS_WORKER.md#completed-book-studio) for requirements.
+Local providers
 use your installed model and do not require an OpenRouter key.
 
 **Version:** 1.0  

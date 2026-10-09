@@ -221,7 +221,7 @@ class Handler(BaseHTTPRequestHandler):
                             logs.append(stream.read().decode('utf-8', errors='replace'))
                 state['log'] = '\n'.join(logs)
                 self.respond(state)
-            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/film/(preview.html|index.html|player.js|storyboard.json|film.mp4|project.zip|assets/gsap.min.js|assets/character-[0-7][.]svg|assets/chapter-[0-9]{3}[.]wav)', path):
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/film/(preview.html|preview-source.html|index.html|player.js|runtime.js|storyboard.json|film.mp4|project.zip|compositions/c[0-9]+-s[0-9]+[.]html|assets/gsap.min.js|assets/character-[0-7][.]svg|assets/chapter-[0-9]{3}[.]wav)', path):
                 job = self.job_path(match[1])
                 audiobook.studio_data(job)
                 state = book_video.status(job)
@@ -237,15 +237,20 @@ class Handler(BaseHTTPRequestHandler):
                     import zipfile
                     with job_lock(job):
                         with zipfile.ZipFile(file, 'w', zipfile.ZIP_DEFLATED) as archive:
-                            for name in ('index.html', 'preview.html', 'player.js', 'storyboard.json', 'package.json', 'hyperframes.json'):
+                            for name in ('index.html', 'storyboard.json', 'package.json', 'hyperframes.json'):
                                 archive.write(job / 'film' / name, name)
                             for asset in (job / 'film/assets').glob('*'):
                                 archive.write(asset, 'assets/' + asset.name)
+                            for composition in (job / 'film/compositions').glob('*.html'):
+                                archive.write(composition, 'compositions/' + composition.name)
                     self.respond_audio(file, 'application/zip')
                 elif filename.endswith('.wav'):
                     self.respond_audio(file)
                 elif filename.endswith('.html'):
-                    body = file.read_bytes()
+                    if filename == 'preview-source.html':
+                        body = (job / 'film/index.html').read_bytes().replace(b'</body>', b'<script src="runtime.js"></script></body>')
+                    else:
+                        body = file.read_bytes()
                     self.send_response(200)
                     self.send_header('Content-Type', 'text/html; charset=utf-8')
                     self.send_header('Content-Length', str(len(body)))

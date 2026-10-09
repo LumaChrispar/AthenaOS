@@ -53,7 +53,19 @@ try {
   for(let i=0;i<180;i++){if(await evaluate('!document.getElementById("render-film").disabled'))break;await sleep(1000);}
   assert.equal(await evaluate('document.getElementById("render-film").disabled'),false,await evaluate('document.getElementById("film-progress").textContent+document.getElementById("film-log").textContent'));
   assert.equal(await evaluate('document.getElementById("film-preview").hidden'),false);
+  await evaluate('document.getElementById("film-preview").scrollIntoView()');
+  await until('document.getElementById("film-preview").contentDocument?.querySelector("hyperframes-player")?.duration > 0');
+  await evaluate('document.getElementById("film-preview").contentDocument.querySelector("hyperframes-player").seek(0.5)');
+  await sleep(500);
   await writeFile('artifacts/athena-video-studio.png',Buffer.from((await send('Page.captureScreenshot',{format:'png'})).data,'base64'));
+  await evaluate('document.getElementById("render-film").click()');
+  for(let i=0;i<180;i++){if(await evaluate('!document.getElementById("film-download").hidden'))break;await sleep(1000);}
+  assert.equal(await evaluate('document.getElementById("film-download").hidden'),false,await evaluate('document.getElementById("film-progress").textContent+document.getElementById("film-log").textContent'));
+  await until('document.getElementById("film-video").readyState >= 1');
+  assert.equal(await evaluate('document.getElementById("film-video").videoWidth'),1920);
+  const filmResponse=await fetch(url+`/api/jobs/${jobs[0].id}/film/film.mp4`);
+  assert.equal(filmResponse.headers.get('content-type'),'video/mp4');
+  await writeFile('artifacts/athena-motion-storybook-preview.mp4',Buffer.from(await filmResponse.arrayBuffer()));
   await evaluate('document.getElementById("tab-manuscript").click()');
   await mkdir('artifacts',{recursive:true});
   await writeFile('artifacts/athena-audiobook-desktop.png',Buffer.from((await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));
@@ -62,5 +74,5 @@ try {
   assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'),true,'Studio fits mobile');
   await writeFile('artifacts/athena-audiobook-mobile.png',Buffer.from((await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));
   assert.deepEqual(errors,[]);
-  console.log('Studio browser passed: chapters, full narration through a local HTTP speech fixture, playback, speed, downloads, reload persistence, voice settings, desktop/mobile layout.');
+  console.log('Studio browser passed: narration through local HTTP fixture, PDF export, HD video build and render, playback, downloads, persistence, voice settings, desktop/mobile layout.');
 }finally{socket?.close();chrome.kill();}

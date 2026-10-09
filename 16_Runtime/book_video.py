@@ -112,12 +112,14 @@ def launch(root, job):
 
 def character_svg(name, index):
     hue = int(hashlib.sha256(name.encode()).hexdigest()[:4], 16) % 360
-    return f'<svg viewBox="0 0 340 440" role="img" aria-label="Illustrated portrait of {escape(name, quote=True)}"><rect width="340" height="440" rx="160" fill="hsl({hue},22%,28%)"/><circle cx="170" cy="122" r="52" fill="#e3c7a7"/><path d="M112 112 Q111 41 174 48 Q236 50 226 118 Q195 93 164 83 Q146 108 112 112" fill="#252d31"/><path d="M68 398 Q54 229 127 204 L170 246 L213 204 Q286 237 272 398Z" fill="hsl({hue},32%,48%)"/><path d="M127 204 L170 246 L145 319 L96 255Z" fill="hsl({hue},24%,62%)"/><path d="M213 204 L170 246 L195 319 L245 255Z" fill="hsl({hue},24%,62%)"/><path d="M127 390 Q165 368 213 390" stroke="#e3c7a7" stroke-width="18" stroke-linecap="round" fill="none"/></svg>'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 440" role="img" aria-label="Illustrated portrait of {escape(name, quote=True)}"><rect width="340" height="440" rx="160" fill="hsl({hue},22%,28%)"/><circle cx="170" cy="122" r="52" fill="#e3c7a7"/><path d="M112 112 Q111 41 174 48 Q236 50 226 118 Q195 93 164 83 Q146 108 112 112" fill="#252d31"/><path d="M68 398 Q54 229 127 204 L170 246 L213 204 Q286 237 272 398Z" fill="hsl({hue},32%,48%)"/><path d="M127 204 L170 246 L145 319 L96 255Z" fill="hsl({hue},24%,62%)"/><path d="M213 204 L170 246 L195 319 L245 255Z" fill="hsl({hue},24%,62%)"/><path d="M127 390 Q165 368 213 390" stroke="#e3c7a7" stroke-width="18" stroke-linecap="round" fill="none"/></svg>'
 
 
 def build(job, state):
     job = Path(job); directory = job / 'film'; assets = directory / 'assets'
     assets.mkdir(exist_ok=True)
+    compositions = directory / 'compositions'
+    compositions.mkdir(exist_ok=True)
     book, audio, cast = studio_data(job), audio_status(job), cast_for(job)
     if not cast:
         cast = [{'name': 'Narrator', 'voice': 'The voice of the story'}]
@@ -129,6 +131,7 @@ def build(job, state):
         raise RuntimeError('Install the animation dependency: npm install gsap')
     shutil.copy2(gsap, assets / 'gsap.min.js')
     shutil.copy2(engine_path / 'dist/hyperframes-player.global.js', directory / 'player.js')
+    shutil.copy2(engine_path / 'dist/hyperframe.runtime.iife.js', directory / 'runtime.js')
     title = escape(book['title'])
     clips, captions, animation, storyboard = [], [], [], []
     clock = 0.0
@@ -155,18 +158,20 @@ def build(job, state):
             relevant = [i for i,p in enumerate(cast) if p['name'].casefold() in text.casefold()]
             figures = relevant[:2] or [index % len(cast)]
             portraits = ''.join(f'<div class="portrait"><img src="assets/character-{i}.svg" alt="Illustrated character {escape(cast[i]["name"], quote=True)}"><p>{escape(cast[i]["name"])}</p></div>' for i in figures)
-            clips.append(f'<section id="{key}" class="clip scene" data-start="{offset:.5f}" data-duration="{length:.5f}" data-track-index="0"><div class="stage"><div class="moon"></div><div class="arches"><i></i><i></i><i></i></div><div class="figures">{portraits}</div><div class="chapter"><p>CHAPTER {number:02d} · ILLUSTRATED READING</p><h1>{escape(chapter["title"])}</h1></div></div><div class="reading"><p>{escape(text)}</p></div></section>')
-            animation.append(f'animate("#{key} .figures",{offset:.5f},{length:.5f});')
-            animation.append(f'animate("#{key} .reading",{offset:.5f},{length:.5f});')
-            animation.append(f'tl.fromTo("#{key} .moon",{{opacity:.5}},{{opacity:1,duration:{length:.5f},ease:"none"}},{offset:.5f});')
+            scene_html = f'<section id="{key}" class="scene" data-composition-id="{key}" data-width="1920" data-height="1080" data-duration="{length:.5f}"><div class="stage"><div class="moon"></div><div class="arches"><i></i><i></i><i></i></div><div class="figures">{portraits}</div><div class="chapter"><p>CHAPTER {number:02d} · ILLUSTRATED READING</p><h1>{escape(chapter["title"])}</h1></div></div><div class="reading"><p>{escape(text)}</p></div></section>'
+            scene_script = f'''<script>(()=>{{const t=gsap.timeline({{paused:true}});const fade=Math.min(.6,{length:.5f}/4);for(const part of ["figures","reading"]){{t.fromTo("#{key} ."+part,{{opacity:0}},{{opacity:1,duration:fade,ease:"power2.out"}},0);t.to("#{key} ."+part,{{opacity:0,duration:fade}},{length:.5f}-fade);}}t.fromTo("#{key} .moon",{{opacity:.5}},{{opacity:1,duration:{length:.5f},ease:"none"}},0);window.__timelines["{key}"]=t;}})();</script>'''
+            (compositions / f'{key}.html').write_text('<template>'+scene_html+scene_script+'</template>', encoding='utf-8')
+            clips.append(f'<div id="slot-{key}" class="clip" data-composition-id="{key}" data-composition-src="compositions/{key}.html" data-start="{offset:.5f}" data-duration="{length:.5f}" data-track-index="0" data-width="1920" data-height="1080"></div>')
             storyboard.append({'chapter': number, 'card': index+1, 'start': round(offset,2), 'duration': round(length,2),
                                'characters': [cast[i]['name'] for i in figures], 'text': text})
             offset += length
         clock += duration
     style = '''*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#101e24;color:#f4ebdb;font-family:serif}#root{width:100%;height:100%;position:relative;overflow:hidden}.scene{position:absolute;inset:0;display:grid;grid-template-columns:58% 42%;background:#101e24}.stage{position:relative;overflow:hidden;border-right:1px solid #7f735b}.moon{position:absolute;left:78px;top:64px;width:200px;height:200px;border-radius:50%;background:#d6c394}.arches{position:absolute;inset:200px 70px 100px;display:flex;gap:35px;opacity:.55}.arches i{flex:1;border:3px solid #729194;border-radius:180px 180px 0 0}.figures{position:absolute;inset:220px 80px 170px;display:flex;justify-content:center;align-items:end;gap:25px}.portrait{width:340px;flex-shrink:1;min-width:0;text-align:center}.portrait img{display:block;width:100%;max-height:440px}.portrait p{font:24px sans-serif;letter-spacing:1px;margin-top:22px}.chapter{position:absolute;bottom:48px;left:80px;right:70px}.chapter p{font:16px sans-serif;color:#d6c394;letter-spacing:3px}.chapter h1{font-size:48px;line-height:1.2;font-weight:400;margin:12px 0;overflow-wrap:anywhere}.reading{display:flex;align-items:center;padding:75px 72px}.reading p{font-size:38px;line-height:1.52;margin:0;overflow-wrap:anywhere}'''
-    html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{title}</title><script src="assets/gsap.min.js"></script><style>{style}</style></head><body><div id="root" data-composition-id="book-film" data-width="1920" data-height="1080" data-fps="30" data-duration="{clock:.5f}">{''.join(clips)}</div><script>const tl=gsap.timeline({{paused:true}});function animate(selector,start,duration){{const fade=Math.min(.6,duration/4);tl.fromTo(selector,{{opacity:0}},{{opacity:1,duration:fade,ease:"power2.out"}},start);tl.to(selector,{{opacity:0,duration:fade}},start+duration-fade);}}{''.join(animation)}window.__timelines=window.__timelines||{{}};window.__timelines["book-film"]=tl;</script></body></html>'''
+    html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{title}</title><script src="assets/gsap.min.js"></script><style>{style}.clip{{position:absolute;inset:0}}</style></head><body><div id="root" data-composition-id="book-film" data-width="1920" data-height="1080" data-fps="30" data-duration="{clock:.5f}">{''.join(clips)}</div><script>window.__timelines=window.__timelines||{{}};window.__timelines["book-film"]=gsap.timeline({{paused:true}});</script></body></html>'''
     (directory / 'index.html').write_text(html, encoding='utf-8')
-    (directory / 'preview.html').write_text('<!doctype html><html><head><meta charset="utf-8"><script src="player.js"></script><style>html,body{margin:0;background:#101e24;width:100%;height:100%}hyperframes-player{display:block;width:100%;height:100%}</style></head><body><hyperframes-player src="index.html" controls width="1920" height="1080"></hyperframes-player></body></html>', encoding='utf-8')
+    # The renderer injects its runtime, but the standalone embedded player
+    # needs a browser-ready source that loads subcompositions and timelines.
+    (directory / 'preview.html').write_text('<!doctype html><html><head><meta charset="utf-8"><script src="player.js"></script><style>html,body{margin:0;background:#101e24;width:100%;height:100%}hyperframes-player{display:block;width:100%;height:100%}</style></head><body><hyperframes-player src="preview-source.html" controls width="1920" height="1080"></hyperframes-player></body></html>', encoding='utf-8')
     atomic_json(directory / 'storyboard.json', {'title': book['title'], 'duration': clock, 'cast': cast, 'cards': storyboard,
         'style': 'Vector character portraits with motion and complete narrated reading cards', 'timing': 'Reading cards use estimated word-share timing.'})
     atomic_json(directory / 'hyperframes.json', {'name':'book-film','width':1920,'height':1080,'fps':30})
@@ -198,7 +203,7 @@ def run(job):
                 output = directory / 'film.mp4'
                 temporary = directory / 'rendering.mp4'
                 result = subprocess.run(command + ['render', str(directory), '--output', str(temporary),
-                    '--resolution', state['resolution'], '--fps', '30', '--quality', 'delivery'], cwd=directory,
+                    '--resolution', state['resolution'], '--fps', '30', '--quality', 'delivery', '--no-best-effort'], cwd=directory,
                     capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=86400)
                 (directory / 'render.log').write_text(result.stdout + result.stderr, encoding='utf-8')
                 if result.returncode or not temporary.exists() or not temporary.stat().st_size:

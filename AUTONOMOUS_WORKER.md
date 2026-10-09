@@ -2,7 +2,8 @@
 
 Status: working prototype, verified with simulated model responses. Live prose
 quality, provider availability, elapsed time, and monetary cost have not been
-benchmarked. This runtime delivers a Markdown draft; it does not publish books.
+benchmarked. This runtime delivers Markdown and a typeset PDF, with optional
+narration and illustrated video exports. It does not publish to stores.
 
 ## Run a book
 
@@ -21,8 +22,53 @@ response timeout. These UI defaults are stored in `config/ui_settings.json`
 and applied to new UI jobs; existing jobs retain their original configuration.
 CLI jobs continue to use `config/models.yaml` and explicit CLI overrides.
 The sidebar lists your books; each book shows saved progress, usage, errors,
-and an activity log. Completed books can be read or downloaded as Markdown.
-No Node.js build or additional web framework is needed.
+and an activity log. Completed books open in their own reading and audiobook
+studio. The main writing UI requires no Node.js build.
+
+### Completed book studio
+
+Open a completed book from the sidebar, or visit `/books/JOB_ID/studio`.
+The studio includes chapter navigation, manuscript reading, a persistent audio
+player, voice settings, PDF/Markdown downloads, and an optional Video Studio.
+
+PDF export uses ReportLab from `requirements.txt`. It includes a title page,
+linked contents, chapter openings, serif body typography and page numbers.
+Formatting creates the PDF automatically; downloading an older completed book
+creates its PDF on demand. Editing a book invalidates older audio and video.
+
+For **Kokoro**, run an OpenAI-compatible local speech server separately. In
+Voice Studio use `http://127.0.0.1:8880/v1`, model `kokoro` and a voice supported
+by that server (default `af_heart`). Athena connects to the server; it does not
+install or start Kokoro. **Local compatible** supports another loopback speech
+server that implements `/audio/speech` and returns PCM WAV. **OpenAI** narration
+uses `https://api.openai.com/v1` and an `OPENAI_API_KEY` available to the UI and
+workers. Voice settings contain no keys. Cloud narration may incur charges.
+
+Generate one chapter or the whole book. Saved chunks survive failures, so
+generating again resumes matching work. Playback supports seeking and speed;
+chapter WAV files and a whole-book WAV are downloadable. A whole-book master
+is available once every chapter has audio for the same current settings.
+
+For optional **HyperFrames video**, install Node.js and workspace dependencies:
+
+```powershell
+npm ci --prefix .
+```
+
+Generate narration first, then choose the chapter or whole book and **Build
+project** in Video Studio. Athena creates an editable composition, validates
+its media and shows a preview. **Render HD** exports an MP4 at 30 fps, in 1080p
+or 4K, with the narration. Download the video or the source project ZIP from
+the same screen. FFmpeg and a browser supported by HyperFrames are required
+for rendering; errors and logs appear in the studio. The computer must stay
+awake while rendering.
+
+The initial video style is an animated illustrated reading: original vector
+character portraits, atmospheric motion and text cards covering all selected
+prose. Text timing is estimated from narration duration. It is not a cinematic
+scene adaptation or lip-synced character performance. Richer scene artwork and
+animation can be added to the exported project. This integration uses
+HyperFrames; Remotion is not needed.
 
 ### Conversations
 
@@ -119,6 +165,9 @@ when deliberately changing a resumed run.
 - `job.json`: status, active step, completed steps, timestamps, and last error.
 - `worker.log`: background worker output.
 - `08_Memory/manuscript.md`: assembled copy-edited chapters, in order.
+- `08_Memory/manuscript.pdf`: typeset reading edition.
+- `audio/`: narration state, reusable chunks and WAV masters.
+- `film/`: video state, editable composition, validation logs and rendered MP4.
 - `08_Memory/metadata.json`: title, blurb, keywords.
 - `08_Memory/delivery.json`: chapter and word counts.
 - `08_Memory/usage.json`: attempted requests and reported token usage.
@@ -148,6 +197,9 @@ delivery even when other reviewers give high scores.
 limits, not a guaranteed dollar budget: input tokens, pricing, and failed requests
 can affect bills. Usage totals include only responses received by this process.
 Truncated output fails validation instead of being delivered as a finished chapter.
+Character planning handles an output-limit failure by checkpointing a compact
+cast roster and generating profiles separately. Resume reuses those saved
+profiles rather than repeating the oversized response.
 
 ## Hermes integration
 
@@ -174,7 +226,12 @@ Provider tests also send real SDK requests to a simulated local HTTP server;
 UI tests exercise book creation, status, resume, and download over HTTP.
 With the UI running, `node tests/ui_smoke.mjs` checks the desktop/mobile browser
 layout using an installed Chrome and Node.js (optional developer tools only).
+`tests/serve_studio_fixture.py` provides an isolated studio and local simulated
+speech server on port 8766. With it running, `node tests/studio_smoke.mjs` checks
+narration, PDF export, video build/render, playback, persistence and mobile layout.
+The speech fixture returns silent audio; these checks do not measure voice quality.
+The video smoke test requires the optional Node dependencies and render tools.
+
 Next, run a short real book and record cost, duration, editing effort, continuity
-problems, and feedback from prospective readers. Long chapters still use one
-generation call; scene-level generation, independent manuscript-wide evaluation,
-DOCX/EPUB export, and a hosted customer interface remain future work.
+problems, and feedback from prospective readers. Independent manuscript-wide
+evaluation, DOCX/EPUB export and a hosted customer interface remain future work.
