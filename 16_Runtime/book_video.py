@@ -124,6 +124,10 @@ def build(job, state):
     for index, person in enumerate(cast):
         (assets / f'character-{index}.svg').write_text(character_svg(person['name'], index), encoding='utf-8')
     engine_path = engine()
+    gsap = Path(__file__).resolve().parents[1] / 'node_modules/gsap/dist/gsap.min.js'
+    if not gsap.exists():
+        raise RuntimeError('Install the animation dependency: npm install gsap')
+    shutil.copy2(gsap, assets / 'gsap.min.js')
     shutil.copy2(engine_path / 'dist/hyperframes-player.global.js', directory / 'player.js')
     title = escape(book['title'])
     clips, captions, animation, storyboard = [], [], [], []
@@ -152,14 +156,15 @@ def build(job, state):
             figures = relevant[:2] or [index % len(cast)]
             portraits = ''.join(f'<div class="portrait"><img src="assets/character-{i}.svg" alt="Illustrated character {escape(cast[i]["name"], quote=True)}"><p>{escape(cast[i]["name"])}</p></div>' for i in figures)
             clips.append(f'<section id="{key}" class="clip scene" data-start="{offset:.5f}" data-duration="{length:.5f}" data-track-index="0"><div class="stage"><div class="moon"></div><div class="arches"><i></i><i></i><i></i></div><div class="figures">{portraits}</div><div class="chapter"><p>CHAPTER {number:02d} · ILLUSTRATED READING</p><h1>{escape(chapter["title"])}</h1></div></div><div class="reading"><p>{escape(text)}</p></div></section>')
-            animation.append(f'animate("#{key} .figures",[{{opacity:0}},{{opacity:1,offset:.12}},{{opacity:1,offset:.88}},{{opacity:0}}],{offset:.5f},{length:.5f});')
-            animation.append(f'animate("#{key} .reading",[{{opacity:0}},{{opacity:1,offset:.08}},{{opacity:1,offset:.92}},{{opacity:0}}],{offset:.5f},{length:.5f});')
+            animation.append(f'animate("#{key} .figures",{offset:.5f},{length:.5f});')
+            animation.append(f'animate("#{key} .reading",{offset:.5f},{length:.5f});')
+            animation.append(f'tl.fromTo("#{key} .moon",{{opacity:.5}},{{opacity:1,duration:{length:.5f},ease:"none"}},{offset:.5f});')
             storyboard.append({'chapter': number, 'card': index+1, 'start': round(offset,2), 'duration': round(length,2),
                                'characters': [cast[i]['name'] for i in figures], 'text': text})
             offset += length
         clock += duration
     style = '''*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#101e24;color:#f4ebdb;font-family:serif}#root{width:100%;height:100%;position:relative;overflow:hidden}.scene{position:absolute;inset:0;display:grid;grid-template-columns:58% 42%;background:#101e24}.stage{position:relative;overflow:hidden;border-right:1px solid #7f735b}.moon{position:absolute;left:78px;top:64px;width:200px;height:200px;border-radius:50%;background:#d6c394}.arches{position:absolute;inset:200px 70px 100px;display:flex;gap:35px;opacity:.55}.arches i{flex:1;border:3px solid #729194;border-radius:180px 180px 0 0}.figures{position:absolute;inset:220px 80px 170px;display:flex;justify-content:center;align-items:end;gap:25px}.portrait{width:340px;flex-shrink:1;min-width:0;text-align:center}.portrait img{display:block;width:100%;max-height:440px}.portrait p{font:24px sans-serif;letter-spacing:1px;margin-top:22px}.chapter{position:absolute;bottom:48px;left:80px;right:70px}.chapter p{font:16px sans-serif;color:#d6c394;letter-spacing:3px}.chapter h1{font-size:48px;line-height:1.2;font-weight:400;margin:12px 0;overflow-wrap:anywhere}.reading{display:flex;align-items:center;padding:75px 72px}.reading p{font-size:38px;line-height:1.52;margin:0;overflow-wrap:anywhere}'''
-    html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{title}</title><style>{style}</style></head><body><div id="root" data-composition-id="book-film" data-width="1920" data-height="1080" data-fps="30" data-duration="{clock:.5f}">{''.join(clips)}</div><script>function animate(selector,frames,start,duration){{const a=document.querySelector(selector).animate(frames,{{delay:start*1000,duration:duration*1000,iterations:1,fill:"both"}});a.pause();}}{''.join(animation)}</script></body></html>'''
+    html = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{title}</title><script src="assets/gsap.min.js"></script><style>{style}</style></head><body><div id="root" data-composition-id="book-film" data-width="1920" data-height="1080" data-fps="30" data-duration="{clock:.5f}">{''.join(clips)}</div><script>const tl=gsap.timeline({{paused:true}});function animate(selector,start,duration){{const fade=Math.min(.6,duration/4);tl.fromTo(selector,{{opacity:0}},{{opacity:1,duration:fade,ease:"power2.out"}},start);tl.to(selector,{{opacity:0,duration:fade}},start+duration-fade);}}{''.join(animation)}window.__timelines=window.__timelines||{{}};window.__timelines["book-film"]=tl;</script></body></html>'''
     (directory / 'index.html').write_text(html, encoding='utf-8')
     (directory / 'preview.html').write_text('<!doctype html><html><head><meta charset="utf-8"><script src="player.js"></script><style>html,body{margin:0;background:#101e24;width:100%;height:100%}hyperframes-player{display:block;width:100%;height:100%}</style></head><body><hyperframes-player src="index.html" controls width="1920" height="1080"></hyperframes-player></body></html>', encoding='utf-8')
     atomic_json(directory / 'storyboard.json', {'title': book['title'], 'duration': clock, 'cast': cast, 'cards': storyboard,

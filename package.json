@@ -1,0 +1,14 @@
+{
+  "name": "athena-book-studio",
+  "private": true,
+  "description": "Optional HD video renderer for Athena's web book studio",
+  "scripts": {
+    "test:studio": "node tests/studio_smoke.mjs"
+  },
+  "devDependencies": {
+    "gsap": "3.14.2",
+    "hyperframes": "0.8.141",
+    "sharp": "0.35.5",
+    "source-map-js": "1.2.2"
+  }
+}

@@ -221,7 +221,7 @@ class Handler(BaseHTTPRequestHandler):
                             logs.append(stream.read().decode('utf-8', errors='replace'))
                 state['log'] = '\n'.join(logs)
                 self.respond(state)
-            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/film/(preview.html|index.html|player.js|storyboard.json|film.mp4|project.zip|assets/character-[0-7][.]svg|assets/chapter-[0-9]{3}[.]wav)', path):
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/film/(preview.html|index.html|player.js|storyboard.json|film.mp4|project.zip|assets/gsap.min.js|assets/character-[0-7][.]svg|assets/chapter-[0-9]{3}[.]wav)', path):
                 job = self.job_path(match[1])
                 audiobook.studio_data(job)
                 state = book_video.status(job)
@@ -300,7 +300,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.respond({'error': 'Not found.'}, 404)
         except FileNotFoundError as error:
             self.respond({'error': str(error)}, 404)
-        except (ValueError, OSError, yaml.YAMLError) as error:
+        except (ValueError, OSError, RuntimeError, yaml.YAMLError) as error:
             self.respond({'error': str(error)}, 400)
 
     def do_POST(self):

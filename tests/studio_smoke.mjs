@@ -31,6 +31,7 @@ try {
   assert.equal(await evaluate('document.getElementById("prose").textContent'),'At dawn she returned.');
   await evaluate('document.getElementById("generate-book").click()');
   await until('!document.getElementById("master-download").hidden');
+  await until('!document.getElementById("generate-book").disabled');
   const pdfResponse=await fetch(url+`/api/jobs/${jobs[0].id}/pdf`);
   assert.equal(pdfResponse.headers.get('content-type'),'application/pdf');
   await mkdir('artifacts',{recursive:true});
