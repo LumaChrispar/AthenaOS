@@ -7,6 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from test_audiobook import AudiobookTests, wav, audiobook, AthenaServer
+import book_video
 
 
 class SpeechStub(BaseHTTPRequestHandler):
@@ -36,7 +37,11 @@ def launch(root, job):
     threading.Thread(target=audiobook.run, args=(job,), daemon=True).start()
 
 
-server = AthenaServer(fixture.root, 8766, audio_launcher=launch)
+def launch_film(root, job):
+    threading.Thread(target=book_video.run, args=(job,), daemon=True).start()
+
+
+server = AthenaServer(fixture.root, 8766, audio_launcher=launch, film_launcher=launch_film)
 print(f'Studio fixture: http://127.0.0.1:8766/books/{fixture.job.name}/studio', flush=True)
 try:
     server.serve_forever()

@@ -17,6 +17,7 @@ from job_lock import job_lock
 from book_library import editor_data, edit_book, continue_book, snapshot, update_model
 from pipeline_inspect import inspect_job, artifact_text, prompt_text
 import audiobook
+import book_video
 
 
 def read_json(path, default=None):
@@ -64,11 +65,12 @@ def settings_config(settings):
 class AthenaServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, root, port=8765, launcher=launch_worker, audio_launcher=audiobook.launch):
+    def __init__(self, root, port=8765, launcher=launch_worker, audio_launcher=audiobook.launch, film_launcher=book_video.launch):
         self.root = Path(root).resolve()
         self.token = secrets.token_urlsafe(32)
         self.launcher = launcher
         self.audio_launcher = audio_launcher
+        self.film_launcher = film_launcher
         self.settings_lock = threading.Lock()
         self.chat_locks = {}
         super().__init__(('127.0.0.1', port), Handler)
@@ -95,7 +97,7 @@ class Handler(BaseHTTPRequestHandler):
         port = self.server.server_address[1]
         return self.headers.get('Host') in (f'127.0.0.1:{port}', f'localhost:{port}')
 
-    def respond_audio(self, path):
+    def respond_audio(self, path, content_type='audio/wav'):
         """Stream audio and support browser seeking without loading a book into RAM."""
         size = path.stat().st_size
         start, end, code = 0, size - 1, 200
@@ -115,7 +117,7 @@ class Handler(BaseHTTPRequestHandler):
                 return
             code = 206
         self.send_response(code)
-        self.send_header('Content-Type', 'audio/wav')
+        self.send_header('Content-Type', content_type)
         self.send_header('Accept-Ranges', 'bytes')
         self.send_header('Content-Length', str(end - start + 1))
         self.send_header('Content-Disposition', f'inline; filename="{path.name}"')
@@ -199,6 +201,59 @@ class Handler(BaseHTTPRequestHandler):
                 }))
             elif path == '/api/narration-settings':
                 self.respond(read_json(self.server.root / 'config/narration.json', audiobook.DEFAULTS))
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/pdf', path):
+                job = self.job_path(match[1])
+                audiobook.studio_data(job)
+                from book_pdf import build_pdf
+                with job_lock(job):
+                    output = build_pdf(job)
+                self.respond(output.read_bytes(), content_type='application/pdf')
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/film-status', path):
+                job = self.job_path(match[1])
+                audiobook.studio_data(job)
+                state = book_video.status(job)
+                logs = []
+                for filename in ('check.log', 'render.log', 'worker.log'):
+                    log = job / 'film' / filename
+                    if log.exists():
+                        with log.open('rb') as stream:
+                            stream.seek(0, 2); stream.seek(max(0, stream.tell()-6000))
+                            logs.append(stream.read().decode('utf-8', errors='replace'))
+                state['log'] = '\n'.join(logs)
+                self.respond(state)
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/film/(preview.html|index.html|player.js|storyboard.json|film.mp4|project.zip|assets/character-[0-7][.]svg|assets/chapter-[0-9]{3}[.]wav)', path):
+                job = self.job_path(match[1])
+                audiobook.studio_data(job)
+                state = book_video.status(job)
+                if state['status'] == 'stale':
+                    raise FileNotFoundError('This video belongs to an earlier book revision. Rebuild it.')
+                filename = match[2]
+                file = job / 'film' / filename
+                if filename == 'film.mp4':
+                    if state['status'] != 'completed':
+                        raise FileNotFoundError('Render the video before downloading it.')
+                    self.respond_audio(file, 'video/mp4')
+                elif filename == 'project.zip':
+                    import zipfile
+                    with job_lock(job):
+                        with zipfile.ZipFile(file, 'w', zipfile.ZIP_DEFLATED) as archive:
+                            for name in ('index.html', 'preview.html', 'player.js', 'storyboard.json', 'package.json', 'hyperframes.json'):
+                                archive.write(job / 'film' / name, name)
+                            for asset in (job / 'film/assets').glob('*'):
+                                archive.write(asset, 'assets/' + asset.name)
+                    self.respond_audio(file, 'application/zip')
+                elif filename.endswith('.wav'):
+                    self.respond_audio(file)
+                elif filename.endswith('.html'):
+                    body = file.read_bytes()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/html; charset=utf-8')
+                    self.send_header('Content-Length', str(len(body)))
+                    self.send_header('Content-Security-Policy', "default-src 'self' blob: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors 'self'; base-uri 'self'")
+                    self.end_headers(); self.wfile.write(body)
+                else:
+                    kind = 'image/svg+xml' if filename.endswith('.svg') else 'text/javascript' if filename.endswith('.js') else 'application/json'
+                    self.respond(file.read_bytes(), content_type=kind if kind != 'application/json' else 'text/plain')
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/(studio|audio-status)', path):
                 job = self.job_path(match[1])
                 self.respond(audiobook.studio_data(job) if match[2] == 'studio' else audiobook.status(job))
@@ -313,6 +368,19 @@ class Handler(BaseHTTPRequestHandler):
                     self.respond(openrouter_key_status(self.server.root))
                 else:
                     raise ValueError('Choose save, test, or remove.')
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/film', path):
+                job = self.job_path(match[1])
+                with self.server.settings_lock:
+                    with job_lock(job):
+                        book_video.prepare(job, data)
+                    try:
+                        self.server.film_launcher(self.server.root, job)
+                    except Exception:
+                        state = read_json(job / 'film/state.json')
+                        state.update(status='failed', error='Could not launch the video worker. Try again.')
+                        atomic_json(job / 'film/state.json', state)
+                        raise
+                self.respond({'id':job.name}, 202)
             elif path == '/api/narration-settings':
                 settings = audiobook.validate_settings(data)
                 with self.server.settings_lock:

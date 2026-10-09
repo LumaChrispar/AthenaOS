@@ -246,7 +246,7 @@ function elapsed(seconds) {
   return value < 60 ? `${value}s` : `${Math.floor(value / 60)}m ${value % 60}s`;
 }
 async function selectBook(id, navigate = true) {
-  if (!location.search.includes('workspace=1')) {
+  if (!location.search.includes('workspace=1') || !location.pathname.includes(id)) {
     const info = await api(`/api/jobs/${id}`);
     if (info.download_ready) { location.href = `/books/${id}/studio`; return; }
   }
@@ -326,6 +326,8 @@ function renderDetail(job) {
   $('download').href = `/api/jobs/${job.id}/manuscript`;
   $('audiobook-studio').hidden = !job.download_ready;
   $('audiobook-studio').href = `/books/${job.id}/studio`;
+  $('download-pdf').hidden = !job.download_ready;
+  $('download-pdf').href = `/api/jobs/${job.id}/pdf`;
   $('job-id').textContent = `Book ID: ${job.id}`;
   renderLog(job);
   // Switch a failed run to the Pipeline tab once, so the reason is on screen

@@ -14,13 +14,14 @@ try {
   for (let i=0;i<100;i++) { try {port=(await readFile(join(profile,'DevToolsActivePort'),'utf8')).split('\n')[0];break;}catch{await sleep(100);} }
   assert.ok(port, 'Chrome started');
   const pages = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
-  socket = new WebSocket(pages[0].webSocketDebuggerUrl);
+  socket = new WebSocket(pages.find(p=>p.type==='page').webSocketDebuggerUrl);
   await new Promise(resolve => socket.addEventListener('open',resolve,{once:true}));
   socket.addEventListener('message',event=>{const msg=JSON.parse(event.data);if(msg.id){const task=pending.get(msg.id);pending.delete(msg.id);msg.error?task.reject(msg.error):task.resolve(msg.result);}else if(msg.method==='Runtime.exceptionThrown')errors.push(msg.params.exceptionDetails.text);});
   const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++sequence;pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});
   const evaluate=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result.value;
-  const until=async expression=>{for(let i=0;i<100;i++){if(await evaluate(expression))return;await sleep(100);}throw new Error(`Timed out: ${expression}`);};
+  const until=async expression=>{for(let i=0;i<100;i++){if(await evaluate(expression))return;await sleep(100);}throw new Error(`Timed out: ${expression}; ${await evaluate('document.body.innerText.slice(0,2000)')}; ${JSON.stringify(errors)}`);};
   await send('Runtime.enable'); await send('Page.enable');
+  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
   const jobs=await(await fetch(url+'/api/jobs')).json();
   await send('Page.navigate',{url:`${url}/books/${jobs[0].id}/studio`});
   await until('document.getElementById("title")?.textContent === "The Door" && !document.getElementById("generate-book").disabled');
@@ -30,6 +31,10 @@ try {
   assert.equal(await evaluate('document.getElementById("prose").textContent'),'At dawn she returned.');
   await evaluate('document.getElementById("generate-book").click()');
   await until('!document.getElementById("master-download").hidden');
+  const pdfResponse=await fetch(url+`/api/jobs/${jobs[0].id}/pdf`);
+  assert.equal(pdfResponse.headers.get('content-type'),'application/pdf');
+  await mkdir('artifacts',{recursive:true});
+  await writeFile('artifacts/athena-reading-edition-preview.pdf',Buffer.from(await pdfResponse.arrayBuffer()));
   await evaluate('document.getElementById("tab-masters").click()');
   assert.equal(await evaluate('document.querySelectorAll(".master-card a[download]").length'),2);
   await evaluate('document.querySelector(".master-card button").click()');
@@ -42,6 +47,12 @@ try {
   await evaluate('document.getElementById("tab-voices").click()');
   await evaluate('document.getElementById("speech-voice").value="af_bella"; document.getElementById("voice-form").requestSubmit()');
   await until('document.getElementById("message").textContent.includes("settings saved")');
+  await evaluate('document.getElementById("tab-manuscript").click()');
+  await evaluate('document.getElementById("chapters").children[1].click(); document.getElementById("tab-film").click(); document.getElementById("build-film").click()');
+  for(let i=0;i<180;i++){if(await evaluate('!document.getElementById("render-film").disabled'))break;await sleep(1000);}
+  assert.equal(await evaluate('document.getElementById("render-film").disabled'),false,await evaluate('document.getElementById("film-progress").textContent+document.getElementById("film-log").textContent'));
+  assert.equal(await evaluate('document.getElementById("film-preview").hidden'),false);
+  await writeFile('artifacts/athena-video-studio.png',Buffer.from((await send('Page.captureScreenshot',{format:'png'})).data,'base64'));
   await evaluate('document.getElementById("tab-manuscript").click()');
   await mkdir('artifacts',{recursive:true});
   await writeFile('artifacts/athena-audiobook-desktop.png',Buffer.from((await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));

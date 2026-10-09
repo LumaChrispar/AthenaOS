@@ -1196,6 +1196,8 @@ class Orchestrator:
             parts.append(f'## Chapter {number}: {chapter.get("title", "")}\n\n{prose.strip()}')
         manuscript = '\n\n'.join(parts) + '\n'
         self.memory.save_text_artifact('manuscript.md', manuscript)
+        from book_pdf import build_pdf
+        build_pdf(self.base_dir)
         self.memory.save_artifact('delivery.json', json.dumps({
             'chapters': count, 'word_count': sum(len(parse_json(self.memory.load_artifact(
                 f'chapter_{n:02d}.json'))['prose_content'].split()) for n in range(1, count + 1)),

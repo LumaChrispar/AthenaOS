@@ -82,6 +82,7 @@ def edit_book(job, data):
             from orchestrator import Orchestrator
             import asyncio
             formatter = Orchestrator.__new__(Orchestrator)
+            formatter.base_dir = str(job)
             formatter.memory = MemoryManager(str(job))
             formatter.pipeline_state = read(job / '08_Memory/pipeline_state.json')
             asyncio.run(formatter.run_formatting())
