@@ -320,12 +320,13 @@ class Handler(BaseHTTPRequestHandler):
                 self.respond(settings)
             elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/narrate', path):
                 job = self.job_path(match[1])
-                with self.server.settings_lock, job_lock(job):
-                    previous = audiobook.status(job)
-                    if previous['status'] in ('pending', 'running'):
-                        raise ValueError('Narration is already queued or running for this book.')
-                    settings = audiobook.validate_settings(data.get('settings', {}))
-                    audiobook.prepare(job, settings, data.get('chapters'))
+                with self.server.settings_lock:
+                    with job_lock(job):
+                        previous = audiobook.status(job)
+                        if previous['status'] in ('pending', 'running'):
+                            raise ValueError('Narration is already queued or running for this book.')
+                        settings = audiobook.validate_settings(data.get('settings', {}))
+                        audiobook.prepare(job, settings, data.get('chapters'))
                     try:
                         self.server.audio_launcher(self.server.root, job)
                     except Exception:

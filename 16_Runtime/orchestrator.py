@@ -337,6 +337,8 @@ class Orchestrator:
                        '"voice": "...", "arc_progress": "..."}]}. '
                        'Include the principal cast, at most 8 characters.\n' + json.dumps(outline))
         try:
+            if os.path.exists(os.path.join(self.memory.memory_dir, 'character_roster.json')):
+                raise ResponseLimitError('Resume the saved character roster.')
             response = self.llm.execute_prompt('SRV-003', system_prompt, user_prompt)
         except ResponseLimitError:
             # Adapt once to small requests and checkpoint each profile. A later

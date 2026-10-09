@@ -38,8 +38,24 @@ class FakeModel:
         if service == 'SRV-001':
             return 'broken JSON' if self.invalid_intake else json.dumps({'decision': 'APPROVED'})
         if service == 'SRV-002':
+            if 'Break this single chapter beat' in prompt:
+                return json.dumps({'title': 'Arrival', 'summary': 'A visitor arrives.',
+                    'scenes': [{'title': 'Arrival', 'pov_character': 'Visitor', 'location': 'Door',
+                                'goal': 'Enter', 'conflict': 'Locked door', 'turn': 'The door opens'}] * 3})
             return json.dumps({'title': 'The Door', 'beat_sheets': [{'act': 1, 'beats': [
-                {'goal': 'Arrive'}, {'goal': 'Resolve'}]}]})
+                {'goal': 'Arrive', 'conflict': 'A locked door', 'outcome': 'Enter'},
+                {'goal': 'Resolve', 'conflict': 'The sea', 'outcome': 'Return'}]}]})
+        if service == 'SRV-003':
+            return json.dumps({'characters': [{'name': 'Visitor', 'psychology': {'want': 'Enter'}}]})
+        if service == 'SRV-004':
+            return json.dumps({'locations': ['Door'], 'rules': []})
+        if 'edits' in prompt and service in ('SRV-005', 'SRV-027', 'SRV-008'):
+            if service == 'SRV-008':
+                return json.dumps({'edits': [{'target_text': 'She opened the door.',
+                    'replacement': 'She opened the door. COPYEDITED ENDING.'}]})
+            return '{"edits": []}'
+        if service == 'SRV-005' and 'Return only polished scene prose' in prompt:
+            return 'She opened the door.' if '"scene_number": 1' in prompt else 'The sea answered.' if '"scene_number": 2' in prompt else 'She stayed.'
         if service in ('SRV-005', 'SRV-027', 'SRV-008'):
             if service == 'SRV-008':
                 chapter['prose_content'] += ' COPYEDITED ENDING.'
@@ -92,7 +108,7 @@ class WorkflowTests(unittest.TestCase):
             self.run_job(job)
         self.assertEqual(json.loads((job / 'job.json').read_text())['status'], 'failed')
         self.run_job(job)
-        self.assertEqual(self.model.calls.count('SRV-002'), 1)
+        self.assertEqual(self.model.calls.count('SRV-002'), 3)  # outline once, two scene plans
         self.assertEqual(self.model.calls.count('SRV-003'), 1)
         self.assertEqual(self.model.calls.count('SRV-004'), 2)
 
@@ -214,9 +230,11 @@ class WorkflowTests(unittest.TestCase):
     def test_saved_chapter_roadmap_recovers_without_new_outline_call(self):
         job = create_job(self.root, 'A story', 2)
         MemoryManager(str(job)).save_artifact('outline.json', json.dumps({
-            'title': 'Recovered', 'chapter_roadmap': [{'goal': 'Arrive'}, {'goal': 'Resolve'}]}))
+            'title': 'Recovered', 'chapter_roadmap': [
+                {'goal': 'Arrive', 'conflict': 'Locked door', 'outcome': 'Enter'},
+                {'goal': 'Resolve', 'conflict': 'Sea', 'outcome': 'Return'}]}))
         self.run_job(job)
-        self.assertNotIn('SRV-002', self.model.calls)
+        self.assertEqual(self.model.calls.count('SRV-002'), 2)  # scene plans only
         outline = json.loads((job / '08_Memory/outline.json').read_text())
         self.assertEqual(len(outline['beat_sheets'][0]['beats']), 2)
 

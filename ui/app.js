@@ -246,6 +246,10 @@ function elapsed(seconds) {
   return value < 60 ? `${value}s` : `${Math.floor(value / 60)}m ${value % 60}s`;
 }
 async function selectBook(id, navigate = true) {
+  if (!location.search.includes('workspace=1')) {
+    const info = await api(`/api/jobs/${id}`);
+    if (info.download_ready) { location.href = `/books/${id}/studio`; return; }
+  }
   if (selected) chatDrafts.set(selected, $('chat-input').value);
   selected = id; showView('detail', `/books/${id}`, navigate); $('reader').hidden = true;
   activitySignature = conversationSignature = '';
@@ -320,6 +324,8 @@ function renderDetail(job) {
   $('edit-book').disabled = $('delete-book').disabled = job.status === 'running';
   $('download').hidden = $('read').hidden = !job.download_ready;
   $('download').href = `/api/jobs/${job.id}/manuscript`;
+  $('audiobook-studio').hidden = !job.download_ready;
+  $('audiobook-studio').href = `/books/${job.id}/studio`;
   $('job-id').textContent = `Book ID: ${job.id}`;
   renderLog(job);
   // Switch a failed run to the Pipeline tab once, so the reason is on screen

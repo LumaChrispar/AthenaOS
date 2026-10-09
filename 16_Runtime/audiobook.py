@@ -149,6 +149,10 @@ def status(job):
         from job_lock import worker_is_active
         if not worker_is_active(job / 'audio'):
             result = {**result, 'status': 'interrupted', 'error': 'Narration stopped. Generate again to resume saved chunks.'}
+    if result.get('status') == 'pending' and time.time() - result.get('updated_at', 0) > 30:
+        from job_lock import worker_is_active
+        if not worker_is_active(job / 'audio'):
+            result = {**result, 'status': 'interrupted', 'error': 'The narration worker did not start. Generate again to retry.'}
     result = dict(result)
     settings = result.get('settings')
     studio = studio_data(job)
