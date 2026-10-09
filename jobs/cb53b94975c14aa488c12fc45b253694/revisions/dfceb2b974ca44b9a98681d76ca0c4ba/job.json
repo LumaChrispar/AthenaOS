@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "concept": "could you write a story titled The Hollow Crown of Blackthorn: a tragedy of ambition and a kingdom that feeds on its rulers. \"the crown doth glitter, yet beneath its gold lies teeth that hungers for the hand that holds\". A king discovers the crown he inherited is cured, every ruler who wears it slowly becomes a monster",
+  "chapters": null,
+  "status": "failed",
+  "completed_steps": [],
+  "active_step": "intake",
+  "error": "Error code: 404 - {'error': {'message': 'This model is unavailable for free. The paid version is available now - use this slug instead: inclusionai/ling-3.0-flash', 'code': 404}, 'user_id': 'user_3FL9coJXwTmIaGSp3R3kdrlutFu'}",
+  "created_at": 1790886047.599445,
+  "updated_at": 1790886051.8115735,
+  "active_started_at": null,
+  "active_attempt": 1,
+  "step_durations_seconds": {
+    "intake": 2.87
+  }
+}

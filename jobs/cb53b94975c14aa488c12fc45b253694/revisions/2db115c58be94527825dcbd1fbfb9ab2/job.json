@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "concept": "could you write a story titled The Hollow Crown of Blackthorn: a tragedy of ambition and a kingdom that feeds on its rulers. \"the crown doth glitter, yet beneath its gold lies teeth that hungers for the hand that holds\". A king discovers the crown he inherited is cured, every ruler who wears it slowly becomes a monster",
+  "chapters": null,
+  "status": "failed",
+  "completed_steps": [
+    "intake",
+    "architecture"
+  ],
+  "active_step": "characters",
+  "error": "Connection failed. Check your internet connection and OpenRouter availability. Transport: ConnectError. Saved steps are kept; resume when the connection is ready.",
+  "created_at": 1790886047.599445,
+  "updated_at": 1790892104.3071787,
+  "active_started_at": null,
+  "active_attempt": 2,
+  "step_durations_seconds": {
+    "intake": 47.47,
+    "architecture": 177.91,
+    "characters": 700.7
+  }
+}

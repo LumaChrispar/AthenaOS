@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Event Schema (CQRS)",
+  "description": "Represents a fact that has occurred in the past. Broadcasted to the Event Bus.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "message.schema.json" }
+  ],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "description": "The fact that occurred, in past tense (e.g., 'ChapterWritten', 'DraftApproved')"
+    },
+    "state_delta": {
+      "type": "object",
+      "description": "The exact changes made to the state machine or project files"
+    }
+  },
+  "required": ["event_type"]
+}

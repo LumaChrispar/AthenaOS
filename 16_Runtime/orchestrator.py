@@ -1,7 +1,7 @@
 import os
 import json
 import asyncio
-from llm_client import AthenaLLMClient
+from llm_client import AthenaLLMClient, ResponseLimitError
 from service_loader import load_service, format_system_prompt
 from memory_manager import MemoryManager
 from context_builder import ContextBuilder
@@ -327,20 +327,50 @@ class Orchestrator:
         
         outline = normalize_outline(parse_json(self.memory.load_artifact("outline.json")))
         self.memory.save_artifact('outline.json', json.dumps(outline, ensure_ascii=False, indent=2))
-        character_schema = self.memory.load_schema("character.schema.json")
-        
-        user_prompt = f"""
-        Execute the Character Psychology Profiling capability.
-        
-        INPUT DEPENDENCY (outline.json):
-        {outline}
-        
-        OUTPUT FORMAT:
-        Output the full character profiles in JSON format based on:
-        {character_schema}
-        """
-        
-        response = self.llm.execute_prompt("SRV-003", system_prompt, user_prompt)
+        # The old full-schema request asked for every profile and every field at
+        # once. Long outlines repeatedly exhausted provider completion ceilings.
+        system_prompt = ('You are a character psychologist for a novel. Return only valid JSON. '
+                         'Use the established cast and events; give practical, concise writing guidance. '
+                         'No analysis outside JSON. Keep each profile under 120 words.')
+        user_prompt = ('Return {"characters": [{"name": "...", "psychology": {"want": "...", '
+                       '"need": "...", "fear": "...", "fatal_flaw": "..."}, '
+                       '"voice": "...", "arc_progress": "..."}]}. '
+                       'Include the principal cast, at most 8 characters.\n' + json.dumps(outline))
+        try:
+            response = self.llm.execute_prompt('SRV-003', system_prompt, user_prompt)
+        except ResponseLimitError:
+            # Adapt once to small requests and checkpoint each profile. A later
+            # resume uses the checkpoints instead of regenerating the whole cast.
+            roster_path = os.path.join(self.memory.memory_dir, 'character_roster.json')
+            if os.path.exists(roster_path):
+                roster = parse_json(self.memory.load_artifact('character_roster.json'))
+            else:
+                roster = parse_json(self.llm.execute_prompt('SRV-003',
+                    'Return only JSON: {"names": ["name"]}. At most 8 principal character names. No profiles.',
+                    json.dumps(outline)))
+                if not isinstance(roster, dict) or not isinstance(roster.get('names'), list) or not roster['names']:
+                    raise ValueError('Character roster must contain names.')
+                if any(not isinstance(name, str) or not name.strip() for name in roster['names']) or len(roster['names']) > 8:
+                    raise ValueError('Character roster must contain 1–8 nonempty names.')
+                self.memory.save_artifact('character_roster.json', json.dumps(roster))
+            profiles = []
+            for index, name in enumerate(roster['names']):
+                filename = f'character_profile_{index + 1:02d}.json'
+                path = os.path.join(self.memory.memory_dir, filename)
+                if os.path.exists(path):
+                    profile = parse_json(self.memory.load_artifact(filename))
+                else:
+                    # Only include beats mentioning this character and the ending.
+                    beats = [beat for act in outline['beat_sheets'] for beat in act['beats']]
+                    relevant = [beat for beat in beats if name.casefold() in json.dumps(beat).casefold()]
+                    profile = parse_json(self.llm.execute_prompt('SRV-003', system_prompt,
+                        'Return one profile object with name, psychology, voice, arc_progress for ' + name + '.\n' +
+                        json.dumps({'title': outline['title'], 'beats': (relevant[:5] or beats[:2]) + beats[-1:]})))
+                    if not isinstance(profile, dict) or profile.get('name') != name or profile.get('error'):
+                        raise ValueError('Character profile must match its roster name.')
+                    self.memory.save_artifact(filename, json.dumps(profile))
+                profiles.append(profile)
+            response = json.dumps({'characters': profiles})
         profiles = parse_json(response)
         if not isinstance(profiles, (dict, list)) or not profiles or (isinstance(profiles, dict) and profiles.get('error')):
             raise ValueError('Character psychology must return profiles, not an error or empty object.')

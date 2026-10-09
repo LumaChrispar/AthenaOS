@@ -4,6 +4,16 @@ import os
 from pathlib import Path
 
 
+def worker_is_active(job):
+    if not (Path(job) / '.worker.lock').exists():
+        return False
+    try:
+        with job_lock(job):
+            return False
+    except RuntimeError:
+        return True
+
+
 @contextmanager
 def job_lock(job):
     lock = (Path(job) / '.worker.lock').open('a+b')

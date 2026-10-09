@@ -1,0 +1,58 @@
+{
+  "calls": 11,
+  "prompt_tokens": 9701,
+  "completion_tokens": 15860,
+  "by_service": {
+    "SRV-001": {
+      "calls": 3,
+      "prompt_tokens": 1393,
+      "completion_tokens": 1091,
+      "response_seconds": 45.760000000000005,
+      "failures": 2
+    },
+    "SRV-002": {
+      "calls": 1,
+      "prompt_tokens": 3327,
+      "completion_tokens": 2769,
+      "response_seconds": 177.88,
+      "failures": 0
+    },
+    "SRV-003": {
+      "calls": 7,
+      "prompt_tokens": 4981,
+      "completion_tokens": 12000,
+      "response_seconds": 1029.72,
+      "failures": 7
+    }
+  },
+  "by_model": {
+    "inclusionai/ling-3.0-flash:free": {
+      "calls": 1,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "response_seconds": 1.17,
+      "failures": 1
+    },
+    "nvidia/nemotron-3-ultra-550b-a55b:free": {
+      "calls": 7,
+      "prompt_tokens": 4720,
+      "completion_tokens": 3860,
+      "response_seconds": 917.08,
+      "failures": 5
+    },
+    "thinkingmachines/inkling-small:free": {
+      "calls": 1,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "response_seconds": 2.1,
+      "failures": 1
+    },
+    "qwen/qwen3.8-27b:free": {
+      "calls": 2,
+      "prompt_tokens": 4981,
+      "completion_tokens": 12000,
+      "response_seconds": 333.01000000000005,
+      "failures": 2
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Timeline Event Schema",
+  "description": "Standardized data model for tracking sequential events in Athena OS.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the event (e.g., EVT-042)"
+    },
+    "date": {
+      "type": "string",
+      "description": "In-universe timestamp or chronological sequencing index"
+    },
+    "participants": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Array of character IDs involved in the event"
+    },
+    "consequences": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "The direct plot or character fallout resulting from this event"
+    }
+  },
+  "required": ["id", "date", "participants", "consequences"]
+}

@@ -12,7 +12,7 @@ from providers import model_overrides
 
 def main():
     parser = argparse.ArgumentParser(description='Athena autonomous manuscript worker')
-    parser.add_argument('command', choices=['start', 'resume', 'status', 'ui'])
+    parser.add_argument('command', choices=['start', 'resume', 'status', 'ui', 'narrate'])
     parser.add_argument('--concept')
     parser.add_argument('--chapters', type=int)
     parser.add_argument('--job', help='Job ID printed by start')
@@ -42,6 +42,11 @@ def main():
         job = ROOT / 'jobs' / args.job
     if args.command == 'status':
         print((job / 'job.json').read_text(encoding='utf-8'))
+        return
+    if args.command == 'narrate':
+        from audiobook import run
+        run(job)
+        print(f'Audio saved: {job / "audio"}')
         return
     if args.background:
         launch_worker(ROOT, job)

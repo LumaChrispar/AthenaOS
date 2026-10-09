@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "concept": "could you write a story titled The Hollow Crown of Blackthorn: a tragedy of ambition and a kingdom that feeds on its rulers. \"the crown doth glitter, yet beneath its gold lies teeth that hungers for the hand that holds\". A king discovers the crown he inherited is cured, every ruler who wears it slowly becomes a monster",
+  "chapters": null,
+  "status": "failed",
+  "completed_steps": [
+    "intake",
+    "architecture"
+  ],
+  "active_step": "characters",
+  "error": "Error code: 403 - {'error': {'message': 'thinkingmachines/inkling-small:free is only available on agentic harnesses. Try plugging it into a coding agent or productivity app listed on https://openrouter.ai/apps', 'code': 403, 'metadata': {'routing_funnel': [{'step': 'Initial Endpoints', 'endpoint_count': 1}], 'failed_routing_step': 'Gate Free Endpoints by Agentic Harness'}}}",
+  "created_at": 1790886047.599445,
+  "updated_at": 1790892776.3596892,
+  "active_started_at": null,
+  "active_attempt": 1,
+  "step_durations_seconds": {
+    "intake": 47.47,
+    "architecture": 177.91,
+    "characters": 3.45
+  }
+}

@@ -11,6 +11,10 @@ from providers import connection_settings, api_key_for, CLOUD_PROVIDERS, PROVIDE
 _MODEL_LIMIT_CACHE = {}
 
 
+class ResponseLimitError(RuntimeError):
+    """A request must be reduced before trying again."""
+
+
 def _model_limits(provider, base_url, api_key, model_name):
     """Read advertised context/output limits when the server exposes them."""
     import httpx
@@ -236,7 +240,7 @@ class AthenaLLMClient:
                     provider_hint = f'for {provider_name}, also choose a model with a larger context limit or lower the output limit.'
                 else:
                     provider_hint = 'for a local model, also check its loaded context length in LM Studio or Ollama.'
-                raise RuntimeError(f'The model reached its response or context limit before finishing. '
+                raise ResponseLimitError(f'The model reached its response or context limit before finishing. '
                                    f'In Settings, check the output limit; {provider_hint} Then use Resume '
                                    f'with current settings. Repeating this same request unchanged will not fix it.')
             finish_reason = response.choices[0].finish_reason

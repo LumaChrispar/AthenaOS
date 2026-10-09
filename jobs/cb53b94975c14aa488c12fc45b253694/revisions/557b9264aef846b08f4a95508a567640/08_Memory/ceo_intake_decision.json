@@ -1,0 +1,22 @@
+{
+  "decision": "APPROVED",
+  "rationale": "The concept presents a clear, compelling tragedy premise with built-in structural irony (a crown that consumes its wearers). It defines genre (dark fantasy/grimdark tragedy), protagonist (the inheriting king), central conflict (ambition vs. corruption), and thematic core (power's parasitic nature). No unresolved obstacles prevent autonomous draft generation. The quote provides tonal anchor. All missing parameters (length, chapter count, subgenre specifics, audience) are routine creative decisions within CEO authority to resolve for a local manuscript draft.",
+  "assumptions": [
+    "Format: Full-length novel (not novella or short story) to properly execute a multi-generational tragedy arc.",
+    "Target audience: Adult grimdark fantasy readers (comparable to Joe Abercrombie, Mark Lawrence, R.F. Kuang).",
+    "Subgenre: Grimdark political tragedy with body horror elements (the physical transformation).",
+    "Chapter count: 15 chapters (approx. 45,000 words at 3,000 words/chapter) — sufficient for three-act tragedy: inheritance & discovery (5), corruption & resistance (5), collapse & succession (5).",
+    "POV: Close third-person limited, primarily the King, with occasional interludes from the Crown's perspective (personified hunger) or historical flashbacks of prior rulers.",
+    "Setting: Blackthorn — a decaying, feudal kingdom where the Crown is the only stable institution; magic is subtle, parasitic, and tied to land/bloodline.",
+    "Tone: Inevitable, atmospheric, morally gray; no redemption arc — the tragedy is that the King *knows* and wears it anyway.",
+    "Ending: The King becomes the monster; the Crown passes to the next heir. Cycle continues. Final image: the new ruler's hand trembling as they lift it."
+  ],
+  "planning_instructions": [
+    "Architect (SRV-002): Develop a 15-chapter outline mapping the three-act tragedy. Include: (a) the King's initial rationalization, (b) the first physical/psychological symptom, (c) the moment they could abdicate but choose not to, (d) the corruption of their closest relationship, (e) the public revelation/performance of monstrosity, (f) the succession mechanism. Ensure each chapter has a distinct turning point.",
+    "Architect: Define the Crown's mechanics — how it 'feeds' (memories? vitality? morality? lifespan?), the visible progression of transformation, and whether prior rulers' consciousnesses persist within it.",
+    "Architect: Create a Cast Sheet: King (name, age, fatal flaw), Heir/Successor, Spouse/Consort, Court Physician/Scholar (knows the truth), Rival Noble, The Crown (as quasi-character).",
+    "Lorekeeper (SRV-004): Establish Blackthorn's history — 12 prior rulers, duration of reigns, notable monsters they became, and the kingdom's complicity (why they keep the Crown).",
+    "Prose Director (SRV-005): Set style guide — archaic but accessible diction, sensory focus on gold/teeth/blood/rot motifs, recurring refrain variations of the user's quote.",
+    "QA Director (SRV-010): Prepare acceptance criteria — each chapter must advance the corruption arc visibly; no chapter may be pure exposition; the King's agency must remain clear until the final surrender."
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "title": "The Hollow Crown of Blackthorn",
+  "beat_sheets": [
+    {
+      "act": 1,
+      "name": "The Golden Lie",
+      "beats": [
+        {
+          "beat_id": 1,
+          "goal": "King Kaelen Vane claims the Blackthorn Crown at his coronation, accepting the burden of rule.",
+          "conflict": "The Crown's first hunger prickles against his temples — a cold, metallic pressure that tastes of old blood — while the court expects a savior-king.",
+          "outcome": "Kaelen wears the Crown; the hunger settles like a second heartbeat. He vows to be the ruler who breaks the cycle."
+        },
+        {
+          "beat_id": 2,
+          "goal": "Kaelen investigates the Crown's history in the sealed Royal Archives, seeking proof of the curse.",
+          "conflict": "Master Vorys, the Court Physician, obstructs access; the archives are fragmented, censored by generations of kings. Each prior reign ends in 'sudden illness' or 'divine madness.'",
+          "outcome": "Kaelen finds a single intact journal: King Alaric III wrote his own transformation — teeth growing inward, memories eaten, the Crown whispering. The curse is real."
+        },
+        {
+          "beat_id": 3,
+          "goal": "Kaelen rationalizes the curse, convincing himself his will and scholarship can master what destroyed his predecessors.",
+          "conflict": "Queen Isolde confronts him with his sleepless nights, his fingers already gilded at the tips. She demands abdication for their son Rowan's sake.",
+          "outcome": "Kaelen refuses. He frames the Crown as a tool — a parasite he can starve by ruling justly. The lie becomes his armor."
+        },
+        {
+          "beat_id": 4,
+          "goal": "The first undeniable symptom manifests during a border dispute negotiation.",
+          "conflict": "Mid-parley, Kaelen's jaw unhinges slightly; a new molar, black as iron, pushes through his gum. He swallows the blood and continues speaking.",
+          "outcome": "The transformation has begun physically. Kaelen hides it. Duke Malric, the rival noble, notices the pause — and the blood on Kaelen's lip."
+        },
+        {
+          "beat_id": 5,
+          "goal": "Kaelen faces the abdication window: he could name Rowan regent and step aside before the corruption deepens.",
+          "conflict": "The Crown whispers that Rowan is weak, that Malric would butcher the boy, that only Kaelen's monstrosity can protect the kingdom. Isolde pleads one last time.",
+          "outcome": "Kaelen refuses abdication. He chooses the Crown. The hunger surges in approval. Act One closes on his first deliberate act of corruption: ordering Vorys to falsify his health records."
+        }
+      ]
+    },
+    {
+      "act": 2,
+      "name": "The Feeding",
+      "beats": [
+        {
+          "beat_id": 6,
+          "goal": "Kaelen tests the Crown's mechanics — discovering it feeds on moral memory, not just flesh.",
+          "conflict": "He executes a corrupt tax collector. The Crown devours Kaelen's memory of the man's pleading children. The act feels clean. Righteous. Easy.",
+          "outcome": "Kaelen realizes the Crown doesn't just change his body — it edits his conscience. He begins selecting victims strategically: enemies, traitors, 'necessary' sacrifices."
+        },
+        {
+          "beat_id": 7,
+          "goal": "Isolde confronts the stranger in her husband's skin; their marriage fractures.",
+          "conflict": "Kaelen cannot recall their wedding vow — the Crown ate it. He mimics affection perfectly. Isolde realizes the man she loves is already gone.",
+          "outcome": "Isolde flees to the convent-tower with Rowan. Kaelen lets them go, telling himself it's for their safety. The Crown purrs at the isolation."
+        },
+        {
+          "beat_id": 8,
+          "goal": "Vorys reveals the full mechanism: the Crown houses the consciousness of all twelve prior kings, a chorus of hunger.",
+          "conflict": "Vorys offers a ritual to sever the Crown's hold — it requires Kaelen's voluntary death. Kaelen has Vorys imprisoned instead.",
+          "outcome": "The scholar silenced. The Crown's voices grow louder in Kaelen's mind — Alaric III, the Tooth-King; Mara the Bone-Weaver; others. They advise him now."
+        },
+        {
+          "beat_id": 9,
+          "goal": "Duke Malric rebels, marching on the capital. Kaelen must use the Crown's power openly to survive.",
+          "conflict": "Malric's army outnumbers the loyalists three-to-one. The Crown offers victory — if Kaelen feeds it the lives of his own honor guard.",
+          "outcome": "Kaelen accepts. He leads the charge, his jaw now permanently distended, teeth like needles. He wins. The court cheers their monster-king."
+        },
+        {
+          "beat_id": 10,
+          "goal": "Kaelen crosses the point of no return: he feeds the Crown a loyal innocent to save a strategic asset.",
+          "conflict": "The Crown demands a child's memory — the son of a general whose loyalty Kaelen needs. The general offers his own son willingly, believing it honor.",
+          "outcome": "Kaelen takes the boy's memory of his mother. The general's loyalty is secured. Kaelen no longer rationalizes. He feeds the Crown because it is easier than ruling without it."
+        }
+      ]
+    },
+    {
+      "act": 3,
+      "name": "The Hollow Throne",
+      "beats": [
+        {
+          "beat_id": 11,
+          "goal": "Kaelen's monstrosity is revealed publicly during the Feast of Saint Veyra.",
+          "conflict": "The Crown forces a transformation mid-ceremony — Kaelen's skin splits, revealing gold-threaded muscle, teeth spilling from his cheeks like coins. He does not hide it.",
+          "outcome": "The court does not flee. They kneel. The kingdom has always known; they have always accepted. Blackthorn feeds its rulers to the Crown willingly."
+        },
+        {
+          "beat_id": 12,
+          "goal": "Kaelen confronts the kingdom's complicity — the nobles, the priests, the people all benefit from the Crown's tyranny.",
+          "conflict": "Isolde returns, not to save him, but to negotiate Rowan's survival. She reveals she has known for years; the convent-tower trains heirs to wear the Crown.",
+          "outcome": "Kaelen realizes the tragedy: there is no victim, only participants. He is not the first to choose the Crown. He is simply the latest."
+        },
+        {
+          "beat_id": 13,
+          "goal": "Rowan is brought before the throne — not as son, but as successor. The succession mechanism activates.",
+          "conflict": "The Crown demands the transfer. Kaelen's consciousness fights the voices of twelve kings who want to stay. Rowan, sixteen and terrified, reaches for the Crown.",
+          "outcome": "Kaelen guides Rowan's hand. He teaches the boy the first lie: 'You can control it.' The Crown passes. Kaelen's body collapses — hollow, human, finally dead."
+        },
+        {
+          "beat_id": 14,
+          "goal": "The final surrender: Kaelen's mind joins the chorus inside the Crown, becoming the thirteenth voice.",
+          "conflict": "As his awareness fades, Kaelen sees through the Crown's eyes — not as king, but as hunger. He understands the Crown is not cursed. It is a mirror.",
+          "outcome": "Kaelen's voice settles into the gold. He will whisper to the next king. He will hunger. He is the Crown now."
+        },
+        {
+          "beat_id": 15,
+          "goal": "Rowan wears the Crown. The cycle completes. The kingdom endures.",
+          "conflict": "Rowan's hand trembles as the cold gold settles on his brow. The hunger pricks his temples. He thinks of his mother in the tower. He thinks of his father's hollow eyes.",
+          "outcome": "Rowan straightens. His jaw sets. He speaks the coronation oath. The Crown doth glitter. Beneath its gold lie teeth. The hunger waits. The story begins again."
+        }
+      ]
+    }
+  ],
+  "state": "APPROVED",
+  "approval_basis": "Runtime structural validation: title and complete chapter beats."
+}

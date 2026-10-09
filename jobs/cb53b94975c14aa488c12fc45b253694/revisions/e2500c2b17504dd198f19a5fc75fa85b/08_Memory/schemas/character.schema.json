@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Character Master Schema",
+  "description": "The root object for a character, tying together sub-schemas. Uses UUIDs.",
+  "type": "object",
+  "properties": {
+    "character_id": { "type": "string", "description": "Unique UUID." },
+    "name": { "type": "string" },
+    "aliases": { "type": "array", "items": { "type": "string" } },
+    "status": { "type": "string", "enum": ["active", "deceased", "missing", "inactive"] },
+    "arc_progress": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "appearance": { "$ref": "character/appearance.schema.json" },
+    "psychology": { "$ref": "character/psychology.schema.json" },
+    "history": { "type": "string", "description": "The character's backstory before the novel begins" },
+    "abilities": { "type": "array", "items": { "type": "string" } },
+    "inventory": { "type": "array", "items": { "type": "string" }}
+  },
+  "required": ["character_id", "name", "status", "appearance", "psychology"]
+}

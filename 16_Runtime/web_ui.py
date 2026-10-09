@@ -16,6 +16,7 @@ from book_chat import read_messages, progress_messages, reply_to_book
 from job_lock import job_lock
 from book_library import editor_data, edit_book, continue_book, snapshot, update_model
 from pipeline_inspect import inspect_job, artifact_text, prompt_text
+import audiobook
 
 
 def read_json(path, default=None):
@@ -63,10 +64,11 @@ def settings_config(settings):
 class AthenaServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, root, port=8765, launcher=launch_worker):
+    def __init__(self, root, port=8765, launcher=launch_worker, audio_launcher=audiobook.launch):
         self.root = Path(root).resolve()
         self.token = secrets.token_urlsafe(32)
         self.launcher = launcher
+        self.audio_launcher = audio_launcher
         self.settings_lock = threading.Lock()
         self.chat_locks = {}
         super().__init__(('127.0.0.1', port), Handler)
@@ -92,6 +94,47 @@ class Handler(BaseHTTPRequestHandler):
     def valid_host(self):
         port = self.server.server_address[1]
         return self.headers.get('Host') in (f'127.0.0.1:{port}', f'localhost:{port}')
+
+    def respond_audio(self, path):
+        """Stream audio and support browser seeking without loading a book into RAM."""
+        size = path.stat().st_size
+        start, end, code = 0, size - 1, 200
+        requested = self.headers.get('Range')
+        if requested:
+            match = re.fullmatch(r'bytes=(\d*)-(\d*)', requested)
+            if not match or not any(match.groups()):
+                self.send_error(416)
+                return
+            if match[1]:
+                start = int(match[1])
+                end = min(int(match[2]), end) if match[2] else end
+            else:
+                start = max(0, size - int(match[2]))
+            if start > end or start >= size:
+                self.send_error(416)
+                return
+            code = 206
+        self.send_response(code)
+        self.send_header('Content-Type', 'audio/wav')
+        self.send_header('Accept-Ranges', 'bytes')
+        self.send_header('Content-Length', str(end - start + 1))
+        self.send_header('Content-Disposition', f'inline; filename="{path.name}"')
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        if code == 206:
+            self.send_header('Content-Range', f'bytes {start}-{end}/{size}')
+        self.end_headers()
+        with path.open('rb') as stream:
+            stream.seek(start)
+            remaining = end - start + 1
+            try:
+                while remaining:
+                    block = stream.read(min(65536, remaining))
+                    if not block:
+                        break
+                    self.wfile.write(block)
+                    remaining -= len(block)
+            except (BrokenPipeError, ConnectionResetError):
+                pass
 
     def job_path(self, identifier):
         if not re.fullmatch('[0-9a-f]{32}', identifier):
@@ -135,6 +178,10 @@ class Handler(BaseHTTPRequestHandler):
             static['/settings.css'] = ('settings.css', 'text/css')
             static['/chat.css'] = ('chat.css', 'text/css')
             static['/polish.css'] = ('polish.css', 'text/css')
+            static['/studio.js'] = ('studio.js', 'text/javascript')
+            static['/studio.css'] = ('studio.css', 'text/css')
+            if re.fullmatch('/books/[0-9a-f]{32}/studio', path):
+                static[path] = ('studio.html', 'text/html')
             if re.fullmatch('/books/[0-9a-f]{32}', path):
                 static[path] = ('index.html', 'text/html')
             if path in static:
@@ -150,6 +197,20 @@ class Handler(BaseHTTPRequestHandler):
                     'max_calls_per_job': 200, 'max_output_tokens': 8192, 'timeout_seconds': 900,
                     'role_models': {},
                 }))
+            elif path == '/api/narration-settings':
+                self.respond(read_json(self.server.root / 'config/narration.json', audiobook.DEFAULTS))
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/(studio|audio-status)', path):
+                job = self.job_path(match[1])
+                self.respond(audiobook.studio_data(job) if match[2] == 'studio' else audiobook.status(job))
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/audio/([a-z0-9-]+[.]wav)', path):
+                job = self.job_path(match[1])
+                audio_state = audiobook.status(job)
+                allowed = [t['filename'] for t in audio_state['tracks'].values()]
+                if audio_state.get('master'):
+                    allowed.append(audio_state['master']['filename'])
+                if match[2] not in allowed:
+                    raise FileNotFoundError('This audio is unavailable or belongs to an earlier manuscript revision.')
+                self.respond_audio(job / 'audio' / match[2])
             elif path in ('/api/jobs', '/api/trash'):
                 jobs = []
                 for state_file in (self.server.root / 'jobs').glob('*/job.json'):
@@ -252,6 +313,27 @@ class Handler(BaseHTTPRequestHandler):
                     self.respond(openrouter_key_status(self.server.root))
                 else:
                     raise ValueError('Choose save, test, or remove.')
+            elif path == '/api/narration-settings':
+                settings = audiobook.validate_settings(data)
+                with self.server.settings_lock:
+                    atomic_json(self.server.root / 'config/narration.json', settings)
+                self.respond(settings)
+            elif match := re.fullmatch('/api/jobs/([0-9a-f]{32})/narrate', path):
+                job = self.job_path(match[1])
+                with self.server.settings_lock, job_lock(job):
+                    previous = audiobook.status(job)
+                    if previous['status'] in ('pending', 'running'):
+                        raise ValueError('Narration is already queued or running for this book.')
+                    settings = audiobook.validate_settings(data.get('settings', {}))
+                    audiobook.prepare(job, settings, data.get('chapters'))
+                    try:
+                        self.server.audio_launcher(self.server.root, job)
+                    except Exception:
+                        state = read_json(job / 'audio/state.json')
+                        state.update(status='failed', error='Could not launch narration. Try again.')
+                        atomic_json(job / 'audio/state.json', state)
+                        raise
+                self.respond({'id': job.name}, 202)
             elif path == '/api/settings':
                 settings = validate_settings(data)
                 with self.server.settings_lock:
