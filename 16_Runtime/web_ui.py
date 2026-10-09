@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import re
 import secrets
+import socket
 import threading
 import time
 from urllib.parse import unquote, urlsplit
@@ -64,6 +65,14 @@ def settings_config(settings):
 
 class AthenaServer(ThreadingHTTPServer):
     daemon_threads = True
+    allow_reuse_address = False
+
+    def server_bind(self):
+        # Windows SO_REUSEADDR can let two servers answer the same port with
+        # different loaded code. Reserve one owner for this UI's listening socket.
+        if hasattr(socket, 'SO_EXCLUSIVEADDRUSE'):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
 
     def __init__(self, root, port=8765, launcher=launch_worker, audio_launcher=audiobook.launch, film_launcher=book_video.launch):
         self.root = Path(root).resolve()
@@ -152,6 +161,20 @@ class Handler(BaseHTTPRequestHandler):
         memory = path / '08_Memory'
         state['usage'] = read_json(memory / 'usage.json', {})
         state['pipeline'] = read_json(memory / 'pipeline_state.json', {})
+        # Draft files land before review/canon finish. Expose both checkpoints
+        # so the polling UI can show saved writing without claiming approval.
+        approved = [int(step.split('_')[1]) for step in state.get('completed_steps', [])
+                    if re.fullmatch(r'chapter_\d+', step)]
+        drafted = []
+        for chapter_path in memory.glob('chapter_*.json'):
+            if re.fullmatch(r'chapter_\d+[.]json', chapter_path.name):
+                try:
+                    chapter = read_json(chapter_path)
+                    if isinstance(chapter, dict) and isinstance(chapter.get('prose_content'), str) and chapter['prose_content'].strip():
+                        drafted.append(int(chapter_path.stem.split('_')[1]))
+                except (OSError, ValueError):
+                    pass
+        state['chapter_progress'] = {'drafted': len(drafted), 'approved': len(approved)}
         state['metadata'] = read_json(memory / 'metadata.json', {})
         state['download_ready'] = state['status'] == 'completed' and (memory / 'manuscript.md').exists()
         config = yaml.safe_load((path / 'config/models.yaml').read_text(encoding='utf-8'))

@@ -47,6 +47,24 @@ class ModelStub(BaseHTTPRequestHandler):
 
 
 class LocalUiTests(unittest.TestCase):
+    def test_another_ui_cannot_share_the_same_port(self):
+        with self.assertRaises(OSError):
+            AthenaServer(self.root, self.server.server_address[1])
+
+    def test_chapter_progress_updates_from_saved_drafts_and_approval_steps(self):
+        job = create_job(self.root, 'Progress', 2)
+        path = f'/api/jobs/{job.name}'
+        with self.request(path) as response:
+            self.assertEqual(json.load(response)['chapter_progress'], {'drafted': 0, 'approved': 0})
+        atomic_json(job / '08_Memory/chapter_01.json', {'prose_content': 'A saved draft.'})
+        with self.request(path) as response:
+            self.assertEqual(json.load(response)['chapter_progress'], {'drafted': 1, 'approved': 0})
+        state = json.loads((job / 'job.json').read_text())
+        state['completed_steps'] = ['chapter_1']
+        atomic_json(job / 'job.json', state)
+        with self.request(path) as response:
+            self.assertEqual(json.load(response)['chapter_progress'], {'drafted': 1, 'approved': 1})
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)

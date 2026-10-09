@@ -314,7 +314,9 @@ function renderDetail(job) {
   const attempt = job.status === 'running' && job.active_attempt > 1 ? ` · attempt ${job.active_attempt}/3` : '';
   $('progress-text').textContent = `${job.completed_steps.length} steps saved${timing}${attempt} · Last update ${new Date((job.updated_at || job.created_at) * 1000).toLocaleString()}`;
   $('metrics').replaceChildren();
-  for (const [value, name] of [[`${job.pipeline.last_completed_chapter || 0} / ${job.pipeline.total_chapters || job.chapters || '?'}`, 'Chapters completed'], [job.usage.calls || 0, 'Writing requests'], [job.chat_usage?.calls || 0, 'Chat requests'], [(job.usage.prompt_tokens || 0) + (job.usage.completion_tokens || 0), 'Writing tokens']]) {
+  const totalChapters = job.pipeline.total_chapters || job.chapters || '?';
+  const chapterProgress = job.chapter_progress || {drafted: job.pipeline.last_completed_chapter || 0, approved: job.pipeline.last_completed_chapter || 0};
+  for (const [value, name] of [[`${chapterProgress.drafted} / ${totalChapters}`, 'Chapters drafted'], [`${chapterProgress.approved} / ${totalChapters}`, 'Chapters approved'], [job.usage.calls || 0, 'Writing requests'], [job.chat_usage?.calls || 0, 'Chat requests'], [(job.usage.prompt_tokens || 0) + (job.usage.completion_tokens || 0), 'Writing tokens']]) {
     const item = document.createElement('div'), number = document.createElement('strong'); number.textContent = value; item.append(number, document.createTextNode(name)); $('metrics').append(item);
   }
   $('resume-current').hidden = job.status === 'completed' || job.status === 'running';

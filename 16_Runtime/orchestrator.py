@@ -3,7 +3,7 @@ import json
 import asyncio
 from llm_client import AthenaLLMClient, ResponseLimitError
 from service_loader import load_service, format_system_prompt
-from memory_manager import MemoryManager
+from memory_manager import MemoryManager, _extract_json_from_response
 from context_builder import ContextBuilder
 from job_runner import atomic_json
 from outline_format import normalize_outline
@@ -11,10 +11,7 @@ import yaml
 
 
 def parse_json(response):
-    text = response.strip()
-    if text.startswith('```'):
-        text = text.split('\n', 1)[1].rsplit('```', 1)[0]
-    return json.loads(text)
+    return json.loads(_extract_json_from_response(response))
 
 
 def apply_passage_edits(chapter_response, edit_response, label='edit'):
@@ -789,34 +786,49 @@ class Orchestrator:
 
     async def write_and_validate_chapter(self, chapter_number: int):
         """Write chapter with revision loop (C2 Part B)."""
-        for attempt in range(self.max_revision_attempts):
+        work_path = os.path.join(self.base_dir, '08_Memory', f'chapter_{chapter_number:02d}_work.json')
+        work = {'attempt': 0, 'results': {}}
+        if os.path.exists(work_path):
+            with open(work_path, encoding='utf-8') as stream:
+                work = json.load(stream)
+
+        async def operation(name, function, *args):
+            if name in work['results']:
+                print(f'Chapter {chapter_number}: reusing saved {name}.')
+                return work['results'][name]
+            result = await function(*args)
+            work['results'][name] = result
+            atomic_json(work_path, work)
+            return result
+
+        for attempt in range(work['attempt'], self.max_revision_attempts):
             print(f"\n=== Chapter {chapter_number}, Attempt {attempt + 1}/{self.max_revision_attempts} ===")
             
             # Draft
             if attempt == 0:
-                await self.run_chapter_draft(chapter_number)
+                await operation('draft', self.run_chapter_draft, chapter_number)
             
             # Voice variation (C4)
             if attempt == 0:
-                await self.run_voice_variation(chapter_number)
+                await operation('voice', self.run_voice_variation, chapter_number)
             
             # Dialogue audit and rewrite (A2)
             # First run SRV-013 Dialogue Master audit
-            await self.run_dialogue_audit(chapter_number)
+            await operation('dialogue_audit', self.run_dialogue_audit, chapter_number)
             # Then rewrite based on audit
-            await self.run_dialogue_rewrite(chapter_number)
+            await operation('dialogue_rewrite', self.run_dialogue_rewrite, chapter_number)
             
             # Stage 4 blind fan-out (WF-001): Developmental Edit + Continuity Check
             # run as independent, isolated subagent calls, concurrently. Neither
             # sees the other's notes — that's what makes this two signals instead
             # of one agent agreeing with itself twice.
             dev_edit_report, continuity_report = await asyncio.gather(
-                self.run_developmental_edit(chapter_number),
-                self.run_continuity_check(chapter_number)
+                operation('developmental', self.run_developmental_edit, chapter_number),
+                operation('continuity', self.run_continuity_check, chapter_number)
             )
             
             # QA check (programmatic metrics + SRV-010)
-            qa_result = parse_json(await self.run_qa_check(chapter_number))
+            qa_result = parse_json(await operation('qa', self.run_qa_check, chapter_number))
             
             # Check scores — ALL gates must pass, per system-prompt.md Directive 5
             continuity_score = continuity_report.get("score", 0)
@@ -829,10 +841,10 @@ class Orchestrator:
                 print(f"Chapter {chapter_number} PASSED (continuity: {continuity_score}, dev_edit: {dev_edit_score})")
                 
                 # Run Reader Proxy (A5) after QA passes
-                await self.run_reader_proxy(chapter_number)
+                await operation('reader', self.run_reader_proxy, chapter_number)
                 
                 # Stage 5 (WF-001): Copy Edit — only runs on an APPROVED chapter
-                await self.run_copy_edit(chapter_number)
+                await operation('copy_edit', self.run_copy_edit, chapter_number)
                 
                 return True
             
@@ -844,7 +856,9 @@ class Orchestrator:
                 merged_report = dict(continuity_report)
                 merged_report["developmental_notes"] = dev_edit_report.get("priority_revision_list", [])
                 merged_report['qa_notes'] = qa_result
-                await self.run_chapter_revision(chapter_number, merged_report)
+                await operation('revision', self.run_chapter_revision, chapter_number, merged_report)
+                work = {'attempt': attempt + 1, 'results': {}}
+                atomic_json(work_path, work)
         
         # Escalation after max attempts
         print(f"ESCALATION: Chapter {chapter_number} failed {self.max_revision_attempts} times")
@@ -876,13 +890,16 @@ class Orchestrator:
         - Dialogue that exists only to transmit information
         - Missing subtext opportunities
         
+        Return one valid JSON object, without commentary. Flag at most five
+        passages. Keep each issue and rationale to one sentence and each
+        proposed replacement to a string, never an array. Escape quotation marks
+        inside JSON strings. Return {{"flagged_lines": [], "rewrite_proposals": [],
+        "differentiation_score": 1.0}} if no changes are needed.
         Output JSON: {{"flagged_lines": [...], "rewrite_proposals": [...], "differentiation_score": 0.0}}
         """
         
         response = self.llm.execute_prompt("SRV-013", system_prompt, user_prompt)
-        audit_file = os.path.join(self.base_dir, "08_Memory", f"dialogue_audit_chapter_{chapter_number:02d}.json")
-        with open(audit_file, 'w', encoding='utf-8') as f:
-            f.write(response)
+        self.memory.save_artifact(f"dialogue_audit_chapter_{chapter_number:02d}.json", response)
         print(f"Dialogue audit complete for Chapter {chapter_number}.")
         return response
 
@@ -1068,7 +1085,8 @@ class Orchestrator:
             return
         
         with open(audit_file, 'r', encoding='utf-8') as f:
-            dialogue_audit = json.load(f)
+            # Existing books may have saved the provider's Markdown wrapper.
+            dialogue_audit = parse_json(f.read())
         
         user_prompt = f"""
         Identify at most five exact dialogue passages where a local edit would

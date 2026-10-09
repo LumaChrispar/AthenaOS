@@ -174,6 +174,12 @@ when deliberately changing a resumed run.
 
 The worker checkpoints each planning stage, each completed chapter, each critique,
 metadata, and manuscript assembly. Resume skips completed steps. An interrupted
+chapter also checkpoints its draft, voice edits, dialogue audit/rewrite and review
+operations. Invalid JSON retries the incomplete operation while retaining the
+earlier valid work. The web progress panel refreshes every three seconds and shows
+drafted and approved chapter counts separately; a draft does not count as approved
+until it passes review and copy editing.
+An interrupted
 intake reuses its saved conditions as context. Intake operates in draft mode:
 it infers missing creative details, accepts short formats, and assigns outline
 work to planning instead of blocking on marketing or publication decisions.

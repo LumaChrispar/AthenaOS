@@ -72,6 +72,52 @@ class FakeModel:
 
 
 class WorkflowTests(unittest.TestCase):
+    def test_dialogue_json_retries_keep_voice_and_draft_checkpoints(self):
+        job = create_job(self.root, 'A door by the sea', 2)
+        original = self.model.execute_prompt
+        audits = []
+        def reply(service, system, prompt):
+            if service == 'SRV-013':
+                self.model.calls.append(service)
+                audits.append(service)
+                return '{"flagged_lines": [broken}' if len(audits) == 1 else 'Audit follows:\n```json\n{"flagged_lines": [], "rewrite_proposals": []}\n```'
+            return original(service, system, prompt)
+        self.model.execute_prompt = reply
+        self.run_job(job)
+        self.assertEqual(self.model.calls.count('SRV-027'), 2)
+        self.assertEqual(self.model.calls.count('SRV-013'), 3)
+        audit = json.loads((job / '08_Memory/dialogue_audit_chapter_01.json').read_text())
+        self.assertEqual(audit['flagged_lines'], [])
+        self.assertEqual(json.loads((job / 'job.json').read_text())['status'], 'completed')
+
+    def test_resume_review_interruption_keeps_chapter_operations(self):
+        job = create_job(self.root, 'A door by the sea', 2)
+        self.model.fail_service = 'SRV-010'
+        with self.assertRaises(RuntimeError):
+            self.run_job(job)
+        self.run_job(job)
+        self.assertEqual(self.model.calls.count('SRV-027'), 2)
+        self.assertEqual(self.model.calls.count('SRV-013'), 2)
+        self.assertEqual(self.model.calls.count('SRV-007'), 2)
+        self.assertEqual(json.loads((job / 'job.json').read_text())['status'], 'completed')
+
+    def test_missing_provider_choices_are_retried_without_type_error(self):
+        job = create_job(self.root, 'First')
+        client = AthenaLLMClient.__new__(AthenaLLMClient)
+        client.capability_model = {}
+        client.default_model = 'fake'
+        client.default_temp = .5
+        client.usage_path = str(job / '08_Memory/usage.json')
+        client.max_calls = 10
+        client.max_output_tokens = 100
+        client.client = Mock()
+        good = SimpleNamespace(usage=None, choices=[SimpleNamespace(finish_reason='stop', message=SimpleNamespace(content='{}'))])
+        client.client.chat.completions.create.side_effect = [SimpleNamespace(choices=None), None, good]
+        with patch('llm_client.time.sleep'), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(client.execute_prompt('SRV-001', 'system', 'user'), '{}')
+        self.assertEqual(client.client.chat.completions.create.call_count, 3)
+        self.assertEqual(json.loads(Path(client.usage_path).read_text())['calls'], 3)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)

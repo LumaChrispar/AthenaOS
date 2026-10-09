@@ -219,6 +219,9 @@ class AthenaLLMClient:
                 max_tokens=request_output_tokens,
             )
             print(f"[{service_id}] Model response received in {time.monotonic() - request_started:.1f}s.")
+            choices = getattr(response, 'choices', None)
+            if not choices or getattr(choices[0], 'message', None) is None:
+                raise ValueError('Model returned empty content: the provider response has no completion message. Saved work is kept; retrying this request.')
             if response.usage:
                 prompt_count = response.usage.prompt_tokens or 0
                 completion_count = response.usage.completion_tokens or 0
